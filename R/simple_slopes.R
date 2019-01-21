@@ -94,7 +94,7 @@
 #' @author Jacob Long <\email{long.1377@@osu.edu}>
 #'
 #' @inheritParams interact_plot
-#' @inheritParams summ.lm
+#' @inheritParams jtools::summ.lm
 #'
 #' @family interaction tools
 #'
@@ -139,6 +139,7 @@
 #' }
 #'
 #' @importFrom stats coef coefficients lm predict sd update getCall vcov relevel
+#' @import jtools
 #' @export
 #'
 
@@ -524,7 +525,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     if (robust != FALSE) {
 
       # For J-N
-      covmat <- do_robust(newmod, robust, cluster, dt)$vcov
+      covmat <- get_robust_se(newmod, robust, cluster, dt)$vcov
 
     } else {
 
@@ -774,7 +775,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
 #' @export
 #' @importFrom cli cat_rule rule
-#' @importFrom crayon red bold
+#' @importFrom crayon red bold italic
 
 print.sim_slopes <- function(x, ...) {
 
@@ -924,14 +925,20 @@ print.sim_slopes <- function(x, ...) {
 
 #### alternate output formats ################################################
 
-#' @rdname glance.summ
+#' @title Tidiers for [sim_slopes()] objects.
+#' @description You can use [broom::tidy()] and [broom::glance()] for "tidy"
+#'  methods of storing `sim_slopes` output.
+#' @param x The `sim_slopes` object
+#' @param conf.level The width of confidence intervals. Default is .95 (95\%).
+#' @param ... Ignored.
+#' @rdname sim_slopes_tidiers
+#' @export 
 #' @rawNamespace 
 #' if (getRversion() >= "3.6.0") {
 #'   S3method(broom::tidy, sim_slopes)
 #' } else {
 #'   export(tidy.sim_slopes)
 #' }
-
 
 tidy.sim_slopes <- function(x, conf.level = .95, ...) {
 
@@ -1017,18 +1024,20 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
 
 }
 
+#' @rdname sim_slopes_tidiers
+#' @export
 #' @rawNamespace 
 #' if (getRversion() >= "3.6.0") {
 #'   S3method(broom::glance, sim_slopes)
 #' } else {
 #'   export(glance.sim_slopes)
 #' }
-#' @rdname glance.summ
 
 glance.sim_slopes <- function(x, ...) {
   data.frame(N = length(residuals(x$mods[[1]])))
 }
 
+#' @importFrom stats nobs
 #' @export
 
 nobs.sim_slopes <- function(object, ...) {
@@ -1191,7 +1200,7 @@ make_table <- function(df, format = "{estimate} ({std.error})",
 #' @title Plot coefficients from simple slopes analysis
 #' @description This creates a coefficient plot to visually summarize the
 #' results of simple slopes analysis.
-#' @param x A [jtools::sim_slopes()] object.
+#' @param x A [sim_slopes()] object.
 #' @param ... arguments passed to [jtools::plot_coefs()]
 
 plot.sim_slopes <- function(x, ...) {
