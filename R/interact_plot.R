@@ -84,7 +84,7 @@
 #'   recommended that you also set `plot.points = TRUE` and use
 #'   `modx.values = "terciles"` with this option.
 #'
-#' @inheritParams summ.lm
+#' @inheritParams jtools::summ.lm
 #'
 #' @param vcov Optional. You may supply the variance-covariance matrix of the
 #'  coefficients yourself. This is useful if you are using some method for
