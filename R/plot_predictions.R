@@ -283,7 +283,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
     # Append weights to data
     d[["the_weights"]] <- wts
 
-    if (is.factor(d[[modx]])) {
+    if (!is.numeric(d[[modx]])) {
       # Create shape aesthetic argument
       shape_arg <- if (point.shape == TRUE) {modx_g} else {NULL}
       shape_guide <- if (point.shape == TRUE) {TRUE} else {FALSE}
