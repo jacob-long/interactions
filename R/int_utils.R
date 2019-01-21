@@ -239,7 +239,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
 
   if (is.numeric(modxvals2) & force.cat == FALSE) {
     # The proper order for interact_plot depends on presence of second moderator
-    modxvals2 <- sort(modxvals2, decreasing = !any.mod2)
+    modxvals2 <- sort(modxvals2, decreasing = (!any.mod2 & !facet.modx))
 
   }
 
