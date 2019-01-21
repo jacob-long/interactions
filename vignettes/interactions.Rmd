@@ -16,6 +16,7 @@ if (!all(sapply(required, requireNamespace, quietly = TRUE)))
 knitr::opts_chunk$set(message = F, warning = F, fig.width = 6, fig.height = 5,
                       fig.options = list(type = "cairo"))
 library(jtools)
+library(interactions)
 ```
 
 Understanding an interaction effect in a linear regression model is usually
@@ -613,7 +614,7 @@ data.
 set.seed(5)
 x <- rnorm(100)
 m <- rnorm(100)
-prob <- boot::inv.logit(.25 + .3*x + .3*m + -.5*(x*m) + rnorm(100))
+prob <- binomial(link = "logit")$linkinv(.25 + .3*x + .3*m + -.5*(x*m) + rnorm(100))
 y <- rep(0, 100)
 y[prob >= .5] <- 1
 logit_fit <- glm(y ~ x * m, family = binomial)
