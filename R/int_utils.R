@@ -754,8 +754,9 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
 
 split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
                            modxvals2, mod2.values, mod2vals2, facmod, facmod2) {
-
-  if (facmod == FALSE) {
+  # For numeric, non-binary moderators...                         
+  if (facmod == FALSE & 
+        !(length(unique(d[[modx]])) == 2) & length(modx.values) == 2) {
 
     # Use ecdf function to get quantile of the modxvals
     mod_val_qs <- ecdf(d[[modx]])(sort(modxvals2))
@@ -787,12 +788,12 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
                                         paste("Upper tercile of", modx)))
     }
 
-  } else if (facmod == TRUE) {
+  } else {
 
     d["modx_group"] <- factor(d[[modx]], levels = modxvals2,
                               labels = names(modxvals2))
 
-  }
+  } 
 
   if (!is.null(mod2)) {
     if (facmod2 == FALSE) {
