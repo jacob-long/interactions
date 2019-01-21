@@ -148,26 +148,30 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
     mod2vals2 <- unique(pm[[mod2]])
   }
 
-  # Get manually defined colors from whichever source requested
-  if (length(color.class) == 1 | length(color.class) >= length(modxvals2)) {
-    colors <- suppressWarnings(get_colors(color.class, length(modxvals2)))
-  } else { # Allow manually defined colors
-    stop("Manually defined colors must be of same length as modx.values.")
-  }
+  gradient <- is.numeric(d[[modx]])
+
+  # Checking if user provided the colors his/herself
+  colors <- suppressWarnings(get_colors(color.class, length(modx.labels),
+                                        gradient = gradient))
 
   # Manually set linetypes
-  types <- c("solid", "4242", "2222", "dotdash", "dotted", "twodash")
+  types <- c("solid", "4242", "2222", "dotdash", "dotted", "twodash",
+             "12223242", "F282", "F4448444", "224282F2", "F1")
   ltypes <- types[seq_along(modxvals2)]
 
   if (is.null(mod2)) {
-    colors <- rev(colors)
-    pp_color <- first(colors) # Darkest color used for plotting points
+    # colors <- rev(colors)
+    low_color <- first(colors)
+    high_color <- last(colors)
   } else {
     ltypes <- rev(ltypes)
-    pp_color <- last(colors)
+    low_color <- last(colors)
+    high_color <- first(colors)
   }
 
-  names(colors) <- modx.labels
+  if (gradient == FALSE) {
+    names(colors) <- modx.labels
+  }
   names(ltypes) <- modx.labels
 
   # Deal with non-syntactic names
@@ -471,15 +475,17 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
     d[[pred]] <- factor(d[[pred]], levels = pred.levels, labels = pred.labels)
   }
 
+  if (!is.null(modx)) {
+    gradient <- is.numeric(d[[modx]]) & !vary.lty
+  } else {gradient <- FALSE}
+
   # Checking if user provided the colors his/herself
-  if (length(color.class) == 1 | length(color.class) != length(modx.labels)) {
-    colors <- suppressWarnings(get_colors(color.class, length(modx.labels)))
-  } else {
-    colors <- color.class
-  }
+  colors <- suppressWarnings(get_colors(color.class, length(modx.labels),
+                                        gradient = gradient))
 
   # Manually set linetypes
-  types <- c("solid", "4242", "2222", "dotdash", "dotted", "twodash")
+  types <- c("solid", "4242", "2222", "dotdash", "dotted", "twodash",
+             "12223242", "F282", "F4448444", "224282F2", "F1")
   ltypes <- types[seq_along(modx.labels)]
 
   names(ltypes) <- modx.labels
