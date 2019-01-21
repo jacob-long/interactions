@@ -368,20 +368,22 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   # Change facet.modx to TRUE if linearity.check is TRUE
   if (linearity.check == TRUE) {facet.modx <- TRUE}
 
-  pred_out <- make_predictions(model = model, pred = pred,
-                               modx = modx,
-                               modx.values = modx.values, mod2 = mod2,
-                               mod2.values = mod2.values, centered = centered,
-                               data = data, interval = interval,
-                               int.type = int.type,
-                               int.width = int.width,
-                               outcome.scale = outcome.scale,
-                               linearity.check = linearity.check,
-                               robust = robust, cluster = cluster,
-                               vcov = vcov, set.offset = set.offset,
-                               modx.labels = modx.labels,
-                               mod2.labels = mod2.labels,
-                               facet.modx = facet.modx, ...)
+  if (is.null(data)) {
+    d <- get_data(model, warn = TRUE)
+  } else {
+    d <- data
+  }
+  pred_out <- prep_data(model = model, pred = pred, modx = modx,
+                        modx.values = modx.values, mod2 = mod2,
+                        mod2.values = mod2.values, centered = centered,
+                        interval = interval, int.type = int.type,
+                        int.width = int.width, outcome.scale = outcome.scale,
+                        linearity.check = linearity.check, robust = robust,
+                        cluster = cluster, vcov = vcov, set.offset = set.offset,
+                        modx.labels = modx.labels, mod2.labels = mod2.labels,
+                        facet.modx = facet.modx, d = d,
+                        survey = "svyglm" %in% class(model), wts = wts,
+                        preds.per.level = 100, ...)
 
   # These are the variables created in the helper functions
   meta <- attributes(pred_out)
