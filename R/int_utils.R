@@ -729,6 +729,15 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
       pm$mod2_group <- factor(pm[[mod2]], levels = mod2vals2,
                               labels = mod2.labels)
     }
+
+  }
+
+  # Dealing with transformations of the dependent variable
+  if (resp %nin% names(d)) {
+    trans_name <- as.character(deparse(formula[[2]]))
+    d[[trans_name]] <- eval(formula[[2]], d)
+  }
+
   out <- list(predicted = pm, original = d)
   out <- structure(out, resp = resp, facmod = facmod,
               pred.values = pred.values, pred.labels = pred.labels,
