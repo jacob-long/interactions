@@ -769,8 +769,9 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
 
     if (!is.null(modx.values) && modx.values == "terciles") {
       d$modx_group <- factor(cut2(d[[modx]], g = 3, levels.mean = TRUE),
-                             labels = c("Lower tercile", "Middle tercile",
-                                        "Upper tercile"))
+                             labels = c(paste("Lower tercile of", modx),
+                                        paste("Middle tercile of", modx),
+                                        paste("Upper tercile of", modx)))
     }
 
   } else if (facmod == TRUE) {
