@@ -199,10 +199,10 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   # Defining linetype here
   if (vary.lty == TRUE) {
     p <- ggplot(pm, aes_string(x = pred_g, y = resp_g, colour = modx_g,
-                               group = modx_g, linetype = modx_g))
+                               group = modx_g, linetype = "modx_group"))
   } else {
     p <- ggplot(pm, aes_string(x = pred_g, y = resp_g, colour = modx_g,
-                               group = modx_g))
+                               group = "modx_group"))
   }
 
   p <- p + geom_path(size = line.thickness, show.legend = !facet.modx)
@@ -211,13 +211,14 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   if (interval == TRUE) {
     p <- p + geom_ribbon(data = pm, aes_string(x = pred_g,
                                                ymin = "ymin", ymax = "ymax",
-                                               fill = modx_g, group = modx_g,
+                                               fill = modx_g,
+                                               group = "modx_group",
                                                colour = modx_g, linetype = NA),
                          alpha = 1/5, show.legend = FALSE,
-                         inherit.aes = FALSE)
+                         inherit.aes = TRUE)
 
-    p <- p + scale_fill_manual(name = legend.main, values = colors,
-                               breaks = names(colors))
+    # p <- p + scale_fill_manual(name = legend.main, values = colors,
+    #                            breaks = names(colors))
   }
 
   # If third mod, facet by third mod
@@ -293,7 +294,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
                                                  shape = shape_arg),
                             position = position_jitter(width = jitter[1],
                                                        height = jitter[2]),
-                            inherit.aes = FALSE,
+                            inherit.aes = TRUE,
                             show.legend = shape_guide,
                             size = point.size) +
           scale_shape_discrete(name = legend.main, breaks = names(colors),
@@ -313,24 +314,19 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
           scale_size_identity(guide = "none")
       }
 
-    } else if (!is.factor(d[[modx]])) {
-      # using alpha for same effect with continuous vars
-      # set alpha argument dependent on whether this is a plot facetted by
-      # the moderator
-      alpha_arg <- if (facet.modx) {c(1, 1)} else {c(0.25, 1)}
+    } else {
       p <- p + geom_point(data = d,
-                          aes_string(x = pred_g, y = resp_g, alpha = modx_g,
+                          aes_string(x = pred_g, y = resp_g,
                                      size = "the_weights"),
-                          colour = pp_color, inherit.aes = FALSE,
+                          inherit.aes = TRUE,
                           position = position_jitter(width = jitter[1],
                                                      height = jitter[2]),
                           show.legend = FALSE) +
-        scale_alpha_continuous(range = alpha_arg, guide = "none") +
+        # scale_alpha_continuous(range = alpha_arg, guide = "none") +
         # Add size aesthetic to avoid giant points
         scale_size_identity(
           guide = "none"
         )
-
     }
 
 
@@ -338,21 +334,12 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
 
   # Rug plot for marginal distributions
   if (rug == TRUE) {
-    if (is.factor(d[[modx]])) {
-      p <- p + geom_rug(data = d,
-                        aes_string(x = pred_g, y = resp_g, colour = modx_g),
-                        alpha = 0.6,
-                        position = position_jitter(width = jitter[1],
-                                                   height = jitter[2]),
-                        sides = rug.sides)
-    } else {
-      p <- p + geom_rug(data = d,
-                        aes_string(x = pred_g, y = resp_g),
-                        alpha = 0.6,
-                        position = position_jitter(width = jitter[1],
-                                                   height = jitter[2]),
-                        sides = rug.sides, inherit.aes = FALSE)
-    }
+    p <- p + geom_rug(data = d,
+                      aes_string(linetype = NULL),
+                      alpha = 0.6,
+                      position = position_jitter(width = jitter[1],
+                                                 height = jitter[2]),
+                      sides = rug.sides, inherit.aes = TRUE)
   }
 
   # Using theme_apa for theming...but using legend title and side positioning
@@ -383,9 +370,52 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
     }
   }
 
+  # Avoiding unnecessary import of scales --- this is scales::squish
+  squish <- function(x, range = c(0, 1), only.finite = TRUE) {
+    force(range)
+    finite <- if (only.finite)
+        is.finite(x)
+    else TRUE
+    x[finite & x < range[1]] <- range[1]
+    x[finite & x > range[2]] <- range[2]
+    x
+  }
+
   # Get scale colors, provide better legend title
-  p <- p + scale_colour_manual(name = legend.main, values = colors,
-                               breaks = names(colors))
+  if (!is.numeric(d[[modx]])) {
+    p <- p + scale_colour_manual(name = legend.main, values = colors,
+                                 breaks = names(colors),
+                                 aesthetics = c("colour", "fill"))
+  } else {
+    limits <- quantile(d[[modx]], probs = c(.1, .9))
+    if (min(modxvals2) < limits[1]) {limits[1] <- min(modxvals2)}
+    if (max(modxvals2) > limits[2]) {limits[2] <- max(modxvals2)}
+    if (length(colors) != 3) {
+      p <- p + scale_colour_gradientn(name = legend.main,
+                                   breaks = modxvals2,
+                                   labels = modx.labels,
+                                   # low = low_color,
+                                   # high = high_color,
+                                   colors = colors,
+                                   limits = limits,
+                                   oob = squish,
+                                   aesthetics = c("colour", "fill"),
+                                   guide = "legend")
+    } else if (length(colors) == 3) {
+      p <- p + scale_colour_gradient2(name = legend.main,
+                                      breaks = modxvals2,
+                                      labels = modx.labels,
+                                      low = low_color,
+                                      mid = colors[2],
+                                      midpoint = modxvals2[2],
+                                      high = high_color,
+                                      # colors = colors,
+                                      limits = limits,
+                                      oob = squish,
+                                      aesthetics = c("colour", "fill"),
+                                      guide = "legend")
+    }
+  }
 
   if (vary.lty == TRUE) { # Add line-specific changes
     p <- p + scale_linetype_manual(name = legend.main, values = ltypes,
