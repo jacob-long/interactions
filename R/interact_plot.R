@@ -355,6 +355,13 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
     mod2 <- NULL
   }
 
+  if (any(c(pred, modx, mod2) %in% centered)) {
+    warn_wrap("You cannot mean-center the focal predictor or moderators with
+              this function.")
+    centered <- centered %not% c(pred, modx, mod2)
+    if (length(centered) == 0) {centered <- "none"}
+  }
+
   # Defining "global variables" for CRAN
   modxvals2 <- mod2vals2 <- resp <- NULL
 
