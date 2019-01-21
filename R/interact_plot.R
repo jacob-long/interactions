@@ -373,6 +373,8 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   } else {
     d <- data
   }
+  wts <- get_weights(model, d)$weights
+
   pred_out <- prep_data(model = model, pred = pred, modx = modx,
                         modx.values = modx.values, mod2 = mod2,
                         mod2.values = mod2.values, centered = centered,
@@ -415,7 +417,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                       line.thickness = line.thickness,
                       vary.lty = vary.lty, jitter = jitter,
                       modxvals2 = modxvals2, mod2vals2 = mod2vals2,
-                      wts = weights, rug = rug, rug.sides = rug.sides,
+                      wts = wts, rug = rug, rug.sides = rug.sides,
                       point.size = point.size, point.shape = point.shape,
                       facet.modx = facet.modx)
 
