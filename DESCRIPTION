@@ -1,47 +1,39 @@
-Package: jtools
+Package: interactions
 Type: Package
-Title: Analysis and Presentation of Social Scientific Data
-Version: 1.1.1
+Title: Comprehensive, User-Friendly Toolkit for Probing Interactions
+Version: 0.1.0
 Authors@R: person(c("Jacob","A."), "Long", email = "long.1377@osu.edu",
   role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1582-6214"))
-Description: This is a collection of tools that the author (Jacob) has written
-  for the purpose of more efficiently understanding and sharing the results of
-  (primarily) regression analyses. There are a number of functions focused
-  specifically on the interpretation and presentation of interactions.
-  Just about everything supports models from the survey package.
-URL: https://github.com/jacob-long/jtools
-BugReports: https://github.com/jacob-long/jtools/issues 
+Description: A suite of functions for conducting and interpreting analysis 
+  of statistical interaction in regression models that was formerly part of the 
+  'jtools' package. Functionality includes visualization of two- and three-way
+  interactions among continuous and/or categorical variables as well as 
+  calculation of "simple slopes" and Johnson-Neyman intervals. These
+  capabilities are implemented for generalized linear models in addition to the 
+  standard linear regression context.
+URL: https://github.com/jacob-long/interactions
+BugReports: https://github.com/jacob-long/interactions/issues 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: ggplot2,
   crayon,
   cli,
-  magrittr
+  jtools (>= 2.0.0)
 Suggests:
-  boot,
-  broom,
   brms,
   cowplot,
   ggstance,
   glue,
   huxtable (>= 3.0.0),
-  kableExtra,
   lme4,
-  lmerTest,
-  methods,
-  pbkrtest,
-  quantreg,
-  RColorBrewer,
   rstanarm,
   sandwich,
-  stats4,
   survey,
-  weights,
     knitr,
     rmarkdown,
     rmdformats,
     testthat
-RoxygenNote: 6.1.0.9000
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
