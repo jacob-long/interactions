@@ -514,6 +514,8 @@ values_checks <- function(pred.values = NULL, modx.values, mod2.values) {
 
 }
 
+#' @importFrom stats as.formula complete.cases df.residual model.frame pt
+#' @importFrom stats residuals terms weighted.mean
 prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
                       modx.values, mod2.values, survey, pred.labels = NULL,
                       modx.labels, mod2.labels, wname, weights, wts,
