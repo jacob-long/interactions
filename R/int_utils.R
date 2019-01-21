@@ -498,52 +498,7 @@ ss_dep_check <- function(fun_name, dots) {
 
 #### predict helpers ########################################################
 
-get_offname <- function(model, survey) {
-
-  # subset gives bare name
-  offname <-
-    as.character(getCall(model)$offset)[length(getCall(model)$offset)]
-  # Sometimes it's character(0)
-  if (length(offname) == 0) {offname <- NULL}
-
-  if (is.null(offname)) {
-    index <- attr(terms(model), "offset")
-    offname <- all.vars(terms(model))[index]
-  }
-
-  return(offname)
-
-}
-
-data_checks <- function(model, data, pred.values = NULL,
-                        modx.values, mod2.values, pred.labels, modx.labels,
-                        mod2.labels, env = parent.frame()) {
-
-  # Avoid CRAN barking
-  d <- facvars <- wts <- wname <- NULL
-
-  # Duplicating the dataframe so it can be manipulated as needed
-  if (is.null(data)) {
-    d <- model.frame(model)
-    # Check to see if model.frame names match formula names
-    varnames <- names(d)
-    # Drop weights and offsets
-    varnames <- varnames[varnames %nin% c("(offset)","(weights)")]
-    if (any(varnames %nin% all.vars(as.formula(formula(model))))) {
-      dat_name <- as.character(deparse(getCall(model)$data))
-
-      warn_wrap("Variable transformations in the model formula
-      detected. Trying to use ", dat_name,
-      " from global environment. This could cause incorrect results if ",
-      dat_name, " has been altered since the model was
-      fit. You can manually provide the data to the \"data =\" argument.",
-      call. = FALSE)
-
-      d <- data <- eval(getCall(model)$data)
-    }
-  } else {
-    d <- data
-  }
+values_checks <- function(pred.values = NULL, modx.values, mod2.values) {
 
   if (length(pred.values) == 1) {
     stop("pred.values must be at least a length of 2.", call. = FALSE)
@@ -557,54 +512,17 @@ data_checks <- function(model, data, pred.values = NULL,
     stop("mod2.values must be at least a length of 2.", call. = FALSE)
   }
 
-  # weights?
-  if (("(weights)" %in% names(d) | !is.null(getCall(model)$weights))) {
-    weights <- TRUE
-    wname <- as.character(getCall(model)["weights"])
-    if (any(colnames(d) == "(weights)")) {
-      colnames(d)[which(colnames(d) == "(weights)")] <- wname
-    }
-    wts <- d[[wname]]
-
-
-  } else {
-
-    weights <- FALSE
-    wname <- NULL
-    wts <- rep(1, times = nrow(d))
-
-  }
-
-  facvars <- names(which(sapply(d, function(x) {
-    !is.numeric(x)
-    })
-  ))
-
-  env$facvars <- facvars
-  env$d <- d
-  env$wts <- wts
-  env$weights <- weights
-  env$wname <- wname
-
 }
 
 prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
                       modx.values, mod2.values, survey, pred.labels = NULL,
                       modx.labels, mod2.labels, wname, weights, wts,
                       linearity.check, interval, set.offset, facvars, centered,
-                      preds.per.level, force.cat = FALSE, facet.modx = FALSE) {
+                      preds.per.level, force.cat = FALSE, facet.modx = FALSE,
+                      ...) {
   # offset?
-  if (!is.null(model.offset(model.frame(model)))) {
-
-    off <- TRUE
-    offname <- get_offname(model, survey)
-
-  } else {
-
-    off <- FALSE
-    offname <- NULL
-
-  }
+  offname <- jtools::get_offset_name(model)
+  off <- !is.null(offname)
 
   if (!is.numeric(d[[pred]])) {
     facpred <- TRUE
@@ -648,38 +566,21 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   formula <- as.formula(formula(model))
 
   # Pulling the name of the response variable for labeling
-  resp <- all.vars(formula)[1]
+  resp <- jtools::get_response_name(model)
 
-  # Drop unneeded columns from data frame
-  if (off == TRUE) {offs <- d[[offname]]}
-  d <- d[all.vars(formula)]
-  # For setting dimensions correctly later
-  nc <- sum(names(d) %nin% c(wname, offname))
-  if (off == TRUE) {d[[offname]] <- offs}
-
-
-### Centering ##################################################################
-
-  # Update facvars by pulling out all non-focals
-  facvars <-
-    facvars[facvars %nin% c(pred, resp, modx, mod2, wname, offname)]
-
-  # Create omitvars variable; we don't center any of these
-  omitvars <- c(pred, resp, modx, mod2, wname, offname, 
-                # facvars,
-                "(weights)", "(offset)")
-
-  if (survey == FALSE) {
-    design <- NULL
+  # Create a design object
+  design <- if ("svyglm" %in% class(model)) {
+    model$survey.design
   } else {
-    design <- model$survey.design
+    NULL
   }
 
-  # Use utility function shared by all interaction functions
-  c_out <- center_values(d = d, weights = wts, omitvars = omitvars,
-                         survey = survey, design = design, centered = centered)
-
-  vals <- c_out$vals
+  # Drop unneeded columns from data frame
+  # if (off == TRUE) {offs <- d[[offname]]}
+  # d <- d[all_vars(formula)]
+  # # For setting dimensions correctly later
+  # nc <- sum(names(d) %nin% c(wname, offname))
+  # if (off == TRUE) {d[[offname]] <- offs}
 
 ### Getting moderator values ##################################################
 
