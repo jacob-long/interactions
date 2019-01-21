@@ -1,91 +1,9 @@
-#'
-#' @title Plot predicted effects from make_predictions
-#'
-#' @description The companion function to [make_predictions()]. This takes
-#' data from [make_predictions()] (or elsewhere) and plots them like
-#' [effect_plot()], [interact_plot()], and [cat_plot()]. Note that some
-#' arguments will be ignored if the inputted predictions
-#'
-#' @param predictions Either the output from [make_predictions()] (an object
-#'   of class "predictions") or a data frame of predicted values.
-#'
-#' @param vary.lty Should the resulting plot have different shapes for each
-#'   line in addition to colors? Default is NULL, which will switch to FALSE
-#'   if the `pred` is a factor and TRUE if `pred` is continuous.
-#'
-#' @param geom **For factor predictors only**: What type of plot should this be?
-#'   There are several options
-#'   here since the best way to visualize categorical interactions varies by
-#'   context. Here are the options:
-#'
-#'   * `"point"`: The default. Simply plot the point estimates. You may want to
-#'      use
-#'     `point.shape = TRUE` with this and you should also consider
-#'     `interval = TRUE` to visualize uncertainty.
-#'
-#'   * `"line"`: This connects observations across levels of the `pred`
-#'     variable with a line. This is a good option when the `pred` variable
-#'     is ordinal (ordered). You may still consider `point.shape = TRUE` and
-#'     `interval = TRUE` is still a good idea.
-#'
-#'   * `"bar"`: A bar chart. Some call this a "dynamite plot."
-#'     Many applied researchers advise against this type of plot because it
-#'     does not represent the distribution of the observed data or the
-#'     uncertainty of the predictions very well. It is best to at least use the
-#'     `interval = TRUE` argument with this geom.
-#'
-#'   * `"boxplot"`: This geom plots a dot and whisker plot. These can be useful
-#'     for understanding the distribution of the observed data without having
-#'     to plot all the observed points (especially helpful with larger data
-#'     sets). **However**, it is important to note the boxplots are not based
-#'     on the model whatsoever.
-#'
-#' @param resp What is the name of the response variable? Use a string.
-#'
-#' @param weights If the data are weighted, provide a vector of weights here.
-#'   This is only used if `plot.points = TRUE` and `data` is not NULL.
-#'
-#' @param force.cat Force the predictor to be treated as if it is a factor,
-#'   even if it isn't? Default is FALSE. Set to TRUE if you'd like to generate
-#'   a type of plot normally reserved for categorical variables. This can be
-#'   helpful for numeric variables that have a small number of unique values,
-#'   for instance.
-#'
-#' @param ... Ignored.
-#'
-#' @inheritParams interact_plot
-#' @inheritParams cat_plot
-#'
-#' @details
-#'
-#' This is designed to offer more flexibility than the canned functions
-#' ([effect_plot()], [interact_plot()], and [cat_plot()]), by letting you
-#' generate your own predicted data and iteratively experiment with the
-#' plotting options.
-#'
-#' Note: `predictions` objects from [make_predictions()] store information
-#' about the arguments used to create the object. Unless you specify those
-#' arguments manually to this function, as a convenience `plot_predictions`
-#' will use the arguments stored in the `predictions` object. Those arguments
-#' are:
-#'
-#' * `pred`, `modx`, and `mod2`
-#' * `resp`
-#' * `pred.values`, `modx.values`, and `mod2.values`
-#' * `pred.labels`, `modx.labels`, and `mod2.labels`
-#' * `data`
-#' * `interval`
-#' * `linearity.check`
-#' * `weights`
-#'
-#'
-#' @family plotting tools
-#' @export
-#'
+
 plot_predictions <- function(predictions, pred = NULL, modx = NULL, mod2 = NULL,
   resp = NULL, data = NULL, geom = c("point", "line", "bar", "boxplot"),
   plot.points = FALSE, interval = FALSE,
-  pred.values = NULL, modx.values = NULL, mod2.values = NULL, linearity.check = FALSE,
+  pred.values = NULL, modx.values = NULL, mod2.values = NULL,
+  linearity.check = FALSE,
   facet.modx = FALSE, x.label = NULL, y.label = NULL, pred.labels = NULL,
   modx.labels = NULL, mod2.labels = NULL, main.title = NULL, legend.main = NULL,
   color.class = NULL, line.thickness = 1.1, vary.lty = NULL, jitter = 0,
