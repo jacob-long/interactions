@@ -160,23 +160,7 @@ plot_predictions <- function(predictions, pred = NULL, modx = NULL, mod2 = NULL,
 
     if (is.null(vary.lty)) {vary.lty <- TRUE}
 
-    if (is.null(modx)) { # effect_plot
-
-      the_args <- formals("plot_effect_continuous")
-      for (n in names(the_args)) {
-
-        if (exists(n)) {
-          the_args[[n]] <- get(n)
-        }
-
-      }
-
-      the_args <- as.list(the_args)
-      do.call("plot_effect_continuous", the_args)
-
-    } else { # interact_plot
-
-      the_args <- formals("plot_mod_continuous")
+    the_args <- formals("plot_mod_continuous")
       for (n in names(the_args)) {
 
         if (exists(n)) {
@@ -188,11 +172,7 @@ plot_predictions <- function(predictions, pred = NULL, modx = NULL, mod2 = NULL,
       the_args <- as.list(the_args)
       do.call("plot_mod_continuous", the_args)
 
-    }
-
-
   }
-
 
 }
 
