@@ -664,23 +664,73 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
 
 #### Creating predicted frame #################################################
 
-  if (facpred == FALSE) {
-    pm <- make_pred_frame_cont(d = d, pred = pred, modx = modx,
-                          modxvals2 = modxvals2, mod2 = mod2,
-                          mod2vals2 = mod2vals2, interval = interval, nc = nc,
-                          facvars = facvars, off = off, offname = offname,
-                          set.offset = set.offset, vals = vals, resp = resp,
-                          wname = wname, preds.per.level = preds.per.level)
+  if (facpred == TRUE) {
+    pred.predicted <- levels(factor(d[[pred]]))
   } else {
-    pm <- make_pred_frame_cat(d = d, pred = pred, modx = modx,
-                          modxvals2 = modxvals2, mod2 = mod2,
-                          mod2vals2 = mod2vals2, interval = interval, nc = nc,
-                          facvars = facvars, off = off, offname = offname,
-                          set.offset = set.offset, vals = vals, resp = resp,
-                          wname = wname, preds.per.level = preds.per.level)
+    pred.predicted <- seq(from = min(d[[pred]]), to = max(d[[pred]]),
+                          length.out = preds.per.level)
   }
 
-  out <- list(pm = pm, d = d, resp = resp, facmod = facmod,
+  if (!is.null(modx)) {
+    num_combos <- length(modxvals2)
+    combos <- expand.grid(modxvals2)
+    names(combos) <- modx
+  } else {
+    num_combos <- 1
+  }
+  if (!is.null(mod2)) {
+    num_combos <- nrow(expand.grid(modxvals2, mod2vals2))
+    combos <- expand.grid(modxvals2, mod2vals2)
+    names(combos) <- c(modx, mod2)
+  }
+
+  pms <- list()
+
+  for (i in seq_len(num_combos)) {
+
+    at_list <- list()
+    if (!is.null(modx)) {
+      at_list[[modx]] <- combos[i, modx]
+    }
+    if (!is.null(mod2)) {
+      at_list[[mod2]] <- combos[i, mod2]
+    }
+
+    pms[[i]] <- jtools::make_predictions(
+        model = model, data = d, pred = pred, pred.values = pred.predicted,
+        at = at_list, set.offset = set.offset, center = centered,
+        interval = interval, ...
+    )
+    pms[[i]] <- pms[[i]][complete.cases(pms[[i]]), ]
+  }
+
+  pm <- do.call("rbind", pms)
+
+  # Labels for values of moderator
+  if (!is.null(modx) && !is.numeric(d[[modx]])) {
+    pm[[modx]] <- factor(pm[[modx]], levels = modxvals2, labels = modx.labels)
+  }
+  if (facmod == TRUE) {
+    d[[modx]] <- factor(d[[modx]], levels = modxvals2, labels = modx.labels)
+  }
+  if (!is.null(modx)) {
+    pm$modx_group <- factor(pm[[modx]], levels = modxvals2, labels = modx.labels)
+  }
+
+  # Setting labels for second moderator
+  if (!is.null(mod2)) {
+
+    # Convert character moderators to factor
+    if (!is.numeric(d[[mod2]])) {
+      d[[mod2]] <- factor(d[[mod2]], levels = mod2vals2, labels = mod2.labels)
+      pm[[mod2]] <- factor(pm[[mod2]], levels = mod2vals2, labels = mod2.labels)
+      pm$mod2_group <- pm[[mod2]]
+    } else {
+      pm$mod2_group <- factor(pm[[mod2]], levels = mod2vals2,
+                              labels = mod2.labels)
+    }
+  out <- list(predicted = pm, original = d)
+  out <- structure(out, resp = resp, facmod = facmod,
               pred.values = pred.values, pred.labels = pred.labels,
               modxvals2 = modxvals2, modx.labels = modx.labels,
               mod2vals2 = mod2vals2, mod2.labels = mod2.labels,
@@ -765,215 +815,6 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
   }
 
   return(d)
-
-}
-
-make_pred_frame_cont <- function(d, pred, modx, modxvals2, mod2, mod2vals2,
-                            interval, nc, facvars, off, offname, set.offset,
-                            vals, resp, wname, preds.per.level) {
-
-  # Makes accommodating effect_plot easier
-  num_levels <- max(c(1, length(modxvals2)))
-
-  # Creating a set of dummy values of the focal predictor for use in predict()
-  xpreds <- seq(from = range(d[!is.na(d[[pred]]), pred])[1],
-                to = range(d[!is.na(d[[pred]]), pred])[2],
-                length.out = preds.per.level)
-  xpreds <- rep(xpreds, num_levels)
-
-  # Skip if effect_plot
-  if (!is.null(modx)) {
-    # Create values of moderator for use in predict()
-    facs <- rep(modxvals2[1], preds.per.level)
-
-    # Looping here allows for a theoretically limitless amount of
-    # moderator values
-    for (i in 2:length(modxvals2)) {
-      facs <- c(facs, rep(modxvals2[i], preds.per.level))
-    }
-  } else {
-    facs <- 1
-  }
-
-  # Takes some rejiggering to get this right with second moderator
-  if (!is.null(mod2)) {
-    # facs and xpreds will be getting longer, so we need originals for later
-    facso <- facs
-    xpredso <- xpreds
-    # facs2 is second moderator. Here we are creating first iteration of values
-    facs2 <- rep(mod2vals2[1], length(facs))
-    # Now we create the 2nd through however many levels iterations
-    for (i in 2:length(mod2vals2)) {
-      # Add the next level of 2nd moderator to facs2
-      # the amount depends on the how many values were in *original* facs
-      facs2 <- c(facs2, rep(mod2vals2[i], length(facso)))
-      # We are basically recreating the whole previous set of values, each
-      # with a different value of 2nd moderator. They have to be in order
-      # since we are using geom_path() later.
-      facs <- c(facs, facso)
-      xpreds <- c(xpreds, xpredso)
-    }
-  }
-
-  # Creating matrix for use in predict()
-  if (interval == TRUE) { # Only create SE columns if intervals needed
-    if (is.null(mod2)) {
-      pm <- matrix(rep(0, preds.per.level * (nc + 2) * num_levels),
-                   ncol = (nc + 2))
-    } else {
-      pm <- matrix(rep(0, (nc + 2) * length(facs)), ncol = (nc + 2))
-    }
-  } else {
-    if (is.null(mod2)) {
-      pm <- matrix(rep(0, preds.per.level * nc * num_levels), ncol = nc)
-    } else {
-      pm <- matrix(rep(0, nc * length(facs)), ncol = nc)
-    }
-  }
-
-  # Naming columns
-  if (interval == TRUE) { # if intervals, name the SE columns
-    colnames(pm) <- c(colnames(d)[colnames(d) %nin% c("modx_group","mod2_group",
-                                                      offname, wname)],
-                      "ymax", "ymin")
-  } else {
-    colnames(pm) <- c(colnames(d)[colnames(d) %nin% c("modx_group",
-                                                      "mod2_group", offname,
-                                                      wname)])
-  }
-  # Convert to dataframe
-  pm <- as.data.frame(pm)
-  # Add values of moderator to df
-  if (!is.null(modx)) {
-    pm[[modx]] <- facs
-  }
-  if (!is.null(mod2)) { # if second moderator
-    pm[[mod2]] <- facs2
-  }
-
-  # Add values of focal predictor to df
-  pm[[pred]] <- xpreds
-
-  # Set factor predictors arbitrarily to their first level
-  if (length(facvars) > 0) {
-    for (v in facvars) {
-      pm[[v]] <- levels(d[[v]])[1]
-    }
-  }
-
-  if (off == TRUE) {
-    if (is.null(set.offset)) {
-      offset.num <- median(d[[offname]])
-    } else {
-      offset.num <- set.offset
-    }
-
-    pm[[offname]] <- offset.num
-    msg <- paste("Outcome is based on a total of", offset.num, "exposures")
-    message(msg)
-  }
-
-  # Adding mean values to newdata in lieu of actually re-fitting model
-  if (!is.null(vals)) {
-    vals <- vals[names(vals) %nin% c(offname,modx,mod2,pred,resp)]
-    for (var in names(vals)) {
-      pm[[var]] <- rep(vals[[var]], times = nrow(pm))
-    }
-  }
-
-  return(pm)
-
-}
-
-make_pred_frame_cat <- function(d, pred,
-                                modx, modxvals2, mod2, mod2vals2,
-                                interval, nc, facvars, off, offname, set.offset,
-                                vals, resp, wname, preds.per.level) {
-  # Creating a set of dummy values of the focal predictor for use in predict()
-  pred_len <- length(unique((d[[pred]])))
-
-  if (!is.null(modx)) {
-    combos <- expand.grid(unique(d[[pred]]), unique(d[[modx]]))
-    combo_pairs <- paste(combos[[1]], combos[[2]])
-    og_pairs <- paste(d[[pred]], d[[modx]])
-    combos <- combos[combo_pairs %in% og_pairs,]
-    xpred_len <- nrow(combos)
-  } else {
-    xpred_len <- pred_len
-    combos <- as.data.frame(unique(d[[pred]]))
-  }
-
-  # Takes some rejiggering to get this right with second moderator
-  if (!is.null(mod2)) {
-    combos <- expand.grid(unique(d[[pred]]), unique(d[[modx]]),
-                          unique(d[[mod2]]))
-    combo_pairs <- paste(combos[[1]], combos[[2]], combos[[3]])
-    og_pairs <- paste(d[[pred]], d[[modx]], d[[mod2]])
-    combos <- combos[combo_pairs %in% og_pairs,]
-    xpred_len <- nrow(combos)
-  }
-
-  # Creating matrix for use in predict()
-  if (interval == TRUE) { # Only create SE columns if intervals needed
-    pm <- matrix(rep(0, xpred_len * (nc + 2)), ncol = (nc + 2))
-  } else {
-    pm <- matrix(rep(0, xpred_len * nc), ncol = nc)
-  }
-
-  # Naming columns
-  if (interval == TRUE) { # if intervals, name the SE columns
-    colnames(pm) <- c(colnames(d)[colnames(d) %nin%
-                                    c("modx_group", "mod2_group",
-                                      offname, wname)],
-                      "ymax", "ymin")
-  } else {
-    colnames(pm) <- c(colnames(d)[colnames(d) %nin% c("modx_group",
-                                                      "mod2_group", offname,
-                                                      wname)])
-  }
-
-  # Convert to dataframe
-  pm <- as.data.frame(pm)
-
-  # Add values of moderator to df
-  if (!is.null(modx)) {
-    pm[[modx]] <- combos[[2]]
-  }
-  if (!is.null(mod2)) { # if second moderator
-    pm[[mod2]] <- combos[[3]]
-  }
-
-  # Add values of focal predictor to df
-  pm[[pred]] <- combos[[1]]
-
-  # Set factor covariates arbitrarily to their first level
-  if (length(facvars) > 0) {
-    for (v in facvars) {
-      pm[[v]] <- levels(d[[v]])[1]
-    }
-  }
-
-  if (off == TRUE) {
-    if (is.null(set.offset)) {
-      offset.num <- median(d[[offname]])
-    } else {
-      offset.num <- set.offset
-    }
-
-    pm[[offname]] <- offset.num
-    msg <- paste("Outcome is based on a total of", offset.num, "exposures\n")
-    message(msg)
-  }
-
-  # Adding mean values to newdata in lieu of actually re-fitting model
-  if (!is.null(vals)) {
-    vals <- vals[names(vals) %nin% c(offname, modx, mod2, pred, resp)]
-    for (var in names(vals)) {
-      pm[[var]] <- rep(vals[[var]], times = nrow(pm))
-    }
-  }
-
-  return(pm)
 
 }
 
