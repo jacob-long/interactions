@@ -545,8 +545,9 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     facmod <- TRUE
   }
 
+  # Treat binary numeric moderators as quasi-categorical
   if (!is.null(modx) && length(unique(d[[modx]])) == 2) {
-    facmod <- TRUE
+    if (is.null(modx.values)) {modx.values <- sort(unique(d[[modx]]))}
   }
 
   # Fix character mod2 as well
@@ -559,8 +560,9 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     facmod2 <- TRUE
   }
 
+  # Treat binary numeric moderators as quasi-categorical
   if (!is.null(mod2) && length(unique(d[[mod2]])) == 2) {
-    facmod2 <- TRUE
+    if (is.null(mod2.values)) {mod2.values <- sort(unique(d[[mod2]]))}
   }
 
 
