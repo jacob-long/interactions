@@ -653,19 +653,6 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
 
   }
 
-
-### Prep original data for splitting into groups ##############################
-
-  # Only do this if going to plot points
-  if (!is.null(modx)) {
-    d <- split_int_data(d = d, modx = modx, mod2 = mod2,
-                        linearity.check = linearity.check,
-                        modx.values = modx.values,
-                        modxvals2 = modxvals2, mod2.values = mod2.values,
-                        mod2vals2 = mod2vals2, facmod = facmod,
-                        facmod2 = facmod2)
-  }
-
 #### Creating predicted frame #################################################
 
   if (facpred == TRUE) {
@@ -709,6 +696,19 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   }
 
   pm <- do.call("rbind", pms)
+
+  
+
+  ## Prep original data for splitting into groups ##
+  # Only do this if going to plot points
+  if (!is.null(modx)) {
+    d <- split_int_data(d = d, modx = modx, mod2 = mod2,
+                        linearity.check = linearity.check,
+                        modx.values = modx.values,
+                        modxvals2 = modxvals2, mod2.values = mod2.values,
+                        mod2vals2 = mod2vals2, facmod = facmod,
+                        facmod2 = facmod2)
+  }
 
   # Labels for values of moderator
   if (!is.null(modx) && !is.numeric(d[[modx]])) {
