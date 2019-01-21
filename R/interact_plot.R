@@ -327,8 +327,8 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                           pred.labels = NULL, modx.labels = NULL,
                           mod2.labels = NULL, main.title = NULL,
                           legend.main = NULL, color.class = NULL,
-                          line.thickness = 1.1, vary.lty = TRUE,
-                          point.size = 2.5, point.shape = FALSE,
+                          line.thickness = 1, vary.lty = TRUE,
+                          point.size = 1, point.shape = FALSE,
                           jitter = 0, rug = FALSE, rug.sides = "b", ...) {
 
   # Capture extra arguments
