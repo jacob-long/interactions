@@ -1,5 +1,4 @@
 library(testthat)
-library(jtools)
+library(interactions)
 
-
-test_check("jtools")
+test_check("interactions")

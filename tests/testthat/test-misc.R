@@ -224,15 +224,6 @@ if (requireNamespace("survey")) {
     expect_silent(print(p))
   })
 
-
-  test_that("effect_plot works for svyglm", {
-    expect_silent(p <- effect_plot(regmodel, pred = meals,
-                                centered = "all"))
-    expect_silent(print(p))
-    expect_silent(p <- effect_plot(regmodel, pred = meals,
-                                centered = "ell"))
-    expect_silent(print(p))
-  })
 }
 
 context("interactions merMod")
@@ -253,14 +244,6 @@ if (requireNamespace("lme4")) {
     expect_silent(print(p))
     expect_message(p <- interact_plot(mv, pred = mode_numeric, modx = Gender,
                                      interval = TRUE))
-    expect_silent(print(p))
-  })
-
-  test_that("effect_plot works for lme4", {
-    expect_error(p <- effect_plot(mve, pred = mode))
-    expect_silent(p <- effect_plot(mv, pred = mode_numeric))
-    expect_silent(print(p))
-    expect_message(p <- effect_plot(mv, pred = mode_numeric, interval = TRUE))
     expect_silent(print(p))
   })
 
@@ -315,15 +298,10 @@ if (requireNamespace("brms")) {
   context("brmsfit plots")
   bfit <- readRDS("brmfit.rds")
   test_that("brmsfit objects are supported", {
-    expect_silent(print(effect_plot(bfit, pred = "log_Base4_c",
-                  interval = TRUE)))
     expect_silent(print(cat_plot(bfit, pred = "Trt",
                   interval = TRUE)))
     expect_silent(print(interact_plot(bfit, pred = "log_Base4_c", modx = "Trt",
                   interval = TRUE)))
-    expect_is(make_predictions(bfit, pred = "log_Base4_c", modx = "Trt",
-                               interval = TRUE, estimate = "median"),
-                               "predictions")
   })
 }
 
@@ -333,87 +311,10 @@ if (requireNamespace("rstanarm") & requireNamespace("lme4")) {
   library(lme4)
   data(cbpp)
   test_that("stanreg objects are supported", {
-    expect_warning(print(effect_plot(rsfit, pred = "size", interval = TRUE)))
     expect_silent(print(interact_plot(rsfit, pred = "size",
       modx = "period", interval = TRUE, data = cbpp)))
-    expect_is(make_predictions(rsfit, pred = "size", interval = TRUE,
-      estimate = "median", data = cbpp), "predictions")
   })
 }
-
-### effect_plot ###############################################################
-
-context("effect_plot")
-
-test_that("effect_plot works for lm", {
-  expect_silent(p <- effect_plot(model = fit,
-                                 pred = Murder,
-                                 centered = "all"))
-  expect_silent(print(p))
-  expect_silent(p <- effect_plot(model = fit,
-                                 pred = Murder,
-                                 centered = "HSGrad"))
-  expect_silent(print(p))
-})
-
-test_that("effect_plot: robust intervals works", {
-  expect_silent(p <- effect_plot(model = fit,
-                                 pred = Murder,
-                                 centered = "HSGrad",
-                                 robust = TRUE))
-  expect_silent(print(p))
-})
-
-test_that("effect_plot: rug plots work", {
-  expect_silent(p <- effect_plot(model = fit,
-                                 pred = Murder,
-                                 centered = "HSGrad",
-                                 rug = TRUE))
-  expect_silent(print(p))
-  expect_silent(p <- effect_plot(model = fit,
-                                 pred = Murder,
-                                 centered = "HSGrad",
-                                 rug = TRUE,
-                                 rug.sides = "lb"))
-  expect_silent(print(p))
-})
-
-test_that("effect_plot works for weighted lm", {
-  expect_silent(p <- effect_plot(model = fitw,
-                                 pred = Murder,
-                                 centered = "all"))
-  expect_silent(print(p))
-  expect_silent(p <- effect_plot(model = fitw,
-                                 pred = Murder,
-                                 centered = "HSGrad"))
-  expect_silent(print(p))
-  expect_silent(p <- effect_plot(model = fitw,
-                                 pred = Murder,
-                                 centered = "HSGrad",
-                                 robust = TRUE))
-  expect_silent(print(p))
-})
-
-if (requireNamespace("survey")) {
-  test_that("effect_plot works for svyglm", {
-    expect_silent(p <- effect_plot(regmodel, pred = meals, centered = "all"))
-    expect_silent(print(p))
-    expect_silent(p <- effect_plot(regmodel, pred = meals, centered = "ell"))
-    expect_silent(print(p))
-  })
-}
-
-if (requireNamespace("lme4")) {
-  test_that("effect_plot works for lme4", {
-    expect_silent(p <- effect_plot(mv, pred = mode_numeric))
-    expect_silent(print(p))
-  })
-}
-
-test_that("effect_plot handles offsets", {
-  expect_message(p <- effect_plot(pmod, pred = money))
-  expect_silent(print(p))
-})
 
 ### johnson_neyman ###########################################################
 
@@ -725,19 +626,19 @@ test_that("cat_plot handles plotted points w/ no mod. (boxplot)", {
   expect_silent(print(p))
 })
 
-if (requireNamespace("lme4", quietly = TRUE)) {
-  test_that("make_predictions.merMod bootstrap intervals work", {
-    mp <- make_predictions(gm, pred = "period", interval = TRUE, boot = TRUE,
-                           sims = 10, progress = "none")
-    expect_silent(p <- plot_predictions(mp, interval = TRUE))
-    expect_silent(print(p))
-  })
-
-  test_that("glmer works", {
-    expect_message(p <- cat_plot(gm, pred = period, interval = TRUE))
-    expect_silent(print(p))
-  })
-}
+# if (requireNamespace("lme4", quietly = TRUE)) {
+#   test_that("make_predictions.merMod bootstrap intervals work", {
+#     mp <- make_predictions(gm, pred = "period", interval = TRUE, boot = TRUE,
+#                            sims = 10, progress = "none")
+#     expect_silent(p <- plot_predictions(mp, interval = TRUE))
+#     expect_silent(print(p))
+#   })
+#
+#   test_that("glmer works", {
+#     expect_message(p <- cat_plot(gm, pred = period, interval = TRUE))
+#     expect_silent(print(p))
+#   })
+# }
 
 options(device = device)
-# dev.off()
+dev.off()
