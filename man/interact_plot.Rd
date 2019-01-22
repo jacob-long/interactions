@@ -12,8 +12,8 @@ interact_plot(model, pred, modx, modx.values = NULL, mod2 = NULL,
   cluster = NULL, vcov = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, pred.labels = NULL, modx.labels = NULL,
   mod2.labels = NULL, main.title = NULL, legend.main = NULL,
-  color.class = NULL, line.thickness = 1.1, vary.lty = TRUE,
-  point.size = 2.5, point.shape = FALSE, jitter = 0, rug = FALSE,
+  color.class = NULL, line.thickness = 1, vary.lty = TRUE,
+  point.size = 1, point.shape = FALSE, jitter = 0, rug = FALSE,
   rug.sides = "b", ...)
 }
 \arguments{

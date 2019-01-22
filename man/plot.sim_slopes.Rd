@@ -7,7 +7,7 @@
 \method{plot}{sim_slopes}(x, ...)
 }
 \arguments{
-\item{x}{A \code{\link[jtools:sim_slopes]{jtools::sim_slopes()}} object.}
+\item{x}{A \code{\link[=sim_slopes]{sim_slopes()}} object.}
 
 \item{...}{arguments passed to \code{\link[jtools:plot_coefs]{jtools::plot_coefs()}}}
 }
