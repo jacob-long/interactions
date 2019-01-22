@@ -538,7 +538,9 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
     # Adding this scale allows me to have consistent ordering
     plot <-
       plot +
-      ggplot2::scale_linetype_discrete(guide = ggplot2::guide_legend(order = 1))
+      ggplot2::scale_linetype_discrete(
+        name = " ", guide = ggplot2::guide_legend(order = 1)
+      )
 
     if (out$bounds[1] < modrange[1]) {
       # warning("The lower bound is outside the range of the plotted data")
@@ -559,9 +561,9 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
     plot <- plot + ggplot2::xlim(range(cbs[,modx])) +
       ggplot2::labs(title = title, x = modx, y = predl) +
 
-      ggplot2::scale_color_manual(values = c("Significant" = sig.color,
-                                           "Insignificant" = insig.color),
-                                guide = "none") +
+      ggplot2::scale_color_manual(name = "", 
+        values = c("Significant" = sig.color, 
+         "Insignificant" = insig.color), guide = "none") +
       theme_apa(legend.pos = "right", legend.font.size = 10) +
 
       ggplot2::theme(legend.key.size = ggplot2::unit(1, "lines"))
