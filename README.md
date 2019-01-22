@@ -45,7 +45,7 @@ you will also need to grab it from Github first.
 if (!requireNamespace("devtools", quietly = TRUE)) {
   install.packages("devtools")
 }
-devtools::install_github("jacob-long/jtools")
+devtools::install_github("jacob-long/jtools", ref = "interactions-split")
 devtools::install_github("jacob-long/interactions")
 ```
 

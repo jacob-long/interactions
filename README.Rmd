@@ -57,7 +57,7 @@ install from Github. Because it depends on a not-yet-released version of
 if (!requireNamespace("devtools", quietly = TRUE)) {
   install.packages("devtools")
 }
-devtools::install_github("jacob-long/jtools")
+devtools::install_github("jacob-long/jtools", ref = "interactions-split")
 devtools::install_github("jacob-long/interactions")
 ```
 
