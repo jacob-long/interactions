@@ -18,7 +18,8 @@ Encoding: UTF-8
 LazyData: true
 Imports: ggplot2,
   crayon,
-  cli
+  cli,
+  jtools (>= 2.0.0)
 Suggests:
   brms,
   cowplot,
