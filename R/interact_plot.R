@@ -12,13 +12,17 @@
 #'   supported. The model should include the interaction of interest.
 #'
 #' @param pred The name of the predictor variable involved
-#'  in the interaction. This can be a bare name or string.
+#'  in the interaction. This can be a bare name or string. Note that it
+#'  is evaluated using `rlang`, so programmers can use the `!!` syntax
+#'  to pass variables instead of the verbatim names.
 #'
 #' @param modx The name of the moderator variable involved
-#'  in the interaction. This can be a bare name or string.
+#'  in the interaction. This can be a bare name or string. The same
+#'  `rlang` proviso applies as with `pred`.
 #'
 #' @param mod2 Optional. The name of the second moderator
 #'  variable involved in the interaction. This can be a bare name or string.
+#'  The same `rlang` proviso applies as with `pred`.
 #'
 #' @param modx.values For which values of the moderator should lines be plotted?
 #'   Default is \code{NULL}. If \code{NULL}, then the customary +/- 1 standard
@@ -313,6 +317,7 @@
 #' @importFrom stats coef coefficients lm predict sd qnorm getCall model.offset
 #' @importFrom stats median ecdf quantile
 #' @import ggplot2
+#' @import rlang
 #' @export interact_plot
 
 interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
@@ -343,17 +348,11 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   }
 
   # Evaluate the modx, mod2, pred args
-  # This is getting nasty due to my decision to use NSE
-  pred <- as.character(deparse(substitute(pred)))
-  pred <- gsub("\"", "", pred, fixed = TRUE)
-  modx <- as.character(deparse(substitute(modx)))
-  modx <- gsub("\"", "", modx, fixed = TRUE)
-  mod2 <- as.character(deparse(substitute(mod2)))
-  mod2 <- gsub("\"", "", mod2, fixed = TRUE)
-  # To avoid unexpected behavior, need to un-un-parse mod2 when it is NULL
-  if (length(mod2) == 0 | mod2 == "NULL") {
-    mod2 <- NULL
-  }
+  pred <- quo_name(enexpr(pred))
+  modx <- quo_name(enexpr(modx))
+  if (modx == "NULL") {modx <- NULL}
+  mod2 <- quo_name(enexpr(mod2))
+  if (mod2 == "NULL") {mod2 <- NULL}
 
   if (any(c(pred, modx, mod2) %in% centered)) {
     warn_wrap("You cannot mean-center the focal predictor or moderators with

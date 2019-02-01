@@ -6,6 +6,8 @@
 #' categorical (or, in R terms, factors).
 #'
 #' @param pred A categorical predictor variable that will appear on the x-axis.
+#'  Note that it is evaluated using `rlang`, so programmers can use the `!!`
+#'  syntax to pass variables instead of the verbatim names.
 #' @param modx A categorical moderator variable.
 #' @param mod2 For three-way interactions, the second categorical moderator.
 #'
@@ -188,20 +190,11 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   }
 
   # Evaluate the modx, mod2, pred args
-  pred <- as.character(deparse(substitute(pred)))
-  pred <- gsub("\"", "", pred, fixed = TRUE)
-  modx <- as.character(deparse(substitute(modx)))
-  modx <- gsub("\"", "", modx, fixed = TRUE)
-  # To avoid unexpected behavior, need to un-un-parse modx when it is NULL
-  if (length(modx) == 0 | modx == "NULL") {
-    modx <- NULL
-  }
-  mod2 <- as.character(deparse(substitute(mod2)))
-  mod2 <- gsub("\"", "", mod2, fixed = TRUE)
-  # To avoid unexpected behavior, need to un-un-parse mod2 when it is NULL
-  if (length(mod2) == 0 | mod2 == "NULL") {
-    mod2 <- NULL
-  }
+  pred <- quo_name(enexpr(pred))
+  modx <- quo_name(enexpr(modx))
+  if (modx == "NULL") {modx <- NULL}
+  mod2 <- quo_name(enexpr(mod2))
+  if (mod2 == "NULL") {mod2 <- NULL}
 
   if (any(c(pred, modx, mod2) %in% centered)) {
     warn_wrap("You cannot mean-center the focal predictor or moderators with
