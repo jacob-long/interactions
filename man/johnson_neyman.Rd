@@ -147,9 +147,8 @@ and application. \emph{Psychometrika}, \emph{15}, 349-367.
 \url{http://doi.org/10.1007/BF02288864}
 }
 \seealso{
-Other interaction tools: \code{\link{cat_plot}},
-  \code{\link{interact_plot}},
-  \code{\link{probe_interaction}}, \code{\link{sim_slopes}}
+Other interaction tools: \code{\link{probe_interaction}},
+  \code{\link{sim_slopes}}
 }
 \author{
 Jacob Long <\email{long.1377@osu.edu}>

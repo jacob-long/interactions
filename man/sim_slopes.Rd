@@ -194,9 +194,7 @@ differences and provides Johnson-Neyman intervals.
 
 \code{\link[pequod]{simpleSlope}} performs a similar analysis.
 
-Other interaction tools: \code{\link{cat_plot}},
-  \code{\link{interact_plot}},
-  \code{\link{johnson_neyman}},
+Other interaction tools: \code{\link{johnson_neyman}},
   \code{\link{probe_interaction}}
 }
 \author{

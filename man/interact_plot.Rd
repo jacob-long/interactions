@@ -12,9 +12,10 @@ interact_plot(model, pred, modx, modx.values = NULL, mod2 = NULL,
   cluster = NULL, vcov = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, pred.labels = NULL, modx.labels = NULL,
   mod2.labels = NULL, main.title = NULL, legend.main = NULL,
-  color.class = NULL, line.thickness = 1, vary.lty = TRUE,
+  colors = NULL, line.thickness = 1, vary.lty = TRUE,
   point.size = 1, point.shape = FALSE, jitter = 0, rug = FALSE,
-  rug.sides = "b", ...)
+  rug.sides = "b", partial.residuals = FALSE, color.class = colors,
+  ...)
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
@@ -25,10 +26,13 @@ Models from other classes may work as well but are not officially
 supported. The model should include the interaction of interest.}
 
 \item{pred}{The name of the predictor variable involved
-in the interaction. This can be a bare name or string.}
+in the interaction. This can be a bare name or string. Note that it
+is evaluated using \code{rlang}, so programmers can use the \code{!!} syntax
+to pass variables instead of the verbatim names.}
 
 \item{modx}{The name of the moderator variable involved
-in the interaction. This can be a bare name or string.}
+in the interaction. This can be a bare name or string. The same
+\code{rlang} proviso applies as with \code{pred}.}
 
 \item{modx.values}{For which values of the moderator should lines be plotted?
 Default is \code{NULL}. If \code{NULL}, then the customary +/- 1 standard
@@ -45,7 +49,8 @@ as there is more than 1. The levels will be plotted in the order you
 provide them, so this can be used to reorder levels as well.}
 
 \item{mod2}{Optional. The name of the second moderator
-variable involved in the interaction. This can be a bare name or string.}
+variable involved in the interaction. This can be a bare name or string.
+The same \code{rlang} proviso applies as with \code{pred}.}
 
 \item{mod2.values}{For which values of the second moderator should the plot
 be
@@ -149,7 +154,7 @@ for the plot. If \code{NULL}, no main title is used.}
 appears above the legend. If \code{NULL}, the name of the moderating
 variable is used.}
 
-\item{color.class}{See \link{jtools_colors} for details on the types of arguments
+\item{colors}{See \link{jtools_colors} for details on the types of arguments
 accepted. Default is "CUD Bright" for factor
 moderators, "Blues" for +/- SD and user-specified \code{modx.values}
 values.}
@@ -188,6 +193,12 @@ FALSE.}
 meaning bottom. "t" and/or "b" show the distribution of the predictor
 while "l" and/or "r" show the distribution of the response. "bl" is
 a good option to show both the predictor and response.}
+
+\item{partial.residuals}{Instead of plotting the observed data, you may plot
+the partial residuals (controlling for the effects of variables besides
+\code{pred}).}
+
+\item{color.class}{Deprecated. Now known as \code{colors}.}
 
 \item{...}{extra arguments passed to \code{make_predictions}}
 }
@@ -326,12 +337,7 @@ its features.
 
 \code{\link{sim_slopes}} performs a simple slopes analysis with a similar
 argument syntax to this function.
-
-Other interaction tools: \code{\link{cat_plot}},
-  \code{\link{johnson_neyman}},
-  \code{\link{probe_interaction}}, \code{\link{sim_slopes}}
 }
 \author{
 Jacob Long <\email{long.1377@osu.edu}>
 }
-\concept{interaction tools}

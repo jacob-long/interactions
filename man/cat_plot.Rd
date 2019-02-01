@@ -17,7 +17,8 @@ cat_plot(model, pred, modx = NULL, mod2 = NULL, data = NULL,
   vcov = NULL, pred.labels = NULL, modx.labels = NULL,
   mod2.labels = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, main.title = NULL, legend.main = NULL,
-  color.class = "CUD Bright", ...)
+  colors = "CUD Bright", partial.residuals = FALSE,
+  color.class = colors, ...)
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
@@ -27,7 +28,9 @@ cat_plot(model, pred, modx = NULL, mod2 = NULL, data = NULL,
 Models from other classes may work as well but are not officially
 supported. The model should include the interaction of interest.}
 
-\item{pred}{A categorical predictor variable that will appear on the x-axis.}
+\item{pred}{A categorical predictor variable that will appear on the x-axis.
+Note that it is evaluated using \code{rlang}, so programmers can use the \code{!!}
+syntax to pass variables instead of the verbatim names.}
 
 \item{modx}{A categorical moderator variable.}
 
@@ -211,10 +214,16 @@ for the plot. If \code{NULL}, no main title is used.}
 appears above the legend. If \code{NULL}, the name of the moderating
 variable is used.}
 
-\item{color.class}{Any palette argument accepted by
+\item{colors}{Any palette argument accepted by
 \code{\link[ggplot2]{scale_colour_brewer}}. Default is "Set2".
 You may also simply supply a vector of colors accepted by
 \code{ggplot2} and of equal length to the number of moderator levels.}
+
+\item{partial.residuals}{Instead of plotting the observed data, you may plot
+the partial residuals (controlling for the effects of variables besides
+\code{pred}).}
+
+\item{color.class}{Deprecated. Now known as \code{colors}.}
 
 \item{...}{extra arguments passed to \code{make_predictions}}
 }
@@ -285,9 +294,3 @@ cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
  interval = TRUE)
 
 }
-\seealso{
-Other interaction tools: \code{\link{interact_plot}},
-  \code{\link{johnson_neyman}},
-  \code{\link{probe_interaction}}, \code{\link{sim_slopes}}
-}
-\concept{interaction tools}
