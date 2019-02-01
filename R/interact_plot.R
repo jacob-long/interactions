@@ -129,7 +129,7 @@
 #'   appears above the legend. If \code{NULL}, the name of the moderating
 #'   variable is used.
 #'
-#' @param color.class See [jtools_colors] for details on the types of arguments
+#' @param colors See [jtools_colors] for details on the types of arguments
 #'    accepted. Default is "CUD Bright" for factor
 #'    moderators, "Blues" for +/- SD and user-specified \code{modx.values}
 #'    values.
@@ -180,6 +180,7 @@
 #' @param ... extra arguments passed to `make_predictions`
 #'
 #' @inheritParams cat_plot
+#' @inheritParams jtools::effect_plot
 #'
 #' @details This function provides a means for plotting conditional effects
 #'   for the purpose of exploring interactions in regression models.
@@ -249,8 +250,6 @@
 #'   like a user-created plot and expanded upon as such.
 #'
 #' @author Jacob Long <\email{long.1377@@osu.edu}>
-#'
-#' @family interaction tools
 #'
 #' @seealso \code{\link[rockchalk]{plotSlopes}} from \pkg{rockchalk} performs a
 #'   similar function, but
@@ -331,10 +330,12 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                           x.label = NULL, y.label = NULL,
                           pred.labels = NULL, modx.labels = NULL,
                           mod2.labels = NULL, main.title = NULL,
-                          legend.main = NULL, color.class = NULL,
+                          legend.main = NULL, colors = NULL,
                           line.thickness = 1, vary.lty = TRUE,
                           point.size = 1, point.shape = FALSE,
-                          jitter = 0, rug = FALSE, rug.sides = "b", ...) {
+                          jitter = 0, rug = FALSE, rug.sides = "b",
+                          partial.residuals = FALSE,
+                          color.class = colors, ...) {
 
   # Capture extra arguments
   dots <- list(...)
@@ -384,7 +385,8 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                         modx.labels = modx.labels, mod2.labels = mod2.labels,
                         facet.modx = facet.modx, d = d,
                         survey = "svyglm" %in% class(model), wts = wts,
-                        preds.per.level = 100, ...)
+                        preds.per.level = 100,
+                        partial.residuals = partial.residuals, ...)
 
   # These are the variables created in the helper functions
   meta <- attributes(pred_out)
@@ -397,7 +399,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   d <- pred_out$original
 
   # Check for factor predictor
-  if (is.factor(d[[pred]])) {
+  if (!is.numeric(d[[pred]])) {
     # I could assume the factor is properly ordered, but that's too risky
     stop("Focal predictor (\"pred\") cannot be a factor. Either",
          " use it as modx, convert it to a numeric dummy variable,",
@@ -407,12 +409,13 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
 
   # Send to internal plotting function
   plot_mod_continuous(predictions = pm, pred = pred, modx = modx, resp = resp,
-                      mod2 = mod2, data = d, plot.points = plot.points,
+                      mod2 = mod2, data = d,
+                      plot.points = plot.points | partial.residuals,
                       interval = interval, linearity.check = linearity.check,
                       x.label = x.label, y.label = y.label,
                       pred.labels = pred.labels, modx.labels = modx.labels,
                       mod2.labels = mod2.labels, main.title = main.title,
-                      legend.main = legend.main, color.class = color.class,
+                      legend.main = legend.main, colors = colors,
                       line.thickness = line.thickness,
                       vary.lty = vary.lty, jitter = jitter,
                       modxvals2 = modxvals2, mod2vals2 = mod2vals2,

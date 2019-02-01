@@ -521,7 +521,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
                       modx.labels, mod2.labels, wname, weights, wts,
                       linearity.check, interval, set.offset, facvars, centered,
                       preds.per.level, force.cat = FALSE, facet.modx = FALSE,
-                      ...) {
+                      partial.residuals = FALSE, outcome.scale, ...) {
   # offset?
   offname <- jtools::get_offset_name(model)
   off <- !is.null(offname)
@@ -690,20 +690,25 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     pms[[i]] <- jtools::make_predictions(
         model = model, data = d, pred = pred, pred.values = pred.predicted,
         at = at_list, set.offset = set.offset, center = centered,
-        interval = interval, ...
+        interval = interval, scale = outcome.scale, ...
     )
     pms[[i]] <- pms[[i]][complete.cases(pms[[i]]), ]
   }
 
   pm <- do.call("rbind", pms)
 
-  
+  # Do partial residuals if requested
+  if (partial.residuals == TRUE) {
+    suppressMessages({
+      d <- partialize(model, vars = c(pred, modx, mod2), center = centered,
+                      data = d, scale = outcome.scale, set.offset = set.offset)
+    })
+  }
 
   ## Prep original data for splitting into groups ##
-  # Only do this if going to plot points
   if (!is.null(modx)) {
     d <- split_int_data(d = d, modx = modx, mod2 = mod2,
-                        linearity.check = linearity.check,
+                        linearity.check = linearity.check | facet.modx,
                         modx.values = modx.values,
                         modxvals2 = modxvals2, mod2.values = mod2.values,
                         mod2vals2 = mod2vals2, facmod = facmod,

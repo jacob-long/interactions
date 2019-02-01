@@ -56,7 +56,7 @@
 #'   vary by the values of the factor? This is especially useful if you aim to
 #'   be black and white printing- or colorblind-friendly.
 #'
-#' @param color.class Any palette argument accepted by
+#' @param colors Any palette argument accepted by
 #'   \code{\link[ggplot2]{scale_colour_brewer}}. Default is "Set2".
 #'   You may also simply supply a vector of colors accepted by
 #'   `ggplot2` and of equal length to the number of moderator levels.
@@ -94,6 +94,7 @@
 #'    be the jitter for width and the second for the height.
 #'
 #' @inheritParams interact_plot
+#' @inheritParams jtools::effect_plot
 #'
 #' @details This function provides a means for plotting conditional effects
 #'   for the purpose of exploring interactions in the context of regression.
@@ -127,8 +128,6 @@
 #'
 #' @return The functions returns a \code{ggplot} object, which can be treated
 #'   like a user-created plot and expanded upon as such.
-#'
-#' @family interaction tools
 #'
 #' @examples
 #'
@@ -173,7 +172,7 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   robust = FALSE, cluster = NULL, vcov = NULL, pred.labels = NULL,
   modx.labels = NULL, mod2.labels = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, main.title = NULL, legend.main = NULL,
-  color.class = "CUD Bright", ...) {
+  colors = "CUD Bright", partial.residuals = FALSE, color.class = colors, ...) {
 
   # Capture extra arguments
   dots <- list(...)
@@ -227,7 +226,8 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
                         modx.labels = modx.labels, mod2.labels = mod2.labels,
                         facet.modx = FALSE, d = d,
                         survey = "svyglm" %in% class(model), wts = wts,
-                        preds.per.level = 100, ...)
+                        preds.per.level = 100,
+                        partial.residuals = partial.residuals, ...)
 
 
   # These are the variables created in the helper functions
@@ -242,14 +242,14 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
 
   plot_cat(predictions = pm, pred = pred, modx = modx, mod2 = mod2,
            data = d, geom = geom, pred.values = pred.values,
-           modx.values = modx.values, mod2.values = mod2.values
-           , interval = interval,
-           plot.points = plot.points,
+           modx.values = modx.values, mod2.values = mod2.values,
+           interval = interval,
+           plot.points = plot.points | partial.residuals,
            point.shape = point.shape, vary.lty = vary.lty,
            pred.labels = pred.labels, modx.labels = modx.labels,
            mod2.labels = mod2.labels, x.label = x.label, y.label = y.label,
            main.title = main.title, legend.main = legend.main,
-           color.class = color.class, wts = wts, resp = resp,
+           colors = colors, wts = wts, resp = resp,
            geom.alpha = geom.alpha, dodge.width = dodge.width,
            errorbar.width = errorbar.width, interval.geom = interval.geom,
            point.size = point.size, line.thickness = line.thickness,

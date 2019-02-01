@@ -6,7 +6,7 @@ plot_predictions <- function(predictions, pred = NULL, modx = NULL, mod2 = NULL,
   linearity.check = FALSE,
   facet.modx = FALSE, x.label = NULL, y.label = NULL, pred.labels = NULL,
   modx.labels = NULL, mod2.labels = NULL, main.title = NULL, legend.main = NULL,
-  color.class = NULL, line.thickness = 1.1, vary.lty = NULL, jitter = 0,
+  colors = NULL, line.thickness = 1.1, vary.lty = NULL, jitter = 0,
   weights = NULL, rug = FALSE, rug.sides = "b", force.cat = FALSE,
   point.shape = FALSE, geom.alpha = NULL, dodge.width = NULL,
   errorbar.width = NULL, interval.geom = c("errorbar", "linerange"),
@@ -98,7 +98,7 @@ plot_predictions <- function(predictions, pred = NULL, modx = NULL, mod2 = NULL,
 plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   data = NULL, plot.points = FALSE, interval = FALSE, linearity.check = FALSE,
   x.label = NULL, y.label = NULL, pred.labels = NULL, modx.labels = NULL,
-  mod2.labels = NULL, main.title = NULL, legend.main = NULL, color.class = NULL,
+  mod2.labels = NULL, main.title = NULL, legend.main = NULL, colors = NULL,
   line.thickness = 1.1, vary.lty = TRUE, jitter = 0, modxvals2 = NULL,
   mod2vals2 = NULL, wts = NULL, rug = FALSE, rug.sides = "b",
   point.shape = FALSE, point.size = 2, facet.modx = FALSE) {
@@ -107,20 +107,20 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   pm <- predictions
 
   # Setting default for colors
-  if (is.null(color.class) && (facet.modx == TRUE | linearity.check == TRUE)) {
-    color.class <- rep("black", times = length(modxvals2))
+  if (is.null(colors) && (facet.modx == TRUE | linearity.check == TRUE)) {
+    colors <- rep("black", times = length(modxvals2))
     vary.lty <- FALSE
     point.shape <- FALSE
   }
   if (is.factor(d[[modx]])) {
     facmod <- TRUE
-    if (is.null(color.class)) {
-      color.class <- "CUD Bright"
+    if (is.null(colors)) {
+      colors <- "CUD Bright"
     }
   } else {
     facmod <- FALSE
-    if (is.null(color.class)) {
-      color.class <- "Blues"
+    if (is.null(colors)) {
+      colors <- "Blues"
     }
   }
 
@@ -151,7 +151,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   gradient <- is.numeric(d[[modx]])
 
   # Checking if user provided the colors his/herself
-  colors <- suppressWarnings(get_colors(color.class, length(modx.labels),
+  colors <- suppressWarnings(get_colors(colors, length(modx.labels),
                                         gradient = gradient))
 
   # Manually set linetypes
@@ -199,7 +199,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   # Defining linetype here
   if (vary.lty == TRUE) {
     p <- ggplot(pm, aes_string(x = pred_g, y = resp_g, colour = modx_g,
-                               group = modx_g, linetype = "modx_group"))
+                               group = "modx_group", linetype = "modx_group"))
   } else {
     p <- ggplot(pm, aes_string(x = pred_g, y = resp_g, colour = modx_g,
                                group = "modx_group"))
@@ -438,7 +438,7 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
    modx.values = NULL, mod2.values = NULL, interval = TRUE, plot.points = FALSE,
    point.shape = FALSE, vary.lty = FALSE,  pred.labels = NULL,
    modx.labels = NULL, mod2.labels = NULL, x.label = NULL, y.label = NULL,
-   main.title = NULL, legend.main = NULL, color.class = "CUD Bright",
+   main.title = NULL, legend.main = NULL, colors = "CUD Bright",
    wts = NULL, resp = NULL, jitter = 0.1, geom.alpha = NULL, dodge.width = NULL,
    errorbar.width = NULL, interval.geom = c("errorbar", "linerange"),
    line.thickness = 1.1, point.size = 1, pred.point.size = 3.5) {
@@ -508,7 +508,7 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
   } else {gradient <- FALSE}
 
   # Checking if user provided the colors his/herself
-  colors <- suppressWarnings(get_colors(color.class, length(modx.labels),
+  colors <- suppressWarnings(get_colors(colors, length(modx.labels),
                                         gradient = gradient))
 
   # Manually set linetypes
