@@ -2,7 +2,7 @@
 title: "Plotting interactions among categorical variables in regression models"
 author: "Jacob Long"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: rmdformats::html_clean
 vignette: >
   %\VignetteIndexEntry{Plotting interactions among categorical variables in regression models}
   %\VignetteEngine{knitr::rmarkdown}
