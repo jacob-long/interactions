@@ -759,9 +759,9 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
 
 split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
                            modxvals2, mod2.values, mod2vals2, facmod, facmod2) {
-  # For numeric, non-binary moderators...                         
-  if (facmod == FALSE & 
-        !(length(unique(d[[modx]])) == 2) & length(modx.values) == 2) {
+  # For numeric, non-binary moderators...
+  if (facmod == FALSE &
+        !(length(unique(d[[modx]])) == 2 & length(modxvals2) == 2)) {
 
     # Use ecdf function to get quantile of the modxvals
     mod_val_qs <- ecdf(d[[modx]])(sort(modxvals2))
@@ -798,10 +798,11 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
     d["modx_group"] <- factor(d[[modx]], levels = modxvals2,
                               labels = names(modxvals2))
 
-  } 
+  }
 
   if (!is.null(mod2)) {
-    if (facmod2 == FALSE) {
+    if (facmod2 == FALSE &
+        !(length(unique(d[[mod2]])) == 2 & length(mod2vals2) == 2)) {
 
       mod_val_qs <- ecdf(d[[mod2]])(sort(mod2vals2))
 
