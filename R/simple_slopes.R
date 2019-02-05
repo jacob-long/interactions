@@ -872,9 +872,8 @@ print.sim_slopes <- function(x, ...) {
 
         cat(italic(paste0("Slope of ", x$pred, " when ", x$modx, " = ",
             x$modx.values[i], " (", names(x$modx.values)[i], ")",
-            ": \n")))
-        print(format(slopes, nsmall = x$digits, digits = 0),
-              row.names = FALSE)
+            ": \n\n")))
+        print(md_table(slopes, digits = x$digits, row.names = FALSE))
 
         # Print conditional intercept
         if (x$cond.int == TRUE) {
@@ -884,9 +883,8 @@ print.sim_slopes <- function(x, ...) {
 
           cat(italic(paste0("Conditional intercept"," when ", x$modx, " = ",
               x$modx.values[i], " (", names(x$modx.values)[i], ")",
-              ": \n")))
-          print(format(ints, nsmall = x$digits, digits = 0),
-                row.names = FALSE)
+              ": \n\n")))
+          print(md_table(ints, digits = x$digits, row.names = FALSE))
           cat("\n")
         } else {cat("\n")}
 
@@ -932,8 +930,8 @@ print.sim_slopes <- function(x, ...) {
 #' @param conf.level The width of confidence intervals. Default is .95 (95\%).
 #' @param ... Ignored.
 #' @rdname sim_slopes_tidiers
-#' @export 
-#' @rawNamespace 
+#' @export
+#' @rawNamespace
 #' if (getRversion() >= "3.6.0") {
 #'   S3method(broom::tidy, sim_slopes)
 #' } else {
@@ -1026,7 +1024,7 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
 
 #' @rdname sim_slopes_tidiers
 #' @export
-#' @rawNamespace 
+#' @rawNamespace
 #' if (getRversion() >= "3.6.0") {
 #'   S3method(broom::glance, sim_slopes)
 #' } else {
@@ -1070,7 +1068,7 @@ nobs.sim_slopes <- function(object, ...) {
 #' For more on what you can do with a `huxtable`, see \pkg{huxtable}.
 #'
 #' @rdname as_huxtable.sim_slopes
-#' @rawNamespace 
+#' @rawNamespace
 #' if (getRversion() >= "3.6.0") {
 #'   S3method(huxtable::as_huxtable, sim_slopes)
 #' } else {
