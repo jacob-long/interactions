@@ -256,3 +256,250 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
            pred.point.size = pred.point.size, jitter = jitter)
 
 }
+
+# Workhorse plotter
+plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
+                     data = NULL, geom = c("point", "line", "bar", "boxplot"),
+                     pred.values = NULL,
+                     modx.values = NULL, mod2.values = NULL, interval = TRUE,
+                     plot.points = FALSE,
+                     point.shape = FALSE, vary.lty = FALSE,  pred.labels = NULL,
+                     modx.labels = NULL, mod2.labels = NULL, x.label = NULL,
+                     y.label = NULL, main.title = NULL, legend.main = NULL,
+                     colors = "CUD Bright", wts = NULL, resp = NULL,
+                     jitter = 0.1, geom.alpha = NULL, dodge.width = NULL,
+                     errorbar.width = NULL,
+                     interval.geom = c("errorbar", "linerange"),
+                     line.thickness = 1.1, point.size = 1,
+                     pred.point.size = 3.5) {
+
+  pm <- predictions
+  d <- data
+
+  geom <- geom[1]
+  if (geom == "dot") {geom <- "point"}
+
+  # If only 1 jitter arg, just duplicate it
+  if (length(jitter) == 1) {jitter <- rep(jitter, 2)}
+
+  # If no user-supplied legend title, set it to name of moderator
+  if (is.null(legend.main)) {
+    legend.main <- modx
+  }
+
+  if (is.null(x.label)) {
+    x.label <- pred
+  }
+
+  if (is.null(y.label)) {
+    y.label <- resp
+  }
+
+  # Deal with non-syntactic names
+  if (make.names(pred) !=  pred) {
+    pred_g <- paste0("`", pred, "`")
+  } else {
+    pred_g <- pred
+  }
+  if (!is.null(modx) && make.names(modx) !=  modx) {
+    modx_g <- paste0("`", modx, "`")
+  } else if (!is.null(modx)) {
+    modx_g <- modx
+  }
+  if (!is.null(mod2) && make.names(mod2) !=  mod2) {
+    mod2_g <- paste0("`", mod2, "`")
+  } else if (!is.null(mod2)) {
+    mod2_g <- mod2
+  }
+  if (make.names(resp) !=  resp) {
+    resp_g <- paste0("`", resp, "`")
+  } else {
+    resp_g <- resp
+  }
+
+  # Deal with numeric predictors coerced into factors
+  if (is.numeric(pm[[pred]])) {
+    pred.levels <- if (!is.null(pred.values)) {pred.values} else {
+      unique(pm[[pred]])
+    }
+    pred.labels <- if (!is.null(pred.labels)) {pred.labels} else {
+      unique(pm[[pred]])
+    }
+    pm[[pred]] <- factor(pm[[pred]], levels = pred.levels,
+                         labels = pred.labels)
+
+    # Make sure only observations of requested levels of predictor are included
+    d <- d[d[[pred]] %in% pred.levels,]
+    d[[pred]] <- factor(d[[pred]], levels = pred.levels, labels = pred.labels)
+  }
+
+  if (!is.null(modx)) {
+    gradient <- is.numeric(d[[modx]]) & !vary.lty
+  } else {gradient <- FALSE}
+
+  # Checking if user provided the colors his/herself
+  colors <- suppressWarnings(get_colors(colors, length(modx.labels),
+                                        gradient = gradient))
+
+  # Manually set linetypes
+  types <- c("solid", "4242", "2222", "dotdash", "dotted", "twodash",
+             "12223242", "F282", "F4448444", "224282F2", "F1")
+  ltypes <- types[seq_along(modx.labels)]
+
+  names(ltypes) <- modx.labels
+  names(colors) <- modx.labels
+
+  if (is.null(geom.alpha)) {
+    a_level <- 1
+    if (plot.points == TRUE) {
+      if (!is.null(modx)) {
+        a_level <- 0
+      } else {
+        a_level <- 0.5
+      }
+    } else if (interval == TRUE) {
+      a_level <- 0.5
+    }
+  } else {a_level <- geom.alpha}
+
+  if (is.null(dodge.width)) {
+    dodge.width <- if (geom %in% c("bar", "point", "boxplot")) {0.9} else {0}
+  }
+  if (is.null(errorbar.width)) {
+    errorbar.width <- if (geom == "point") {
+      0.9
+    } else if (geom == "bar") {
+      0.75
+    } else {0.5}
+  }
+
+  if (!is.null(modx)) {
+    shape_arg <- if (point.shape == TRUE) {modx_g} else {NULL}
+    lty_arg <- if (vary.lty == TRUE) {modx_g} else {NULL}
+
+    p <- ggplot(pm, aes_string(x = pred_g, y = resp_g, group = modx_g,
+                               colour = modx_g, fill = modx_g,
+                               shape = shape_arg, linetype = lty_arg))
+  } else {
+    p <- ggplot(pm, aes_string(x = pred_g, y = resp_g, group = 1))
+  }
+
+  if (geom == "bar") {
+    p <- p + geom_bar(stat = "identity", position = "dodge", alpha = a_level)
+  } else if (geom == "boxplot") {
+    if (!is.null(modx)) {
+      p <- ggplot(d, aes_string(x = pred_g, y = resp_g,
+                                colour = modx_g)) +
+        geom_boxplot(position = position_dodge(dodge.width))
+    } else {
+      p <- ggplot(d, aes_string(x = pred_g, y = resp_g)) +
+        geom_boxplot(position = position_dodge(dodge.width))
+    }
+  } else if (geom %in% c("point", "line")) {
+    p <- p + geom_point(size = pred.point.size,
+                        position = position_dodge(dodge.width))
+  }
+
+  if (geom == "line") {
+    p <- p + geom_path(position = position_dodge(dodge.width),
+                       size = line.thickness)
+  }
+
+  # Plot intervals if requested
+  if (interval == TRUE && geom != "boxplot" && interval.geom == "errorbar") {
+    p <- p + geom_errorbar(aes_string(ymin = "ymin", ymax = "ymax"),
+                           alpha = 1, show.legend = FALSE,
+                           position = position_dodge(dodge.width),
+                           width = errorbar.width,
+                           size = line.thickness)
+  } else if (interval == TRUE && geom != "boxplot" && interval.geom %in%
+             c("line", "linerange")) {
+    p <- p + geom_linerange(aes_string(ymin = "ymin", ymax = "ymax"),
+                            alpha = 0.8, show.legend = FALSE,
+                            position = position_dodge(dodge.width),
+                            size = line.thickness)
+  }
+
+  # If third mod, facet by third mod
+  if (!is.null(mod2)) {
+    facets <- facet_grid(paste(". ~", mod2_g))
+    p <- p + facets
+  }
+
+  # For factor vars, plotting the observed points
+  # and coloring them by factor looks great
+  if (plot.points == TRUE) {
+    # Transform weights so they have mean = 1
+    const <- length(wts) / sum(wts) # scaling constant
+    # make the range of values larger, but only if there are non-1 weights
+    const <- const * (1 * all(wts == 1) * point.size)
+    wts <- const * wts
+    # Append weights to data
+    d[,"the_weights"] <- wts
+
+    if (!is.null(modx)) {
+      p <- p + geom_point(data = d, aes_string(x = pred_g, y = resp_g,
+                                               colour = modx_g,
+                                               size = "the_weights",
+                                               shape = shape_arg),
+                          position =
+                            position_jitterdodge(dodge.width = dodge.width,
+                                                 jitter.width = jitter[1],
+                                                 jitter.height = jitter[2]),
+                          inherit.aes = FALSE,
+                          show.legend = FALSE,
+                          alpha = 0.6)
+    } else if (is.null(modx)) {
+      p <- p + geom_point(data = d, aes_string(x = pred_g, y = resp_g,
+                                               size = "the_weights",
+                                               shape = pred_g),
+                          position =
+                            position_jitterdodge(dodge.width = dodge.width,
+                                                 jitter.width = jitter[1],
+                                                 jitter.height = jitter[2]),
+                          inherit.aes = FALSE,
+                          show.legend = FALSE,
+                          alpha = 0.6)
+    }
+
+    # Add size aesthetic to avoid giant points
+    p <- p + scale_size_identity()
+
+  }
+
+  # Using theme_apa for theming...but using legend title and side positioning
+  if (is.null(mod2)) {
+    p <- p + theme_nice(legend.pos = "right")
+  } else {
+    # make better use of space by putting legend on bottom for facet plots
+    p <- p + theme_nice(legend.pos = "bottom")
+  }
+  p <- p + labs(x = x.label, y = y.label) # better labels for axes
+
+  # Get scale colors, provide better legend title
+  p <- p + scale_colour_manual(name = legend.main,
+                               values = colors,
+                               breaks = names(colors))
+  p <- p + scale_fill_manual(name = legend.main,
+                             values = colors,
+                             breaks = names(colors))
+  p <- p + scale_shape(name = legend.main)
+
+  if (vary.lty == TRUE) { # Add line-specific changes
+    p <- p + scale_linetype_manual(name = legend.main, values = ltypes,
+                                   breaks = names(ltypes),
+                                   na.value = "blank")
+    # Need some extra width to show the linetype pattern fully
+    p <- p + theme(legend.key.width = grid::unit(3, "lines"))
+  }
+
+  # Give the plot the user-specified title if there is one
+  if (!is.null(main.title)) {
+    p <- p + ggtitle(main.title)
+  }
+
+  # Return the plot
+  return(p)
+
+
+}
