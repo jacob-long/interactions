@@ -172,7 +172,6 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   robust = FALSE, cluster = NULL, vcov = NULL, pred.labels = NULL,
   modx.labels = NULL, mod2.labels = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, main.title = NULL, legend.main = NULL,
-  colors = "CUD Bright", partial.residuals = FALSE, color.class = NULL, ...) {
   colors = "CUD Bright", partial.residuals = FALSE, point.alpha = 0.6,
   color.class = NULL, ...) {
 
@@ -257,7 +256,7 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
            pred.labels = pred.labels, modx.labels = modx.labels,
            mod2.labels = mod2.labels, x.label = x.label, y.label = y.label,
            main.title = main.title, legend.main = legend.main,
-           colors = colors, wts = wts, resp = resp,
+           colors = colors, weights = weights, resp = resp,
            geom.alpha = geom.alpha, dodge.width = dodge.width,
            errorbar.width = errorbar.width, interval.geom = interval.geom,
            point.size = point.size, line.thickness = line.thickness,
@@ -304,28 +303,6 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
     y.label <- resp
   }
 
-  # Deal with non-syntactic names
-  if (make.names(pred) !=  pred) {
-    pred_g <- paste0("`", pred, "`")
-  } else {
-    pred_g <- pred
-  }
-  if (!is.null(modx) && make.names(modx) !=  modx) {
-    modx_g <- paste0("`", modx, "`")
-  } else if (!is.null(modx)) {
-    modx_g <- modx
-  }
-  if (!is.null(mod2) && make.names(mod2) !=  mod2) {
-    mod2_g <- paste0("`", mod2, "`")
-  } else if (!is.null(mod2)) {
-    mod2_g <- mod2
-  }
-  if (make.names(resp) !=  resp) {
-    resp_g <- paste0("`", resp, "`")
-  } else {
-    resp_g <- resp
-  }
-
   # Deal with numeric predictors coerced into factors
   if (is.numeric(pm[[pred]])) {
     pred.levels <- if (!is.null(pred.values)) {pred.values} else {
@@ -345,6 +322,13 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
   if (!is.null(modx)) {
     gradient <- is.numeric(d[[modx]]) & !vary.lty
   } else {gradient <- FALSE}
+
+  # Prepare names for tidy evaluation
+  pred <- sym(pred)
+  resp <- sym(resp)
+  if (!is.null(modx)) {modx <- sym(modx)}
+  if (!is.null(mod2)) {mod2 <- sym(mod2)}
+  if (!is.null(weights)) {weights <- sym(weights)}
 
   # Checking if user provided the colors his/herself
   colors <- suppressWarnings(get_colors(colors, length(modx.labels),
@@ -382,16 +366,13 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
     } else {0.5}
   }
 
-  if (!is.null(modx)) {
-    shape_arg <- if (point.shape == TRUE) {modx_g} else {NULL}
-    lty_arg <- if (vary.lty == TRUE) {modx_g} else {NULL}
+  shape <- if (point.shape == TRUE) {modx} else {NULL}
+  lty <- if (vary.lty == TRUE) {modx} else {NULL}
+  grp <- if (!is.null(modx)) modx else 1
 
-    p <- ggplot(pm, aes_string(x = pred_g, y = resp_g, group = modx_g,
-                               colour = modx_g, fill = modx_g,
-                               shape = shape_arg, linetype = lty_arg))
-  } else {
-    p <- ggplot(pm, aes_string(x = pred_g, y = resp_g, group = 1))
-  }
+  p <- ggplot(pm, aes(x = !! pred, y = !! resp, group = !! grp,
+                      colour = !! modx, fill = !! modx,
+                      shape = !! shape, linetype = !! lty))
 
   if (geom == "bar") {
     p <- p + geom_bar(stat = "identity", position = "dodge", alpha = a_level)
@@ -415,15 +396,14 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
   }
 
   # Plot intervals if requested
-  if (interval == TRUE && geom != "boxplot" && interval.geom == "errorbar") {
-    p <- p + geom_errorbar(aes_string(ymin = "ymin", ymax = "ymax"),
+  if (interval == TRUE & interval.geom[1] == "errorbar") {
+    p <- p + geom_errorbar(aes(ymin = !! sym("ymin"), ymax = !! sym("ymax")),
                            alpha = 1, show.legend = FALSE,
                            position = position_dodge(dodge.width),
                            width = errorbar.width,
                            size = line.thickness)
-  } else if (interval == TRUE && geom != "boxplot" && interval.geom %in%
-             c("line", "linerange")) {
-    p <- p + geom_linerange(aes_string(ymin = "ymin", ymax = "ymax"),
+  } else if (interval == TRUE & interval.geom[1] %in% c("line", "linerange")) {
+    p <- p + geom_linerange(aes(ymin = !! sym("ymin"), ymax = !! sym("ymax")),
                             alpha = 0.8, show.legend = FALSE,
                             position = position_dodge(dodge.width),
                             size = line.thickness)
@@ -431,48 +411,29 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
 
   # If third mod, facet by third mod
   if (!is.null(mod2)) {
-    facets <- facet_grid(paste(". ~", mod2_g))
+    facets <- facet_grid(paste(". ~", as_string(mod2)))
     p <- p + facets
   }
 
   # For factor vars, plotting the observed points
   # and coloring them by factor looks great
   if (plot.points == TRUE) {
-    # Transform weights so they have mean = 1
-    const <- length(wts) / sum(wts) # scaling constant
-    # make the range of values larger, but only if there are non-1 weights
-    const <- const * (1 * all(wts == 1) * point.size)
-    wts <- const * wts
-    # Append weights to data
-    d[,"the_weights"] <- wts
 
-    if (!is.null(modx)) {
-      p <- p + geom_point(data = d, aes_string(x = pred_g, y = resp_g,
-                                               colour = modx_g,
-                                               size = "the_weights",
-                                               shape = shape_arg),
-                          position =
-                            position_jitterdodge(dodge.width = dodge.width,
-                                                 jitter.width = jitter[1],
-                                                 jitter.height = jitter[2]),
-                          inherit.aes = FALSE,
-                          show.legend = FALSE,
-                          alpha = 0.6)
-    } else if (is.null(modx)) {
-      p <- p + geom_point(data = d, aes_string(x = pred_g, y = resp_g,
-                                               size = "the_weights",
-                                               shape = pred_g),
-                          position =
-                            position_jitterdodge(dodge.width = dodge.width,
-                                                 jitter.width = jitter[1],
-                                                 jitter.height = jitter[2]),
-                          inherit.aes = FALSE,
-                          show.legend = FALSE,
-                          alpha = 0.6)
+    constants <- list(alpha = point.alpha)
+    if (is.null(weights)) {
+      # Only use constant size if weights are not used
+      constants$size <- point.size
     }
-
-    # Add size aesthetic to avoid giant points
-    p <- p + scale_size_identity()
+    # Need to use layer function to programmatically define constant aesthetics
+    p <- p + layer(geom = "point", data = d, stat = "identity",
+                   inherit.aes = TRUE, show.legend = FALSE,
+                   mapping = aes(x = !! pred, y = !! resp, size = !! weights,
+                                 group = !! grp, colour = !! modx,
+                                 shape = !! shape),
+                   position = position_jitter(width = jitter[1],
+                                              height = jitter[2]),
+                   params = constants) +
+      scale_size(range = c(1 * point.size, 5 * point.size))
 
   }
 

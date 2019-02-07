@@ -517,66 +517,46 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   }
   names(ltypes) <- modx.labels
 
-  # Deal with non-syntactic names
-  if (make.names(pred) !=  pred) {
-    pred_g <- paste0("`", pred, "`")
-  } else {
-    pred_g <- pred
-  }
-  if (make.names(modx) !=  modx) {
-    modx_g <- paste0("`", modx, "`")
-  } else {
-    modx_g <- modx
-  }
-  if (!is.null(mod2) && make.names(mod2) !=  mod2) {
-    mod2_g <- paste0("`", mod2, "`")
-  } else if (!is.null(mod2)) {
-    mod2_g <- mod2
-  }
-  if (make.names(resp) !=  resp) {
-    resp_g <- paste0("`", resp, "`")
-  } else {
-    resp_g <- resp
-  }
+  # Prepare names for tidy evaluation
+  pred <- sym(pred)
+  resp <- sym(resp)
+  if (!is.null(modx)) {modx <- sym(modx)}
+  if (!is.null(mod2)) {mod2 <- sym(mod2)}
+  if (!is.null(weights)) {weights <- sym(weights)}
 
-  # Defining linetype here
-  if (vary.lty == TRUE) {
-    p <- ggplot(pm, aes_string(x = pred_g, y = resp_g, colour = modx_g,
-                               group = "modx_group", linetype = "modx_group"))
-  } else {
-    p <- ggplot(pm, aes_string(x = pred_g, y = resp_g, colour = modx_g,
-                               group = "modx_group"))
-  }
+  lty <- if (vary.lty) sym("modx_group") else NULL
+  # Don't use 'modx_group' if I don't have to since it makes it harder for
+  # users to make changes after the fact
+  grp <- if (vary.lty | facet.modx) sym("modx_group") else modx
+
+  p <- ggplot(pm, aes(x = !! pred, y = !! resp, colour = !! modx,
+                      group = !! grp, linetype = !! lty))
 
   p <- p + geom_path(size = line.thickness, show.legend = !facet.modx)
 
   # Plot intervals if requested
   if (interval == TRUE) {
-    p <- p + geom_ribbon(data = pm, aes_string(x = pred_g,
-                                               ymin = "ymin", ymax = "ymax",
-                                               fill = modx_g,
-                                               group = "modx_group",
-                                               colour = modx_g, linetype = NA),
+    p <- p + geom_ribbon(data = pm,
+                         aes(x = !! pred, ymin = !! sym("ymin"),
+                             ymax = !! sym("ymax"), fill = !! modx,
+                             group = !! grp, colour = !! modx, linetype = NA),
                          alpha = 1/5, show.legend = FALSE,
                          inherit.aes = TRUE)
-
-    # p <- p + scale_fill_manual(name = legend.main, values = colors,
-    #                            breaks = names(colors))
   }
 
   # If third mod, facet by third mod
   facet_form <- "~"
   modgroup <- NULL
-  if (!is.null(mod2) || linearity.check == TRUE || facet.modx == TRUE) {
+  # First, decide whether we're faceting at all
+  if (!is.null(mod2) || facet.modx == TRUE) {
     do_facets <- TRUE
-    # p <- p + facets
   } else {do_facets <- FALSE}
-
+  # If faceting by modx, add that to formula
   if (linearity.check == TRUE | facet.modx == TRUE) {
     facet_form <- paste(facet_form, "modx_group")
     modgroup <- "modx_group"
   }
-
+  # If faceting by mod2, add that to formula
   if (!is.null(mod2)) {
     facet_form <- paste(facet_form,
                         ifelse(facet_form == "~", yes = "mod2_group",
@@ -606,8 +586,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
 
   if (linearity.check == TRUE) {
     p <- p + stat_smooth(data = d,
-                         aes_string(x = pred_g, y = resp_g,
-                                    group = "modx_group"),
+                         aes(x = !! pred, y = !! resp, group = !! grp),
                          method = "loess", size = 1,
                          show.legend = FALSE, inherit.aes = FALSE,
                          se = FALSE, span = 2, geom = "line",
@@ -617,68 +596,31 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   # For factor vars, plotting the observed points
   # and coloring them by factor looks great
   if (plot.points == TRUE) {
-    # Transform weights so they have mean = 1
-    const <- length(wts)/sum(wts) # scaling constant
-    # make the range of values larger, but only if there are non-1 weights
-    no_wts <- all(wts == 1)
-    # const <- const * ((1 * !all(wts == 1)) + point.size)
-    wts <- (const * point.size) * wts
-    # Append weights to data
-    d[["the_weights"]] <- wts
 
-    if (!is.numeric(d[[modx]])) {
-      # Create shape aesthetic argument
-      shape_arg <- if (point.shape == TRUE) {modx_g} else {NULL}
-      shape_guide <- if (point.shape == TRUE) {TRUE} else {FALSE}
-
-      if (no_wts) {
-        p <- p + geom_point(data = d, aes_string(x = pred_g, y = resp_g,
-                                                 colour = modx_g,
-                                                 shape = shape_arg),
-                            position = position_jitter(width = jitter[1],
-                                                       height = jitter[2]),
-                            inherit.aes = TRUE,
-                            show.legend = shape_guide,
-                            size = point.size) +
-          scale_shape_discrete(name = legend.main, breaks = names(colors),
-                               na.value = "blank")
-      } else {
-        p <- p + geom_point(data = d, aes_string(x = pred_g, y = resp_g,
-                                                 colour = modx_g,
-                                                 size = "the_weights"
-                                                 ,                                                 shape = shape_arg),
-                            position = position_jitter(width = jitter[1],
-                                                       height = jitter[2]),
-                            inherit.aes = TRUE,
-                            show.legend = shape_guide) +
-          scale_shape_discrete(name = legend.main, breaks = names(colors),
-                               na.value = "blank") +
-          # guides(shape = guide_legend(override.aes = list(size = point.size))) +
-          scale_size_identity(guide = "none")
-      }
-
-    } else {
-      p <- p + geom_point(data = d,
-                          aes_string(x = pred_g, y = resp_g,
-                                     size = "the_weights"),
-                          inherit.aes = TRUE,
-                          position = position_jitter(width = jitter[1],
-                                                     height = jitter[2]),
-                          show.legend = FALSE) +
-        # scale_alpha_continuous(range = alpha_arg, guide = "none") +
-        # Add size aesthetic to avoid giant points
-        scale_size_identity(
-          guide = "none"
-        )
+    shape_arg <- if (!is.numeric(d[[as_string(modx)]])) {
+      modx
+    } else {NULL}
+    constants <- list(alpha = point.alpha)
+    if (is.null(weights)) {
+      # Only use constant size if weights are not used
+      constants$size <- point.size
     }
-
+    # Need to use layer function to programmatically define constant aesthetics
+    p <- p + layer(geom = "point", data = d, stat = "identity",
+                   inherit.aes = TRUE, show.legend = FALSE,
+                   mapping = aes(x = !! pred, y = !! resp, size = !! weights,
+                                 group = !! grp, colour = !! modx,
+                                 shape = !! shape_arg),
+                   position = position_jitter(width = jitter[1],
+                                              height = jitter[2]),
+                   params = constants) +
+      scale_size(range = c(1 * point.size, 5 * point.size))
 
   }
 
   # Rug plot for marginal distributions
   if (rug == TRUE) {
-    p <- p + geom_rug(data = d,
-                      aes_string(linetype = NULL),
+    p <- p + geom_rug(data = d, aes(linetype = NULL),
                       alpha = 0.6,
                       position = position_jitter(width = jitter[1],
                                                  height = jitter[2]),
@@ -723,39 +665,22 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   }
 
   # Get scale colors, provide better legend title
-  if (!is.numeric(d[[modx]])) {
+  if (!is.numeric(d[[as_string(modx)]])) {
     p <- p + scale_colour_manual(name = legend.main, values = colors,
                                  breaks = names(colors),
-                                 aesthetics = c("colour", "fill"))
+                                 aesthetics = c("colour", "fill", "shape"))
   } else {
     limits <- quantile(d[[modx]], probs = c(.1, .9))
     if (min(modxvals2) < limits[1]) {limits[1] <- min(modxvals2)}
     if (max(modxvals2) > limits[2]) {limits[2] <- max(modxvals2)}
-    if (length(colors) != 3) {
-      p <- p + scale_colour_gradientn(name = legend.main,
-                                      breaks = modxvals2,
-                                      labels = modx.labels,
-                                      # low = low_color,
-                                      # high = high_color,
-                                      colors = colors,
-                                      limits = limits,
-                                      oob = squish,
-                                      aesthetics = c("colour", "fill"),
-                                      guide = "legend")
-    } else if (length(colors) == 3) {
-      p <- p + scale_colour_gradient2(name = legend.main,
-                                      breaks = modxvals2,
-                                      labels = modx.labels,
-                                      low = low_color,
-                                      mid = colors[2],
-                                      midpoint = modxvals2[2],
-                                      high = high_color,
-                                      # colors = colors,
-                                      limits = limits,
-                                      oob = squish,
-                                      aesthetics = c("colour", "fill"),
-                                      guide = "legend")
-    }
+    p <- p + scale_colour_gradientn(name = legend.main,
+                                    breaks = modxvals2,
+                                    labels = modx.labels,
+                                    colors = colors,
+                                    limits = limits,
+                                    oob = squish,
+                                    aesthetics = c("colour", "fill"),
+                                    guide = "legend")
   }
 
   if (vary.lty == TRUE) { # Add line-specific changes
