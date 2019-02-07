@@ -115,8 +115,7 @@ error? The default, .95, corresponds to roughly 1.96 standard errors and
 a .05 alpha level for values outside the range. In other words, for a
 confidence interval, .95 is analogous to a 95\% confidence interval.}
 
-\item{line.thickness}{How thick should the plotted lines be? Default is 1.1;
-ggplot's default is 1.}
+\item{line.thickness}{How thick should the plotted lines be? Default is 1.}
 
 \item{point.size}{What size should be used for observed data when
 \code{plot.points} is TRUE? Default is 1.5.}

@@ -134,8 +134,7 @@
 #'    moderators, "Blues" for +/- SD and user-specified \code{modx.values}
 #'    values.
 #'
-#' @param line.thickness How thick should the plotted lines be? Default is 1.1;
-#'   ggplot's default is 1.
+#' @param line.thickness How thick should the plotted lines be? Default is 1.
 #'
 #' @param vary.lty Should the resulting plot have different shapes for each
 #'   line in addition to colors? Defaults to \code{TRUE}.
@@ -331,7 +330,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                           pred.labels = NULL, modx.labels = NULL,
                           mod2.labels = NULL, main.title = NULL,
                           legend.main = NULL, colors = NULL,
-                          line.thickness = 1.1, vary.lty = TRUE,
+                          line.thickness = 1, vary.lty = TRUE,
                           point.size = 1.5, point.shape = FALSE,
                           jitter = 0, rug = FALSE, rug.sides = "b",
                           partial.residuals = FALSE, point.alpha = 0.6,
