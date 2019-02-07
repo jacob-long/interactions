@@ -14,8 +14,8 @@ interact_plot(model, pred, modx, modx.values = NULL, mod2 = NULL,
   mod2.labels = NULL, main.title = NULL, legend.main = NULL,
   colors = NULL, line.thickness = 1.1, vary.lty = TRUE,
   point.size = 1.5, point.shape = FALSE, jitter = 0, rug = FALSE,
-  rug.sides = "b", partial.residuals = FALSE, color.class = colors,
-  point.alpha = 0.6, ...)
+  rug.sides = "b", partial.residuals = FALSE, point.alpha = 0.6,
+  color.class = NULL, ...)
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
@@ -198,11 +198,11 @@ a good option to show both the predictor and response.}
 the partial residuals (controlling for the effects of variables besides
 \code{pred}).}
 
-\item{color.class}{Deprecated. Now known as \code{colors}.}
-
 \item{point.alpha}{What should the \code{alpha} aesthetic for plotted points of
 observed data be? Default is 0.6, and it can range from 0 (transparent) to
 1 (opaque).}
+
+\item{color.class}{Deprecated. Now known as \code{colors}.}
 
 \item{...}{extra arguments passed to \code{make_predictions}}
 }
