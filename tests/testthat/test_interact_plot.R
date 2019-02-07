@@ -1,4 +1,4 @@
-context("interactions lm")
+context("interact_plot lm")
 
 device <- getOption("device")
 options(device = "pdf")
@@ -161,7 +161,7 @@ test_that("interact_plot linearity.check works", {
   expect_silent(print(p))
 })
 
-context("interactions svyglm")
+context("interact_plot svyglm")
 
 if (requireNamespace("survey")) {
   test_that("interact_plot works for svyglm", {
@@ -177,7 +177,7 @@ if (requireNamespace("survey")) {
 
 }
 
-context("interactions merMod")
+context("interact_plot merMod")
 
 if (requireNamespace("lme4")) {
   library(lme4, quietly = TRUE)
@@ -200,7 +200,7 @@ if (requireNamespace("lme4")) {
 
 }
 
-context("interactions offsets")
+context("interact_plot offsets")
 
 set.seed(100)
 exposures <- rpois(50, 50)
@@ -246,7 +246,7 @@ test_that("sim_slopes handles offsets", {
 #### brms and rstanarm tests #################################################
 
 if (requireNamespace("brms")) {
-  context("brmsfit plots")
+  context("brmsfit plots 2")
   bfit <- readRDS("brmfit.rds")
   test_that("brmsfit objects are supported", {
     expect_silent(print(cat_plot(bfit, pred = "Trt",
