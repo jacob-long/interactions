@@ -109,7 +109,8 @@ if (requireNamespace("lme4")) {
 
   test_that("sim_slopes works for lme4", {
     expect_is(sim_slopes(lmVA0, pred = Anger, modx = Gender,
-                         johnson_neyman = FALSE), "sim_slopes")
+                         johnson_neyman = FALSE, t.df = "residual"),
+              "sim_slopes")
     expect_is(sim_slopes(fmVA0, pred = Anger, modx = Gender,
                          johnson_neyman = FALSE), "sim_slopes")
   })
