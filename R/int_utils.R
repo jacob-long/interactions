@@ -149,7 +149,11 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
 
   # Get moderator mean
   if (survey == FALSE & is.numeric(d[[modx]])) {
-
+    weights <- if (is.null(weights)) {
+      rep(1, nrow(d))
+    } else if (is.character(weights)) {
+      d[[weights]]
+    } else weights
     modmean <- weighted.mean(d[[modx]], weights, na.rm = TRUE)
     modsd <- wtd.sd(d[[modx]], weights)
 
@@ -518,7 +522,7 @@ values_checks <- function(pred.values = NULL, modx.values, mod2.values) {
 #' @importFrom stats residuals terms weighted.mean
 prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
                       modx.values, mod2.values, survey, pred.labels = NULL,
-                      modx.labels, mod2.labels, wname, weights, wts,
+                      modx.labels, mod2.labels, wname, weights,
                       linearity.check, interval, set.offset, facvars, centered,
                       preds.per.level, force.cat = FALSE, facet.modx = FALSE,
                       partial.residuals = FALSE, outcome.scale, ...) {
@@ -591,7 +595,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   if (facpred == TRUE) {
 
     pred.values <- mod_vals(d = d, modx = pred, modx.values = pred.values,
-                         survey = survey, weights = wts,
+                         survey = survey, weights = weights,
                          design = design,
                          modx.labels = pred.labels, is.mod2 = TRUE,
                          facet.modx = facet.modx)
@@ -602,7 +606,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   if (!is.null(modx)) {
 
     modxvals2 <- mod_vals(d = d, modx = modx, modx.values = modx.values,
-                          survey = survey, weights = wts,
+                          survey = survey, weights = weights,
                           design = design,
                           modx.labels = modx.labels, any.mod2 = !is.null(mod2),
                           facet.modx = facet.modx, force.cat = force.cat)
@@ -617,7 +621,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   if (!is.null(mod2)) {
 
     mod2vals2 <- mod_vals(d = d, modx = mod2, modx.values = mod2.values,
-                          survey = survey, weights = wts,
+                          survey = survey, weights = weights,
                           design = design,
                           modx.labels = mod2.labels, any.mod2 = !is.null(mod2),
                           is.mod2 = TRUE, force.cat = force.cat)

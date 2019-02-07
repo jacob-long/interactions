@@ -214,7 +214,7 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   } else {
     d <- data
   }
-  wts <- get_weights(model, d)$weights
+  weights <- get_weights(model, d)$weights_name
 
   pred_out <- prep_data(model = model, pred = pred, modx = modx,
                         modx.values = modx.values, mod2 = mod2,
@@ -225,7 +225,7 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
                         cluster = cluster, vcov = vcov, set.offset = set.offset,
                         modx.labels = modx.labels, mod2.labels = mod2.labels,
                         facet.modx = FALSE, d = d,
-                        survey = "svyglm" %in% class(model), wts = wts,
+                        survey = "svyglm" %in% class(model), weights = weights,
                         preds.per.level = 100,
                         partial.residuals = partial.residuals, ...)
 
@@ -266,7 +266,7 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
                      point.shape = FALSE, vary.lty = FALSE,  pred.labels = NULL,
                      modx.labels = NULL, mod2.labels = NULL, x.label = NULL,
                      y.label = NULL, main.title = NULL, legend.main = NULL,
-                     colors = "CUD Bright", wts = NULL, resp = NULL,
+                     colors = "CUD Bright", weights = NULL, resp = NULL,
                      jitter = 0.1, geom.alpha = NULL, dodge.width = NULL,
                      errorbar.width = NULL,
                      interval.geom = c("errorbar", "linerange"),

@@ -373,7 +373,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   } else {
     d <- data
   }
-  wts <- get_weights(model, d)$weights
+  weights <- get_weights(model, d)$weights_name
 
   pred_out <- prep_data(model = model, pred = pred, modx = modx,
                         modx.values = modx.values, mod2 = mod2,
@@ -384,7 +384,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                         cluster = cluster, vcov = vcov, set.offset = set.offset,
                         modx.labels = modx.labels, mod2.labels = mod2.labels,
                         facet.modx = facet.modx, d = d,
-                        survey = "svyglm" %in% class(model), wts = wts,
+                        survey = "svyglm" %in% class(model), weights = weights,
                         preds.per.level = 100,
                         partial.residuals = partial.residuals, ...)
 
@@ -419,7 +419,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                       line.thickness = line.thickness,
                       vary.lty = vary.lty, jitter = jitter,
                       modxvals2 = modxvals2, mod2vals2 = mod2vals2,
-                      wts = wts, rug = rug, rug.sides = rug.sides,
+                      weights = weights, rug = rug, rug.sides = rug.sides,
                       point.size = point.size, point.shape = point.shape,
                       facet.modx = facet.modx)
 
@@ -435,7 +435,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
                                 legend.main = NULL, colors = NULL,
                                 line.thickness = 1.1, vary.lty = TRUE,
                                 jitter = 0, modxvals2 = NULL,
-                                mod2vals2 = NULL, wts = NULL, rug = FALSE,
+                                mod2vals2 = NULL, weights = NULL, rug = FALSE,
                                 rug.sides = "b",
                                 point.shape = FALSE, point.size = 2,
                                 facet.modx = FALSE) {
