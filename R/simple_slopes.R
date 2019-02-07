@@ -861,55 +861,37 @@ print.sim_slopes <- function(x, ...) {
         x$modx.values <- format(x$modx.values, nsmall = x$digits, digits = 0)
       }
 
-      # Use the labels for the automatic +/- 1 SD
+      slopes <-
+        as.data.frame(lapply(m$slopes[i,2:ncol(m$slopes)], as.numeric),
+          check.names = FALSE)
+
+      # Handle automatic labels
       if (x$def == TRUE) {
-
-        slopes <-
-          as.data.frame(lapply(m$slopes[i,2:ncol(m$slopes)], as.numeric),
-            check.names = FALSE)
-
-        cat(italic(paste0("Slope of ", x$pred, " when ", x$modx, " = ",
-            x$modx.values[i], " (", names(x$modx.values)[i], ")",
-            ": \n\n")))
-        print(md_table(slopes, digits = x$digits, row.names = FALSE))
-
-        # Print conditional intercept
-        if (x$cond.int == TRUE) {
-
-          ints <- as.data.frame(lapply(m$ints[i,2:ncol(m$slopes)], as.numeric),
-                    check.names = FALSE)
-
-          cat(italic(paste0("Conditional intercept"," when ", x$modx, " = ",
-              x$modx.values[i], " (", names(x$modx.values)[i], ")",
-              ": \n\n")))
-          print(md_table(ints, digits = x$digits, row.names = FALSE))
-          cat("\n")
-        } else {cat("\n")}
-
-      } else { # otherwise don't use labels
-
-        slopes <-
-          as.data.frame(lapply(m$slopes[i, 2:ncol(m$slopes)], as.numeric),
-            check.names = FALSE)
-
-        cat(italic(paste0("Slope of ", x$pred, " when ", x$modx, " = ",
-            x$modx.values[i],
-            ": \n")))
-        print(format(slopes, nsmall = x$digits, digits = 0), row.names = FALSE)
-
-        # Print conditional intercept
-        if (x$cond.int == TRUE) {
-
-          ints <- as.data.frame(lapply(m$ints[i, 2:ncol(m$slopes)], as.numeric),
-                    check.names = FALSE)
-
-          cat(italic(paste0("Conditional intercept", " when ", x$modx, " = ",
-              x$modx.values[i], ": \n")))
-          print(format(ints, nsmall = x$digits, digits = 0), row.names = FALSE)
-          cat("\n")
-        } else {cat("\n")}
-
+        modx_label <- paste0(x$modx.values[i], " (", names(x$modx.values)[i],
+                             ")")
+      } else {
+        modx_label <- paste0(x$modx.values[i])
       }
+
+      # Print conditional intercept
+      if (x$cond.int == TRUE) {
+        cat(italic(paste0("When ", x$modx, " = ", modx_label, ": \n\n")))
+        ints <- as.data.frame(lapply(m$ints[i,2:ncol(m$slopes)], as.numeric),
+                  check.names = FALSE)
+        slopes <- rbind(slopes, ints)
+        rownames(slopes) <- c(paste0("Slope of ", x$pred),
+                              "Conditional intercept")
+        print(md_table(slopes, digits = x$digits, format = "pandoc",
+                       sig.digits = FALSE))
+      } else {
+        cat(italic(paste0("Slope of ", x$pred, " when ", x$modx, " = ",
+                          modx_label, ": \n\n")))
+        print(md_table(slopes, digits = x$digits, format = "pandoc",
+                       row.names = FALSE, sig.digits = FALSE))
+      }
+
+      cat("\n")
+
     }
   } # end mod2 loop
 
