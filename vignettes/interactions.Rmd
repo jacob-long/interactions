@@ -21,8 +21,8 @@ library(interactions)
 
 Understanding an interaction effect in a linear regression model is usually
 difficult when using just the basic output tables and looking at the
-coefficients. The `jtools` package provides several functions that can help
-analysts probe more deeply.
+coefficients. The `interactions` package provides several functions that can 
+help analysts probe more deeply.
 
 **Categorical by categorical interactions**: All the tools described here 
 require at least one variable to be continuous. A separate vignette describes
@@ -32,9 +32,9 @@ predictors are categorical variables.
 First, we use example data from `state.x77` that is built into R. Let's look 
 at the interaction model output with `summ` as a starting point.
 
-```{r}
+```{r results = 'knitr::normal_print'}
 states <- as.data.frame(state.x77)
-fiti <- lm(Income ~ Illiteracy * Murder, data = states)
+fiti <- lm(Income ~ Illiteracy * Murder + `HS Grad`, data = states)
 summ(fiti)
 ```
 
@@ -44,31 +44,22 @@ on the main effects of terms included in the interaction since they are
 conditional on the other variable(s) in the interaction being held constant
 at 0.
 
-Note that if you would like to see the output if the input variables were 
-mean-centered and/or standardized, `summ` can do that for you.
-
-```{r}
-summ(fiti, center = TRUE)
-```
-
-`scale = TRUE` instead of `center = TRUE` would scale the predictors.
-
 # Plotting interactions
 
 A versatile and sometimes the most interpretable method for 
-understanding interaction effects is via plotting. `jtools` provides 
+understanding interaction effects is via plotting. `interactions` provides 
 `interact_plot` as a relatively pain-free method to get good-looking plots of
 interactions using `ggplot2` on the backend.
 
 ```{r}
-interact_plot(fiti, pred = "Illiteracy", modx = "Murder")
+interact_plot(fiti, pred = Illiteracy, modx = Murder)
 ```
 
 Keep in mind that the default behavior of `interact_plot` is to mean-center 
-all variables not involved in the interaction so that the predicted values are 
-more easily interpreted. You can disable that by adding `centered = "none"`.
-You can choose specific variables by providing their names in a vector to
-the `centered` argument.
+all continuous variables not involved in the interaction so that the predicted
+values are more easily interpreted. You can disable that by adding
+`centered = "none"`. You can choose specific variables by providing their names
+in a vector to the `centered` argument.
 
 By default, with a continuous moderator you get three lines --- 1 standard 
 deviation above and below the mean and the mean itself. If you specify 
@@ -83,14 +74,14 @@ should leave `modx.values = NULL`, the default.
 
 ```{r}
 fitiris <- lm(Petal.Length ~ Petal.Width * Species, data = iris)
-interact_plot(fitiris, pred = "Petal.Width", modx = "Species")
+interact_plot(fitiris, pred = Petal.Width, modx = Species)
 ```
 
 If you want, you can specify a subset of a factor's levels via the `modx.values`
 argument:
 
 ```{r}
-interact_plot(fitiris, pred = "Petal.Width", modx = "Species",
+interact_plot(fitiris, pred = Petal.Width, modx = Species,
               modx.values = c("versicolor", "virginica"))
 ```
 
@@ -102,16 +93,16 @@ the fitted lines related to the observed data, you can use the
 `plot.points = TRUE` argument.
 
 ```{r}
-interact_plot(fiti, pred = "Illiteracy", modx = "Murder", plot.points = TRUE)
+interact_plot(fiti, pred = Illiteracy, modx = Murder, plot.points = TRUE)
 ```
 
 For continuous moderators, as you can see, the observed data points are 
-shaded depending on the level of the mdoerator variable. 
+shaded depending on the level of the moderator variable. 
 
 It can be very enlightening, too, for categorical moderators.
 
 ```{r}
-interact_plot(fitiris, pred = "Petal.Width", modx = "Species",
+interact_plot(fitiris, pred = Petal.Width, modx = Species,
               plot.points = TRUE)
 ```
 
@@ -127,7 +118,7 @@ you can use `point.shape = TRUE` to give a different shape to each point.
 This can be especially helpful for black and white publications.
 
 ```{r}
-interact_plot(fitiris, pred = "Petal.Width", modx = "Species",
+interact_plot(fitiris, pred = Petal.Width, modx = Species,
               plot.points = TRUE, jitter = 0.1, point.shape = TRUE)
 ```
 
