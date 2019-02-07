@@ -661,7 +661,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   if (!is.numeric(d[[as_string(modx)]])) {
     p <- p + scale_colour_manual(name = legend.main, values = colors,
                                  breaks = names(colors),
-                                 aesthetics = c("colour", "fill", "shape"))
+                                 aesthetics = c("colour", "fill"))
   } else {
     limits <- quantile(d[[modx]], probs = c(.1, .9))
     if (min(modxvals2) < limits[1]) {limits[1] <- min(modxvals2)}
