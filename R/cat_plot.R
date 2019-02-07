@@ -427,7 +427,7 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
                        position_jitter(width = jitter[1], height = jitter[2])
                      },
                    params = constants) +
-      scale_size(range = c(1 * point.size, 5 * point.size))
+      scale_size(range = c(1 * point.size, 5 * point.size), guide = "none")
 
   }
 
