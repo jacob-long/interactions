@@ -30,12 +30,6 @@
 #'     uncertainty of the predictions very well. It is best to at least use the
 #'     `interval = TRUE` argument with this geom.
 #'
-#'   * `"boxplot"`: This geom plots a dot and whisker plot. These can be useful
-#'     for understanding the distribution of the observed data without having
-#'     to plot all the observed points (especially helpful with larger data
-#'     sets). **However**, it is important to note the boxplots are not based
-#'     on the model whatsoever.
-#'
 #' @param pred.values Which values of the predictor should be included in the
 #'   plot? By default, all levels are included.
 #'
@@ -162,7 +156,7 @@
 #'
 
 cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
-  data = NULL, geom = c("point", "line", "bar", "boxplot"), pred.values = NULL,
+  data = NULL, geom = c("point", "line", "bar"), pred.values = NULL,
   modx.values = NULL, mod2.values = NULL, interval = TRUE, plot.points = FALSE,
   point.shape = FALSE, vary.lty = FALSE, centered = "all",
   int.type = c("confidence", "prediction"), int.width = .95, line.thickness = 1,
@@ -286,6 +280,9 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
 
   geom <- geom[1]
   if (geom == "dot") {geom <- "point"}
+  if (geom %in% c("boxplot", "box")) {
+    stop_wrap("The boxplot geom is no longer supported.")
+  }
 
   # If only 1 jitter arg, just duplicate it
   if (length(jitter) == 1) {jitter <- rep(jitter, 2)}
@@ -356,7 +353,7 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
   } else {a_level <- geom.alpha}
 
   if (is.null(dodge.width)) {
-    dodge.width <- if (geom %in% c("bar", "point", "boxplot")) {0.9} else {0}
+    dodge.width <- if (geom %in% c("bar", "point")) {0.9} else {0}
   }
   if (is.null(errorbar.width)) {
     errorbar.width <- if (geom == "point") {
@@ -376,15 +373,6 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
 
   if (geom == "bar") {
     p <- p + geom_bar(stat = "identity", position = "dodge", alpha = a_level)
-  } else if (geom == "boxplot") {
-    if (!is.null(modx)) {
-      p <- ggplot(d, aes_string(x = pred_g, y = resp_g,
-                                colour = modx_g)) +
-        geom_boxplot(position = position_dodge(dodge.width))
-    } else {
-      p <- ggplot(d, aes_string(x = pred_g, y = resp_g)) +
-        geom_boxplot(position = position_dodge(dodge.width))
-    }
   } else if (geom %in% c("point", "line")) {
     p <- p + geom_point(size = pred.point.size,
                         position = position_dodge(dodge.width))
