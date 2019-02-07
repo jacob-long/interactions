@@ -419,8 +419,13 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
                    mapping = aes(x = !! pred, y = !! resp, size = !! weights,
                                  group = !! grp, colour = !! modx,
                                  shape = !! shape),
-                   position = position_jitter(width = jitter[1],
-                                              height = jitter[2]),
+                   position = if (!is.null(modx)) {
+                      position_jitterdodge(dodge.width = dodge.width,
+                                           jitter.width = jitter[1],
+                                           jitter.height = jitter[2])
+                     } else {
+                       position_jitter(width = jitter[1], height = jitter[2])
+                     },
                    params = constants) +
       scale_size(range = c(1 * point.size, 5 * point.size))
 
