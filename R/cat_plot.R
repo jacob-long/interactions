@@ -172,7 +172,7 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   robust = FALSE, cluster = NULL, vcov = NULL, pred.labels = NULL,
   modx.labels = NULL, mod2.labels = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, main.title = NULL, legend.main = NULL,
-  colors = "CUD Bright", partial.residuals = FALSE, color.class = colors, ...) {
+  colors = "CUD Bright", partial.residuals = FALSE, color.class = NULL, ...) {
 
   # Capture extra arguments
   dots <- list(...)
@@ -186,6 +186,12 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
     if ("mod2vals" %in% names(dots)) {
       mod2.values <- dots$mod2vals
     }
+  }
+
+  if (!is.null(color.class)) {
+    colors <- color.class
+    msg_wrap("The color.class argument is deprecated. Please use 'colors'
+             instead.")
   }
 
   # Evaluate the modx, mod2, pred args

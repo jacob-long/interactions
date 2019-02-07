@@ -335,7 +335,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                           point.size = 1, point.shape = FALSE,
                           jitter = 0, rug = FALSE, rug.sides = "b",
                           partial.residuals = FALSE,
-                          color.class = colors, ...) {
+                          color.class = NULL,  ...) {
 
   # Capture extra arguments
   dots <- list(...)
@@ -346,6 +346,12 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
     if ("mod2vals" %in% names(dots)) {
       mod2.values <- dots$mod2vals
     }
+  }
+
+  if (!is.null(color.class)) {
+    colors <- color.class
+    msg_wrap("The color.class argument is deprecated. Please use 'colors'
+             instead.")
   }
 
   # Evaluate the modx, mod2, pred args
