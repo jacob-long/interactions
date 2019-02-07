@@ -202,63 +202,13 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
               if it is used.")
   }
 
-  # Is it a svyglm?
-  if (class(model)[1] == "svyglm" || class(model)[1] == "svrepglm") {
-
-    survey <- TRUE
+  d <- get_data(model)
+  if (is_survey <- "svyglm" %in% class(model)) {
     design <- model$survey.design
-    d <- design$variables
-
-    # Focal vars so the weights don't get centered
-    fvars <- as.character(attributes(terms(model))$variables)
-    # for some reason I can't get rid of the "list" as first element
-    fvars <- fvars[2:length(fvars)]
-    all.vars <- fvars
-
-    facvars <- c()
-    for (v in fvars) {
-      if (is.factor((d[,v])) && length(unique(d[,v])) > 2) {
-        facvars <- c(facvars, v)
-      }
-    }
-
-  } else {
-
-    survey <- FALSE
-    # Duplicating the dataframe so it can be manipulated as needed
-    if (is.null(data)) {
-      d <- model.frame(model)
-      # Check to see if model.frame names match formula names
-      varnames <- names(d)
-      # Drop weights and offsets
-      varnames <- varnames[varnames %nin% c("(offset)","(weights)")]
-      if (any(varnames %nin% all.vars(formula(model)))) {
-
-        warn_wrap("Variable transformations in the model formula
-                  detected. Trying to use ", as.character(getCall(model)$data),
-                  " from global environment instead. This could cause incorrect
-                  results if ", as.character(getCall(model)$data), " has been
-                  altered since the model was fit. You can manually provide the
-                  data to the \"data =\" argument.", call. = FALSE)
-      }
-    } else {
-      d <- data
-    }
-    design <- NULL
-
-    fvars <- as.character(attributes(terms(model))$variables)
-    # for some reason I can't get rid of the "list" as first element
-    fvars <- fvars[2:length(fvars)]
-    all.vars <- fvars
-
-    facvars <- c()
-    for (v in fvars) {
-      if (is.factor((d[,v])) && length(unique(d[,v])) > 2) {
-        facvars <- c(facvars, v)
-      }
-    }
-
-  }
+  } else {design <- NULL}
+  # Which variables are factors?
+  facvars <- names(d)[!unlist(lapply(d, is.numeric))]
+  fvars <- names(d)
 
   # Check for factor predictor
   if (is.factor(d[[pred]])) {
@@ -267,79 +217,11 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
           use it as modx or convert it to a numeric dummy variable."))
   }
 
-  # weights?
-  if (survey == FALSE && ("(weights)" %in% names(d) |
-                          !is.null(getCall(model)$weights))) {
-    weights <- TRUE
-    wname <- as.character(getCall(model)["weights"])
-    if (any(colnames(d) == "(weights)")) {
-      colnames(d)[which(colnames(d) == "(weights)")] <- wname
-    }
-    wts <- d[[wname]]
-
-  } else {
-
-    weights <- FALSE
-    wname <- NULL
-    wts <- rep(1, times = nrow(d))
-
-  }
-
-  # offset?
-  if (!is.null(model.offset(model.frame(model)))) {
-
-    off <- TRUE
-    offname <- as.character(getCall(model)$offset[-1]) # subset gives bare name
-
-    # Getting/setting offset name depending on whether it was specified in
-    # argument or formula
-    if (any(colnames(d) == "(offset)") & !is.null(offname)) {
-      colnames(d)[which(colnames(d) == "(offset)")] <- offname
-    } else if (any(colnames(d) == "(offset)") & is.null(offname)) {
-
-      offname <- "(offset)"
-
-      # This strategy won't work for svyglm
-      if (survey == TRUE) {
-
-        stop("For svyglm with offsets, please specify the offset with the
-             'offset =' argument rather than in the model formula.")
-
-      }
-
-    }
-
-    # See if offset term was logged
-    if (offname == "(offset)") {
-      offterm <- regmatches(as.character(formula(model)),
-                            regexpr("(?<=(offset\\()).*(?=(\\)))",
-                                    as.character(formula(model)), perl = TRUE))
-      if (grepl("log(", offterm, fixed = TRUE)) {
-
-        d[[offname]] <- exp(d[[offname]])
-
-      }
-
-    }
-
-    # Exponentiate offset if it was logged
-    if ("log" %in% as.character(getCall(model)$offset)) {
-      d[[offname]] <- exp(d[[offname]])
-    }
-
-  } else {
-
-      off <- FALSE
-      offname <- NULL
-
-  }
-
-  # Pulling the name of the response variable for labeling
-  formula <- formula(model)
-  formula <- paste(formula[2],formula[1],formula[3])
-
-  resp <- sub("(.*)(?=~).*", x = formula, perl = T, replacement = "\\1")
-  resp <- trimws(resp)
+  wname <- get_weights(model, d)$weights_name
+  wts <- get_weights(model, d)$weights
+  offname <- get_offset_name(model)
+  # Need the raw variable name from the LHS
+  resp <- all.vars(as.formula(paste("~", (get_response_name(model)))))
 
   # Saving key arguments as attributes of return object
   ss <- structure(ss, resp = resp, modx = modx, mod2 = mod2, pred = pred,
@@ -354,7 +236,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   # Use utility function shared by all interaction functions
   c_out <- center_ss(d = d, weights = wts, facvars = facvars,
               fvars = fvars, pred = pred,
-              resp = resp, modx = modx, survey = survey,
+              resp = resp, modx = modx, survey = is_survey,
               design = design, mod2 = mod2, wname = wname,
               offname = offname, centered = centered)
 
@@ -365,7 +247,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
 ### Getting moderator values ##################################################
 
-  modxvals2 <- mod_vals(d, modx, modx.values, survey, wts, design,
+  modxvals2 <- mod_vals(d, modx, modx.values, is_survey, wts, design,
                         modx.labels = modx.labels,
                         any.mod2 = !is.null(mod2), sims = TRUE)
 
@@ -392,7 +274,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   if (!is.null(mod2)) {
 
     if (is.numeric(d[[mod2]])) {
-      mod2vals2 <- mod_vals(d, mod2, mod2.values, survey, wts, design,
+      mod2vals2 <- mod_vals(d, mod2, mod2.values, is_survey, wts, design,
                             modx.labels = mod2.labels, any.mod2 = !is.null(mod2),
                             sims = TRUE)
     } else {
@@ -425,7 +307,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     # Don't want def = TRUE for factors even though they are character
     if (!is.numeric(d[[mod2]])) {ss <- structure(ss, def2 = FALSE)}
 
-  }
+  } else {mod2vals2 <- NULL}
 
 #### Fit models ##############################################################
 
@@ -481,7 +363,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     # so we do it here. Requires an extra model fit.
 
     # Creating extra "copy" of model frame to change for model update
-    if (survey == FALSE) {
+    if (is_survey == FALSE) {
       dt <- d
     } else {
       # Create new design to modify
@@ -505,7 +387,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
 
     # Update design
-    if (survey == TRUE) {
+    if (is_survey == TRUE) {
       designt$variables <- dt
       # Update model
       ## Have to do all this to avoid adding survey to dependencies
@@ -555,7 +437,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     dt <- d
 
     # Create new design to modify
-    if (survey == TRUE) {designt <- design}
+    if (is_survey == TRUE) {designt <- design}
 
     # The moderator value-adjusted variable
     if (is.numeric(dt[[modx]])) {
@@ -581,7 +463,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
 
     # Creating the model
-    if (survey == TRUE) {
+    if (is_survey == TRUE) {
       # Update design
       designt$variables <- dt
 
