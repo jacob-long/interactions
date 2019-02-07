@@ -12,10 +12,10 @@ interact_plot(model, pred, modx, modx.values = NULL, mod2 = NULL,
   cluster = NULL, vcov = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, pred.labels = NULL, modx.labels = NULL,
   mod2.labels = NULL, main.title = NULL, legend.main = NULL,
-  colors = NULL, line.thickness = 1, vary.lty = TRUE,
-  point.size = 1, point.shape = FALSE, jitter = 0, rug = FALSE,
+  colors = NULL, line.thickness = 1.1, vary.lty = TRUE,
+  point.size = 1.5, point.shape = FALSE, jitter = 0, rug = FALSE,
   rug.sides = "b", partial.residuals = FALSE, color.class = colors,
-  ...)
+  point.alpha = 0.6, ...)
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
@@ -166,7 +166,7 @@ ggplot's default is 1.}
 line in addition to colors? Defaults to \code{TRUE}.}
 
 \item{point.size}{What size should be used for observed data when
-\code{plot.points} is TRUE? Default is 2.}
+\code{plot.points} is TRUE? Default is 1.5.}
 
 \item{point.shape}{For plotted points---either of observed data or predicted
 values with the "point" or "line" geoms---should the shape of the points
@@ -199,6 +199,10 @@ the partial residuals (controlling for the effects of variables besides
 \code{pred}).}
 
 \item{color.class}{Deprecated. Now known as \code{colors}.}
+
+\item{point.alpha}{What should the \code{alpha} aesthetic for plotted points of
+observed data be? Default is 0.6, and it can range from 0 (transparent) to
+1 (opaque).}
 
 \item{...}{extra arguments passed to \code{make_predictions}}
 }

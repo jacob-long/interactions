@@ -5,7 +5,7 @@
 \title{Plot interaction effects between categorical predictors.}
 \usage{
 cat_plot(model, pred, modx = NULL, mod2 = NULL, data = NULL,
-  geom = c("point", "line", "bar", "boxplot"), pred.values = NULL,
+  geom = c("point", "line", "bar"), pred.values = NULL,
   modx.values = NULL, mod2.values = NULL, interval = TRUE,
   plot.points = FALSE, point.shape = FALSE, vary.lty = FALSE,
   centered = "all", int.type = c("confidence", "prediction"),
@@ -18,7 +18,7 @@ cat_plot(model, pred, modx = NULL, mod2 = NULL, data = NULL,
   mod2.labels = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, main.title = NULL, legend.main = NULL,
   colors = "CUD Bright", partial.residuals = FALSE,
-  color.class = colors, ...)
+  point.alpha = 0.6, color.class = NULL, ...)
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
@@ -60,11 +60,6 @@ Many applied researchers advise against this type of plot because it
 does not represent the distribution of the observed data or the
 uncertainty of the predictions very well. It is best to at least use the
 \code{interval = TRUE} argument with this geom.
-\item \code{"boxplot"}: This geom plots a dot and whisker plot. These can be useful
-for understanding the distribution of the observed data without having
-to plot all the observed points (especially helpful with larger data
-sets). \strong{However}, it is important to note the boxplots are not based
-on the model whatsoever.
 }}
 
 \item{pred.values}{Which values of the predictor should be included in the
@@ -124,7 +119,7 @@ confidence interval, .95 is analogous to a 95\% confidence interval.}
 ggplot's default is 1.}
 
 \item{point.size}{What size should be used for observed data when
-\code{plot.points} is TRUE? Default is 2.}
+\code{plot.points} is TRUE? Default is 1.5.}
 
 \item{pred.point.size}{If TRUE and \code{geom} is \code{"point"} or \code{"line"},
 sets the size of the predicted points. Default is 3.5.
@@ -222,6 +217,10 @@ You may also simply supply a vector of colors accepted by
 \item{partial.residuals}{Instead of plotting the observed data, you may plot
 the partial residuals (controlling for the effects of variables besides
 \code{pred}).}
+
+\item{point.alpha}{What should the \code{alpha} aesthetic for plotted points of
+observed data be? Default is 0.6, and it can range from 0 (transparent) to
+1 (opaque).}
 
 \item{color.class}{Deprecated. Now known as \code{colors}.}
 
