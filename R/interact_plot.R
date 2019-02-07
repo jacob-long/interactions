@@ -334,7 +334,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                           line.thickness = 1, vary.lty = TRUE,
                           point.size = 1, point.shape = FALSE,
                           jitter = 0, rug = FALSE, rug.sides = "b",
-                          partial.residuals = FALSE,
+                          partial.residuals = FALSE, point.alpha = 0.6,
                           color.class = NULL,  ...) {
 
   # Capture extra arguments
@@ -444,7 +444,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
                                 mod2vals2 = NULL, weights = NULL, rug = FALSE,
                                 rug.sides = "b",
                                 point.shape = FALSE, point.size = 2,
-                                facet.modx = FALSE) {
+                                facet.modx = FALSE, point.alpha = 0.6) {
 
   d <- data
   pm <- predictions

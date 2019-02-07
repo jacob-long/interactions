@@ -173,6 +173,8 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   modx.labels = NULL, mod2.labels = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, main.title = NULL, legend.main = NULL,
   colors = "CUD Bright", partial.residuals = FALSE, color.class = NULL, ...) {
+  colors = "CUD Bright", partial.residuals = FALSE, point.alpha = 0.6,
+  color.class = NULL, ...) {
 
   # Capture extra arguments
   dots <- list(...)
@@ -259,7 +261,8 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
            geom.alpha = geom.alpha, dodge.width = dodge.width,
            errorbar.width = errorbar.width, interval.geom = interval.geom,
            point.size = point.size, line.thickness = line.thickness,
-           pred.point.size = pred.point.size, jitter = jitter)
+           pred.point.size = pred.point.size, jitter = jitter,
+           point.alpha = point.alpha)
 
 }
 
@@ -277,7 +280,7 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
                      errorbar.width = NULL,
                      interval.geom = c("errorbar", "linerange"),
                      line.thickness = 1.1, point.size = 1,
-                     pred.point.size = 3.5) {
+                     pred.point.size = 3.5, point.alpha = 0.6) {
 
   pm <- predictions
   d <- data
