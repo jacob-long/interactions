@@ -152,18 +152,10 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
                            insig.color = "#F8766D", mod.range = NULL,
                            title = "Johnson-Neyman plot") {
 
-  # Parse unquoted variable names
-  predt <- as.character(substitute(pred))
-  modxt <- as.character(substitute(modx))
-
-  # Doing a check so it works when called from inside a function
-  if (!(predt %in% as.character(attr(terms(model), "variables")))) {
-    pred <- as.character(eval(pred))
-    modx <- as.character(eval(modx))
-  } else {
-    pred <- predt
-    modx <- modxt
-  }
+  # Evaluate the modx, mod2, pred args
+  pred <- quo_name(enexpr(pred))
+  modx <- quo_name(enexpr(modx))
+  if (modx == "NULL") {modx <- NULL}
 
   # Handling df argument
   if (df == "residual") {
@@ -561,8 +553,8 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
     plot <- plot + ggplot2::xlim(range(cbs[,modx])) +
       ggplot2::labs(title = title, x = modx, y = predl) +
 
-      ggplot2::scale_color_manual(name = "", 
-        values = c("Significant" = sig.color, 
+      ggplot2::scale_color_manual(name = "",
+        values = c("Significant" = sig.color,
          "Insignificant" = insig.color), guide = "none") +
       theme_apa(legend.pos = "right", legend.font.size = 10) +
 
