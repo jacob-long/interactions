@@ -33,6 +33,7 @@ First, we use example data from `state.x77` that is built into R. Let's look
 at the interaction model output with `summ` as a starting point.
 
 ```{r results = 'knitr::normal_print'}
+library(jtools) # for summ()
 states <- as.data.frame(state.x77)
 fiti <- lm(Income ~ Illiteracy * Murder + `HS Grad`, data = states)
 summ(fiti)
@@ -129,12 +130,63 @@ using with the population of each state.
 ```{r}
 fiti <- lm(Income ~ Illiteracy * Murder, data = states,
            weights = Population)
-interact_plot(fiti, pred = "Illiteracy", modx = "Murder", plot.points = TRUE)
+interact_plot(fiti, pred = Illiteracy, modx = Murder, plot.points = TRUE)
 ```
 
 For those working with weighted data, it can be hard to use a scatterplot to
 explore the data unless there is some way to account for the weights. Using
 size is a nice middle ground.
+
+## Plotting partial residuals
+
+In more complex regressions, plotting the observed data can sometimes be 
+relatively uninformative because the points seem to be all over the place.
+
+For an example, let's take a look at this model. I am using the `mpg` 
+dataset from `ggplot2` and predicting the city miles per gallon (`cty`)
+based on several variables, including model year, type of car, fuel type,
+drive type, and an interaction between engine displacement (`displ`) and
+number of cylinders in the engine (`cyl`). Let's take a look at the 
+regression output:
+
+```{r}
+library(ggplot2)
+data(cars)
+fitc <- lm(cty ~ year + cyl * displ + class + fl + drv, data = mpg)
+summ(fitc)
+```
+
+Okay, we are explaining a lot of variance here but there is quite a bit going
+on. Let's plot the interaction with the observed data.
+
+```{r}
+interact_plot(fitc, pred = displ, modx = cyl, plot.points = TRUE,
+              modx.values = c(4, 5, 6, 8))
+```
+
+Hmm, doesn't that look...bad? You can kind of see the pattern of the 
+interaction, but the predicted lines don't seem to match the data very well.
+But I included a lot of variables besides `cyl` and `displ` in this model and
+they may be accounting for some of this variation. This is what 
+*partial residual plots* are designed to help with. You can learn more about
+the technique and theory in Fox and Weisberg (2018) and another place to 
+generate partial residual plots is in Fox's `effects` package.
+
+Using the argument `partial.residuals = TRUE`, what is plotted instead is the
+observed data *with the effects of all the control variables accounted for*.
+In other words, the value `cty` for the observed data is based only on the 
+values of `displ`, `cyl`, and the model error. Let's take a look.
+
+```{r}
+interact_plot(fitc, pred = displ, modx = cyl, partial.residuals = TRUE,
+              modx.values = c(4, 5, 6, 8))
+```
+
+Now we can understand how the observed data and the model relate to each other
+much better. One insight is how the model really underestimates the values at
+the low end of displacement and cylinders. You can also see how much the
+cylinders and displacement seem to be correlated each other, which makes it
+difficult to say how much we can learn from this kind of model.
 
 ## Confidence bands
 
@@ -144,7 +196,7 @@ wide the confidence interval should be, express the percentile as a number,
 e.g., `int.width = 0.8` corresponds to an 80% interval.
 
 ```{r}
-interact_plot(fiti, pred = "Illiteracy", modx = "Murder", interval = TRUE,
+interact_plot(fiti, pred = Illiteracy, modx = Murder, interval = TRUE,
               int.width = 0.8)
 ```
 
@@ -190,7 +242,7 @@ will be curved if the relationship is nonlinear. What we're looking for
 is whether the red loess line is straight like the predicted line.
 
 ```{r}
-interact_plot(model_1, pred = "x", modx = "w", linearity.check = TRUE, 
+interact_plot(model_1, pred = x, modx = w, linearity.check = TRUE, 
               plot.points = TRUE)
 ```
 
@@ -214,7 +266,7 @@ The regression output would lead us to believe there is no interaction.
 Let's do the linearity check:
 
 ```{r}
-interact_plot(model_2, pred = "x_2", modx = "w", linearity.check = TRUE, 
+interact_plot(model_2, pred = x_2, modx = w, linearity.check = TRUE, 
               plot.points = TRUE)
 ```
 
@@ -236,14 +288,14 @@ try to find the data you used but it will warn you about it and it could cause
 problems under some circumstances.
 
 ```{r}
-interact_plot(model_3, pred = "x_2", modx = "w", data = data_2)
+interact_plot(model_3, pred = x_2, modx = w, data = data_2)
 ```
 
 Look familiar? Let's do the linearity.check, which in this case is more like
 a non-linearity check:
 
 ```{r}
-interact_plot(model_3, pred = "x_2", modx = "w", data = data_2,
+interact_plot(model_3, pred = x_2, modx = w, data = data_2,
               linearity.check = TRUE, plot.points = TRUE)
 ```
 
@@ -261,10 +313,10 @@ For instance, you can manually specify the axis labels, add a main title,
 choose a color scheme, and so on.
 
 ```{r}
-interact_plot(fiti, pred = "Illiteracy", modx = "Murder",
+interact_plot(fiti, pred = Illiteracy, modx = Murder,
               x.label = "Custom X Label", y.label = "Custom Y Label",
               main.title = "Sample Plot",  legend.main = "Custom Legend Title",
-              color.class = "Oranges")
+              colors = "seagreen")
 ```
 
 Because the function uses `ggplot2`, it can be modified and extended like any 
@@ -272,7 +324,7 @@ other `ggplot2` object. For example, using the `theme_apa` function from
 `jtools`:
 
 ```{r}
-interact_plot(fitiris, pred = "Petal.Width", modx = "Species") + theme_apa()
+interact_plot(fitiris, pred = Petal.Width, modx = Species) + theme_apa()
 ```
 
 # Simple slopes analysis and Johnson-Neyman intervals
@@ -293,7 +345,7 @@ slopes analysis allows the researcher to specify meaningful values at which to
 hold the moderator value.
 
 While the computation behind doing so isn't exactly rocket science, it is 
-inconvenient and prone to error. The `sim_slopes` function from `jtools` 
+inconvenient and prone to error. The `sim_slopes` function from `interactions` 
 accepts a regression model (with an interaction term) as an input and 
 automates the simple slopes procedure. The function will, by default, do the 
 following:
@@ -343,7 +395,8 @@ you can save your `sim_slopes` output to an object and call `plot` on that
 object.
 
 ```{r}
-ss <- sim_slopes(fiti, pred = Illiteracy, modx = Murder, modx.values = c(0, 5, 10))
+ss <- sim_slopes(fiti, pred = Illiteracy, modx = Murder, 
+                 modx.values = c(0, 5, 10))
 plot(ss)
 ```
 
@@ -353,7 +406,8 @@ You can also use the `huxtable` package to get a publication-style table
 from your `sim_slopes` output.
 
 ```{r}
-ss <- sim_slopes(fiti, pred = Illiteracy, modx = Murder, modx.values = c(0, 5, 10))
+ss <- sim_slopes(fiti, pred = Illiteracy, modx = Murder,
+                 modx.values = c(0, 5, 10))
 library(huxtable)
 as_huxtable(ss)
 ```
@@ -380,7 +434,7 @@ sim_slopes(fiti, pred = Illiteracy, modx = Murder, johnson_neyman = TRUE)
 In the example above, we can see that the Johnson-Neyman interval and the 
 simple slopes analysis agree---they always will. The benefit of the J-N 
 interval is it will tell you exactly where the predictor's slope becomes
-significant/insignificant. 
+significant/insignificant at a specified alpha level. 
 
 You can also call the `johnson_neyman` function 
 directly if you want to do something like tweak the alpha level. The 
@@ -388,7 +442,7 @@ directly if you want to do something like tweak the alpha level. The
 them by setting `jnplot = TRUE` with `sim_slopes`.
 
 ```{r}
-johnson_neyman(fiti, pred = Illiteracy, modx = Murder, alpha = 0.01)
+johnson_neyman(fiti, pred = Illiteracy, modx = Murder, alpha = .05)
 ```
 
 *A note on Johnson-Neyman plots*: Once again, it is easy to misinterpret the 
@@ -404,7 +458,7 @@ before which the slope of Illiteracy would become positive.
 The purpose of reminding you both within the plot and the printed output of
 the range of observed data is to help you put the results in context; in this 
 case, the only justifiable interpretation is that Illiteracy has no effect on 
-the outcome variable except when Murder is higher than 9.12. You wouldn't 
+the outcome variable except when Murder is higher than 8.16. You wouldn't 
 interpret the lower boundary because your dataset doesn't contain any values 
 near it.
 
@@ -427,7 +481,7 @@ balancing the desire to be a conservative test without missing a lot of
 true effects in the process. I won't go into the details here. The 
 implementation in `johnson_neyman` is based on code adapted from Esarey and
 Sumner's `interactionTest` package, but any errors should be assumed to be
-from `jtools`, not them.
+from `interactions`, not them.
 
 To use this feature, simply set `control.fdr = TRUE` in the call to 
 `johnson_neyman` or `sim_slopes`.
@@ -490,7 +544,8 @@ may also request specific variables to center by providing a vector of quoted
 variable names --- no others will be centered in that case.
 
 Note that the moderator is centered around the specified values. Factor 
-variables are ignored in the centering process.
+variables are ignored in the centering process and just held at their observed
+values.
 
 # Do simple slopes and plotting with one function
 
@@ -634,6 +689,10 @@ Behavioral Research*, *40*, 373–400.
 Esarey, J., & Sumner, J. L. (2017). Marginal effects in interaction models:
 Determining and controlling the false positive rate. *Comparative Political
 Studies*, 1–33. [https://doi.org/10.1177/0010414017730080](https://doi.org/10.1177/0010414017730080)
+
+Fox, J., & Weisberg, S. (2018). Visualizing fit and lack of fit in complex
+regression models with predictor effect plots and partial residuals. *Journal of 
+Statistical Software*, *87*, 1–27. [https://doi.org/10.18637/jss.v087.i09](https://doi.org/10.18637/jss.v087.i09)
 
 Hainmueller, J., Mummolo, J., & Xu, Y. (2017). How much should we trust 
 estimates from multiplicative interaction models? Simple tools to improve

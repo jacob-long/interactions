@@ -18,7 +18,7 @@ library(interactions)
 
 When trying to understand interactions between categorical predictors, 
 the types of visualizations called for tend to differ from those for continuous
-predictors. For that (and some other) reasons, `jtools` offers support for 
+predictors. For that (and some other) reasons, `interactions` offers support for 
 these in `cat_plot` while continuous predictors (perhaps in interactions with
 categorical predictors) are dealt with in `interact_plot`, which has a separate
 vignette.
@@ -60,6 +60,7 @@ two-wheel drive. The DV is fuel mileage in the city.
 Here's summary output for our model:
 
 ```{r}
+library(jtools) # for summ()
 summ(fit3)
 ```
 
@@ -105,11 +106,12 @@ cat_plot(fit3, pred = cyl, modx = fwd, geom = "line", point.shape = TRUE,
          vary.lty = TRUE)
 ```
 
-You may also choose any color palette from `RColorBrewer`:
+You may also choose any color palette from `RColorBrewer` as well as several
+preset palettes available in `jtools`:
 
 ```{r}
 cat_plot(fit3, pred = cyl, modx = fwd, geom = "line", point.shape = TRUE,
-         color.class = "Set2")
+         colors = "Set2")
 ```
 
 Use `?jtools_colors` for more on your color options.
