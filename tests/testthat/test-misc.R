@@ -426,14 +426,7 @@ test_that("cat_plot handles point.shape (point)", {
 })
 
 test_that("cat_plot handles simple plot (boxplot)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, geom = "boxplot"))
-  expect_silent(print(p))
-})
-
-test_that("cat_plot handles plotted points (boxplot)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                         plot.points = TRUE, geom = "boxplot"))
-  expect_silent(print(p))
+  expect_error(p <- cat_plot(fit, pred = color, modx = cut, geom = "boxplot"))
 })
 
 set.seed(100)
@@ -567,12 +560,6 @@ test_that("cat_plot does plot.points w/ 3-way interactions (line)", {
   expect_silent(print(p))
 })
 
-test_that("cat_plot does point.shape w/ 3-way interactions (boxplot)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "boxplot",
-           plot.points = TRUE, point.shape = TRUE))
-  expect_silent(print(p))
-})
-
 ### No interaction cat_plot ##################################################
 
 test_that("cat_plot handles simple plot w/ no mod. (bar)", {
@@ -612,17 +599,6 @@ test_that("cat_plot handles point.shape w/ no mod. (point)", {
   expect_silent(p <- cat_plot(fit, pred = color, interval = TRUE,
                          plot.points = TRUE, geom = "point",
                          point.shape = TRUE))
-  expect_silent(print(p))
-})
-
-test_that("cat_plot handles simple plot w/ no mod. (boxplot)", {
-  expect_silent(p <- cat_plot(fit, pred = color, geom = "boxplot"))
-  expect_silent(print(p))
-})
-
-test_that("cat_plot handles plotted points w/ no mod. (boxplot)", {
-  expect_silent(p <- cat_plot(fit, pred = color, interval = TRUE,
-                         plot.points = TRUE, geom = "boxplot"))
   expect_silent(print(p))
 })
 
