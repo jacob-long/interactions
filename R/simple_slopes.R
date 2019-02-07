@@ -163,15 +163,12 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
   }
 
-  # Allows unquoted variable names
-  pred <- as.character(substitute(pred))
-  modx <- as.character(substitute(modx))
-  mod2 <- as.character(substitute(mod2))
-  # To avoid unexpected behavior, need to un-un-parse mod2 when it is NULL
-  if (length(mod2) == 0) {
-    mod2 <- NULL
-    mod2vals2 <- NULL
-  }
+  # Evaluate the modx, mod2, pred args
+  pred <- quo_name(enexpr(pred))
+  modx <- quo_name(enexpr(modx))
+  if (modx == "NULL") {modx <- NULL}
+  mod2 <- quo_name(enexpr(mod2))
+  if (mod2 == "NULL") {mod2 <- NULL}
 
   if (length(dots) > 0) { # See if there were any extra args
     # Check for deprecated arguments
@@ -537,8 +534,9 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     if (robust == FALSE) {covmat <- NULL}
 
     if (johnson_neyman == TRUE) {
-      args <- list(newmod, pred = pred, modx = modx, vmat = covmat,
-                         plot = jnplot, alpha = jnalpha, digits = digits)
+      args <- list(newmod, pred = substitute(pred), modx = substitute(modx),
+                   vmat = covmat, plot = jnplot, alpha = jnalpha,
+                   digits = digits)
       if (exists("jn_args")) {args <- as.list(c(args, jn_args))}
       jn <- do.call("johnson_neyman", args)
     } else {
