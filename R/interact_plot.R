@@ -162,7 +162,7 @@
 #'    a good option to show both the predictor and response.
 #'
 #' @param point.size What size should be used for observed data when
-#'   `plot.points` is TRUE? Default is 2.
+#'   `plot.points` is TRUE? Default is 1.5.
 #'
 #' @param facet.modx Create separate panels for each level of the moderator?
 #'   Default is FALSE, except when `linearity.check` is TRUE.
@@ -331,8 +331,8 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                           pred.labels = NULL, modx.labels = NULL,
                           mod2.labels = NULL, main.title = NULL,
                           legend.main = NULL, colors = NULL,
-                          line.thickness = 1, vary.lty = TRUE,
-                          point.size = 1, point.shape = FALSE,
+                          line.thickness = 1.1, vary.lty = TRUE,
+                          point.size = 1.5, point.shape = FALSE,
                           jitter = 0, rug = FALSE, rug.sides = "b",
                           partial.residuals = FALSE, point.alpha = 0.6,
                           color.class = NULL,  ...) {
@@ -463,7 +463,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   } else {
     facmod <- FALSE
     if (is.null(colors)) {
-      colors <- "Blues"
+      colors <- "blue"
     }
   }
 
@@ -502,15 +502,8 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
              "12223242", "F282", "F4448444", "224282F2", "F1")
   ltypes <- types[seq_along(modxvals2)]
 
-  if (is.null(mod2)) {
-    # colors <- rev(colors)
-    low_color <- first(colors)
-    high_color <- last(colors)
-  } else {
-    ltypes <- rev(ltypes)
-    low_color <- last(colors)
-    high_color <- first(colors)
-  }
+  # Reverse the order of the linetypes if second moderator
+  if (!is.null(mod2)) ltypes <- rev(ltypes)
 
   if (gradient == FALSE) {
     names(colors) <- modx.labels
