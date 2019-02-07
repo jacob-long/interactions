@@ -590,9 +590,14 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   # and coloring them by factor looks great
   if (plot.points == TRUE) {
 
-    shape_arg <- if (!is.numeric(d[[as_string(modx)]])) {
-      modx
-    } else {NULL}
+    if (!is.numeric(d[[as_string(modx)]]) & point.shape) {
+      shape_arg <- modx
+      # Only show legend if there's a shape aesthetic
+      show_legend <- TRUE
+    } else {
+      shape_arg <- NULL
+      show_legend <- FALSE
+    }
     constants <- list(alpha = point.alpha)
     if (is.null(weights)) {
       # Only use constant size if weights are not used
@@ -600,7 +605,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
     }
     # Need to use layer function to programmatically define constant aesthetics
     p <- p + layer(geom = "point", data = d, stat = "identity",
-                   inherit.aes = TRUE, show.legend = FALSE,
+                   inherit.aes = TRUE, show.legend = show_legend,
                    mapping = aes(x = !! pred, y = !! resp, size = !! weights,
                                  group = !! grp, colour = !! modx,
                                  shape = !! shape_arg),
