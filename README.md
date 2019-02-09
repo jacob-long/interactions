@@ -3,7 +3,7 @@
 
 # interactions
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/interactions)](https://cran.r-project.org/package=interactions)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-ago/interactions)](https://cran.r-project.org/package=interactions)
 [![GitHub
 tag](https://img.shields.io/github/tag/jacob-long/interactions.svg?label=Github)](https://github.com/jacob-long/interactions)
 [![Total
@@ -42,14 +42,14 @@ yet be available as you read this. If that is the case, please install
 from Github.
 
 ``` r
-devtools::install_github("jacob-long/interactions")
+source("https://install-github.me/jacob-long/interactions")
 ```
 
 ## Usage
 
 Unless you have a really keen eye and good familiarity with both the
 underlying mathematics and the scale of your variables, it can be very
-difficult to look at the ouput of regression model that includes an
+difficult to look at the output of regression model that includes an
 interaction and actually understand what the model is telling you.
 
 This package contains several means of aiding understanding and doing

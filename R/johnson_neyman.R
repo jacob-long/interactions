@@ -84,7 +84,7 @@
 #'  range given by the function. The output of this function will make it clear
 #'  either way.
 #'
-#'  One weakness of this method of probing interactions is that it is analagous
+#'  One weakness of this method of probing interactions is that it is analogous
 #'  to making multiple comparisons without any adjustment to the alpha level.
 #'  Esarey & Sumner (2017) proposed a method for addressing this, which is
 #'  implemented in the `interactionTest` package. This function implements that

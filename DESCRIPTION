@@ -11,7 +11,7 @@ Description: A suite of functions for conducting and interpreting analysis
   calculation of "simple slopes" and Johnson-Neyman intervals. These
   capabilities are implemented for generalized linear models in addition to the 
   standard linear regression context.
-URL: https://github.com/jacob-long/interactions
+URL: https://interactions.jacob-long.com
 BugReports: https://github.com/jacob-long/interactions/issues 
 License: MIT + file LICENSE
 Encoding: UTF-8
