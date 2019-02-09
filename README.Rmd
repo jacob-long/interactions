@@ -43,22 +43,18 @@ Quick rundown of features:
 All of these are implemented in a consistent interface designed to be as
 simple as possible with tweaks and guts available to advanced users. 
 GLMs, models from the `survey` package, and multilevel models from `lme4`
-are fully supported as are visualization for Bayesian models from `rstanaram` 
+are fully supported as is visualization for Bayesian models from `rstanaram` 
 and `brms`.
 
 
 ## Installation
 
-For the moment, the package is not yet on CRAN and you must 
-install from Github. Because it depends on a not-yet-released version of 
-`jtools`, you will also need to grab it from Github first.
+For the moment, the package has just been submitted to CRAN and may not yet
+be available as you read this. If that is the case, please
+install from Github.
 
 ```r
-if (!requireNamespace("devtools", quietly = TRUE)) {
-  install.packages("devtools")
-}
-devtools::install_github("jacob-long/jtools", ref = "interactions-split")
-devtools::install_github("jacob-long/interactions")
+source("https://install-github.me/jacob-long/interactions")
 ```
 
 ## Usage
@@ -129,7 +125,10 @@ categorical interactions can be investigated using the `cat_plot` function.
 
 ## Contributing
 
-I'm happy to receive bug reports, suggestions, questions, and (most of all) contributions to fix problems and add features. I prefer you use the Github issues system over trying to reach out to me in other ways. Pull requests for contributions are encouraged.
+I'm happy to receive bug reports, suggestions, questions, and (most of all) 
+contributions to fix problems and add features. I prefer you use the Github 
+issues system over trying to reach out to me in other ways. Pull requests for
+contributions are encouraged.
 
 Please note that this project is released with a 
 [Contributor Code of Conduct](CONDUCT.md). By participating in this project

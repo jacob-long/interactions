@@ -25,6 +25,7 @@ their usage.
 caused RStudio notebook users issues with the output not being printed to the
 console and having the notebook format them in less-than-ideal ways. The tables
 now have a markdown format that might remind you of Stata's coefficient tables.
+Thanks to Kim Henry for contacting me about this.
 
 ## Use partial residuals for plotting 
 

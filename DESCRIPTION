@@ -1,7 +1,7 @@
 Package: interactions
 Type: Package
 Title: Comprehensive, User-Friendly Toolkit for Probing Interactions
-Version: 1.0.0.9000
+Version: 1.0.0
 Authors@R: person(c("Jacob","A."), "Long", email = "long.1377@osu.edu",
   role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1582-6214"))
 Description: A suite of functions for conducting and interpreting analysis 
@@ -39,4 +39,3 @@ Suggests:
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
-Remotes: jacob-long/jtools@interactions-split

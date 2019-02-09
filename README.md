@@ -32,20 +32,16 @@ Quick rundown of features:
 All of these are implemented in a consistent interface designed to be as
 simple as possible with tweaks and guts available to advanced users.
 GLMs, models from the `survey` package, and multilevel models from
-`lme4` are fully supported as are visualization for Bayesian models from
+`lme4` are fully supported as is visualization for Bayesian models from
 `rstanaram` and `brms`.
 
 ## Installation
 
-For the moment, the package is not yet on CRAN and you must install from
-Github. Because it depends on a not-yet-released version of `jtools`,
-you will also need to grab it from Github first.
+For the moment, the package has just been submitted to CRAN and may not
+yet be available as you read this. If that is the case, please install
+from Github.
 
 ``` r
-if (!requireNamespace("devtools", quietly = TRUE)) {
-  install.packages("devtools")
-}
-devtools::install_github("jacob-long/jtools", ref = "interactions-split")
 devtools::install_github("jacob-long/interactions")
 ```
 
@@ -70,7 +66,7 @@ for continuous moderators.
 With that said, the more statistically rigorous way to explore these
 effects is to find the Johnson-Neyman interval, which tells you the
 range of values of the moderator in which the slope of the predictor is
-significant vs. nonsignificant at a specified alpha level.
+significant vs.  nonsignificant at a specified alpha level.
 
 The `sim_slopes` function will by default find the Johnson-Neyman
 interval and tell you the predictor’s slope at specified values of the
@@ -95,16 +91,22 @@ sim_slopes(fiti, pred = hp, modx = wt, jnplot = TRUE)
     #> SIMPLE SLOPES ANALYSIS 
     #> 
     #> Slope of hp when wt = 4.20 (+ 1 SD): 
-    #>   Est. S.E. t val.    p
-    #>  -0.00 0.01  -0.31 0.76
+    #> 
+    #>   Est.   S.E.   t val.      p
+    #> ------  -----  -------  -----
+    #>  -0.00   0.01    -0.31   0.76
     #> 
     #> Slope of hp when wt = 3.22 (Mean): 
-    #>   Est. S.E. t val.    p
-    #>  -0.03 0.01  -4.07 0.00
+    #> 
+    #>   Est.   S.E.   t val.      p
+    #> ------  -----  -------  -----
+    #>  -0.03   0.01    -4.07   0.00
     #> 
     #> Slope of hp when wt = 2.24 (- 1 SD): 
-    #>   Est. S.E. t val.    p
-    #>  -0.06 0.01  -5.66 0.00
+    #> 
+    #>   Est.   S.E.   t val.      p
+    #> ------  -----  -------  -----
+    #>  -0.06   0.01    -5.66   0.00
 
 The Johnson-Neyman plot can really help you get a handle on what the
 interval is telling you, too. Note that you can look at the

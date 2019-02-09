@@ -1,68 +1,9 @@
 template:
   params:
-    bootswatch: flatly
-
-reference:
- - title: Summarizing and visualizing regression models
-   contents:
-    - summ
-    - summ.lm
-    - summ.glm
-    - summ.svyglm
-    - summ.merMod
-    - summ.rq
-    - set_summ_defaults
-    - export_summs
-    - plot_summs
-    - plot_coefs
-    - effect_plot
-    - j_summ
- - title: Probing and visualizing interaction effects
-   contents:
-    - interact_plot
-    - sim_slopes
-    - probe_interaction
-    - johnson_neyman
-    - cat_plot
-    - make_predictions
-    - make_predictions.merMod
-    - make_predictions.rq
-    - make_predictions.brmsfit
-    - make_predictions.stanreg
-    - plot_predictions
-    - as_huxtable.sim_slopes
-    - plot.sim_slopes
- - title: Data centering and scaling tools
-   contents:
-    - gscale
-    - scale_mod
-    - center_mod
-    - standardize
-    - center
- - title: Survey data tools
-   contents:
-    - svycor
-    - svysd
-    - weights_tests
-    - wgttest
-    - pf_sv_test
- - title: Theming
-   contents:
-    - theme_apa
-    - add_gridlines
-    - add_x_gridlines
-    - add_y_gridlines
-    - drop_gridlines
-    - drop_x_gridlines
-    - drop_y_gridlines
- - title: Miscellaneous
-   contents:
-    - jtools_colors
-    - tidy.summ
-    - knit_print.summ.lm
-
+    bootswatch: readable
 
 navbar:
+  type: inverse
   left:
     - icon: fa-home
       href: index.html
@@ -75,16 +16,12 @@ navbar:
     - icon: fa-book
       text: "Vignettes"
       menu:
-      -  text: Tools for summarizing and visualizing regression models
-         href: articles/summ.html
       -  text: Exploring interactions with continuous predictors in regression models
          href: articles/interactions.html
       -  text: Plotting interactions among categorical variables in regression models
          href: articles/categorical.html
-      -  text: Calculate correlations and correlation tables with complex survey data
-         href: articles/svycor.html
+
   right:
     - icon: fa-github fa-lg
       text: "Github"
-      href: https://github.com/jacob-long/jtools
-
+      href: https://github.com/jacob-long/interactions
