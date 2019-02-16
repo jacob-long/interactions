@@ -271,7 +271,7 @@ auto_mod_vals <-
                               paste("Mean of", modx, "+ 1 SD"))
       }
 
-    } else if (!is.null(modx.values) && modx.values == "plus-minus") { # No mean
+    } else if (!is.null(modx.values) && modx.values[1] == "plus-minus") { # No mean
 
       modxvals2 <- c(modmean - modsd, modmean + modsd)
       if (mod2 == FALSE) {
@@ -281,7 +281,7 @@ auto_mod_vals <-
                               paste("Mean of", modx, "+ 1 SD"))
       }
 
-    } else if (!is.null(modx.values) && modx.values == "terciles") {
+    } else if (!is.null(modx.values) && modx.values[1] == "terciles") {
 
       x_or_2 <- switch(as.character(mod2),
                        "TRUE" = "2",
@@ -370,7 +370,7 @@ center_ss_non_survey <- function(d, weights, facvars = NULL, fvars, pred,
   fv2 <- fvars[fvars %nin% omitvars]
 
   # Handling user-requested centered vars
-  if (centered != "all" && centered != "none") {
+  if (centered[1] != "all" && centered[1] != "none") {
 
     if (any(omitvars %in% centered)) {
       warning("Moderators, outcome variables, and weights/offsets",
@@ -393,7 +393,7 @@ center_ss_non_survey <- function(d, weights, facvars = NULL, fvars, pred,
 
     }
 
-  } else if (centered == "all") {
+  } else if (centered[1] == "all") {
 
     # saving all vars except response
     vars <- names(d)[names(d) %nin% omitvars]
@@ -437,7 +437,7 @@ center_ss_survey <- function(d, weights, facvars = NULL, fvars, pred, resp,
   fv2 <- fvars[fvars %nin% omitvars]
 
   # Handling user-requested centered vars
-  if (centered != "all" && centered != "none") {
+  if (centered[1] != "all" && centered[1] != "none") {
 
     if (any(omitvars %in% centered)) {
       warning("Moderators, outcome variables, and weights/offsets",
@@ -790,7 +790,7 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
     d["modx_group"] <- cut(d[[modx]], cut_points,
                            labels = names(sort(modxvals2)))
 
-    if (!is.null(modx.values) && modx.values == "terciles") {
+    if (!is.null(modx.values) && modx.values[1] == "terciles") {
       d$modx_group <- factor(cut2(d[[modx]], g = 3, levels.mean = TRUE),
                              labels = c(paste("Lower tercile of", modx),
                                         paste("Middle tercile of", modx),
@@ -824,7 +824,7 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
       d["mod2_group"] <- cut(d[[mod2]], cut_points2,
                           labels = names(sort(mod2vals2)))
 
-      if (!is.null(mod2.values) && mod2.values == "terciles") {
+      if (!is.null(mod2.values) && mod2.values[1] == "terciles") {
         d$mod2_group <- factor(cut2(d[[mod2]], g = 3, levels.mean = TRUE),
                                labels = c(paste("Lower tercile of", mod2),
                                           paste("Middle tercile of", mod2),
