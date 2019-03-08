@@ -2,7 +2,11 @@
 title: "Exploring interactions with continuous predictors in regression models"
 author: "Jacob Long"
 date: "`r Sys.Date()`"
-output: rmdformats::html_clean
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: "spacelab"
 vignette: >
   %\VignetteIndexEntry{Exploring interactions with continuous predictors in regression models}
   %\VignetteEngine{knitr::rmarkdown}

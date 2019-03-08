@@ -32,7 +32,6 @@ Suggests:
   survey,
     knitr,
     rmarkdown,
-    rmdformats,
     testthat
 Enhances:
   brms,
