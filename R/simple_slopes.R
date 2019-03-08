@@ -287,7 +287,10 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     # Don't want def = TRUE for factors even though they are character
     if (!is.numeric(d[[mod2]])) {ss <- structure(ss, def2 = FALSE)}
 
-  } else {mod2vals2 <- NULL}
+  } else {
+    mod2vals2 <- NULL
+    modxvals2 <- rev(modxvals2)
+  }
 
 #### Fit models ##############################################################
 
