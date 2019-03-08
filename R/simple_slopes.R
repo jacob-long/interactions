@@ -177,11 +177,6 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
   ss <- structure(ss, digits = digits)
 
-  if (!is.null(modx.values) && !is.vector(modx.values)) {
-    stop_wrap("The modx.values argument must be a vector of at least length 2
-              if it is used.")
-  }
-
   d <- get_data(model)
   if (is_survey <- "svyglm" %in% class(model)) {
     design <- model$survey.design
