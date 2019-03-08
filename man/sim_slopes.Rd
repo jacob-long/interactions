@@ -24,28 +24,35 @@ supported. The model should include the interaction of interest.}
 \item{modx}{The moderator variable involved in the interaction.}
 
 \item{mod2}{Optional. The name of the second moderator
-variable involved in the interaction.}
+variable involved in the interaction. This can be a bare name or string.
+The same \code{rlang} proviso applies as with \code{pred}.}
 
-\item{modx.values}{For which values of the moderator should simple slopes
-analysis be performed? Default is \code{NULL}. If \code{NULL}, then the
-values will be the customary +/- 1 standard deviation from the mean as
-well as the mean itself. There is no specific limit on the number of
-variables provided. If
-\code{"plus-minus"}, uses just +/- 1 standard
-deviation without the mean. You may also choose \code{"terciles"} to split
-the data into equally-sized groups and choose the point at the mean of
-each of those groups.
+\item{modx.values}{For which values of the moderator should lines be
+plotted? There are two basic options:
+\itemize{
+\item A vector of values (e.g., \code{c(1, 2, 3)})
+\item A single argument asking to calculate a set of values. See details
+below.
+}
 
-Factor variables
-are not particularly suited to simple slopes analysis, but you could have
-a numeric moderator with values of 0 and 1 and give \code{c(0,1)} to
-compare the slopes at the different conditions. Two-level factor
-variables are coerced to numeric 0/1 variables, but are not
-standardized/centered like they could be if your input data had a numeric
-0/1 variable.}
+Default is \code{NULL}. If \code{NULL} (or \code{mean-plus-minus}),
+then the customary +/- 1 standard
+deviation from the mean as well as the mean itself are used for continuous
+moderators. If \code{"plus-minus"}, plots lines when the moderator is at
++/- 1 standard deviation without the mean. You may also choose \code{"terciles"}
+to split the data into equally-sized groups and choose the point at the
+mean of each of those groups.
 
-\item{mod2.values}{Same as \code{modx.values}, but for the second moderator
-(\code{mod2}).}
+If the moderator is a factor variable and \code{modx.values} is
+\code{NULL}, each level of the factor is included. You may specify
+any subset of the factor levels (e.g., \code{c("Level 1", "Level 3")}) as long
+as there is more than 1. The levels will be plotted in the order you
+provide them, so this can be used to reorder levels as well.}
+
+\item{mod2.values}{For which values of the second moderator should the plot
+be
+facetted by? That is, there will be a separate plot for each level of this
+moderator. Defaults are the same as \code{modx.values}.}
 
 \item{centered}{A vector of quoted variable names that are to be
 mean-centered. If \code{"all"}, all non-focal predictors as well as
