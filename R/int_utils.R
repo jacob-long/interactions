@@ -491,6 +491,38 @@ ss_dep_check <- function(fun_name, dots) {
 
 }
 
+#### Check for interactions ##################################################
+
+any_interaction <- function(formula) {
+  any(attr(terms(formula), "order") > 1)
+}
+
+get_interactions <- function(formula) {
+  if (any_interaction(formula)) {
+    ts <- terms(formula)
+    labs <- paste("~", attr(ts, "term.labels"))
+    forms <- lapply(labs, as.formula)
+    forms <- forms[which(attr(ts, "order") > 1)]
+    ints <- lapply(forms, all.vars)
+    names(ints) <- attr(ts, "term.labels")[which(attr(ts, "order") > 1)]
+    return(ints)
+  } else {
+    NULL
+  }
+}
+
+check_interactions <- function(formula, vars) {
+  vars <- vars[!is.null(vars)]
+  if (any_interaction(formula)) {
+    checks <- sapply(get_interactions(formula), function(x, vars) {
+      if (all(vars %in% x)) TRUE else FALSE
+    }, vars = vars)
+    any(checks)
+  } else {
+    FALSE
+  }
+}
+
 #### predict helpers ########################################################
 
 values_checks <- function(pred.values = NULL, modx.values, mod2.values) {
@@ -580,6 +612,11 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   # # For setting dimensions correctly later
   # nc <- sum(names(d) %nin% c(wname, offname))
   # if (off == TRUE) {d[[offname]] <- offs}
+  # Warn user if interaction term is absent
+  if (check_interactions(formula, c(pred, modx, mod2))) {
+    warn_wrap(c(pred, modx, mod2), " are not included in an interaction with
+              one another in the model.")
+  }
 
 ### Getting moderator values ##################################################
 
