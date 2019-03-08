@@ -235,7 +235,16 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
   if (is.numeric(modxvals2) & force.cat == FALSE) {
     # The proper order for interact_plot depends on presence of second moderator
     modxvals2 <- sort(modxvals2, decreasing = (!any.mod2 & !facet.modx))
-
+    if (any(modxvals2 > range(d[[modx]])[2])) {
+      warn_wrap(paste(modxvals2[which(modxvals2 > range(d[[modx]])[2])],
+                      collapse = " and "), " is outside the observed range of ",
+                modx)
+    }
+    if (any(modxvals2 < range(d[[modx]])[1])) {
+      warn_wrap(paste(modxvals2[which(modxvals2 < range(d[[modx]])[1])],
+                      collapse = " and "), " is outside the observed range of ",
+                modx)
+    }
   }
 
   return(modxvals2)
@@ -607,12 +616,6 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     NULL
   }
 
-  # Drop unneeded columns from data frame
-  # if (off == TRUE) {offs <- d[[offname]]}
-  # d <- d[all_vars(formula)]
-  # # For setting dimensions correctly later
-  # nc <- sum(names(d) %nin% c(wname, offname))
-  # if (off == TRUE) {d[[offname]] <- offs}
   # Warn user if interaction term is absent
   if (check_interactions(formula, c(pred, modx, mod2))) {
     warn_wrap(c(pred, modx, mod2), " are not included in an interaction with
