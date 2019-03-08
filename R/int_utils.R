@@ -720,12 +720,17 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
       at_list[[mod2]] <- combos[i, mod2]
     }
 
-    pms[[i]] <- jtools::make_predictions(
+    suppressMessages({pms[[i]] <- jtools::make_predictions(
         model = model, data = d, pred = pred, pred.values = pred.predicted,
         at = at_list, set.offset = set.offset, center = centered,
         interval = interval, scale = outcome.scale, ...
     )
+    )})
     pms[[i]] <- pms[[i]][complete.cases(pms[[i]]), ]
+  }
+
+  if (off == TRUE) {
+    msg_wrap("Outcome is based on a total of ", set.offset, " exposures.")
   }
 
   pm <- do.call("rbind", pms)
