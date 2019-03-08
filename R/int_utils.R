@@ -723,8 +723,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     suppressMessages({pms[[i]] <- jtools::make_predictions(
         model = model, data = d, pred = pred, pred.values = pred.predicted,
         at = at_list, set.offset = set.offset, center = centered,
-        interval = interval, scale = outcome.scale, ...
-    )
+        interval = interval, outcome.scale = outcome.scale, ...
     )})
     pms[[i]] <- pms[[i]][complete.cases(pms[[i]]), ]
   }
