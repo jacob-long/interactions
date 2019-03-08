@@ -93,7 +93,7 @@ probe_interaction(model = regmodel3, pred = ell, modx = sch.wide,
 }
 \seealso{
 Other interaction tools: \code{\link{johnson_neyman}},
-  \code{\link{sim_slopes}}
+  \code{\link{sim_margins}}, \code{\link{sim_slopes}}
 }
 \author{
 Jacob Long <\email{long.1377@osu.edu}>

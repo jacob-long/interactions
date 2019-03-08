@@ -28,6 +28,7 @@ Suggests:
   glue,
   huxtable (>= 3.0.0),
   lme4,
+  margins,
   sandwich,
   survey,
     knitr,

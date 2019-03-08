@@ -31,6 +31,20 @@ make_ci_labs <- function(ci.width) {
 }
 
 
+mean_or_base <- function(x, weights = NA) {
+  if (is.numeric(x)) {
+    if (all(is.na(weights))) {
+      mean(x, na.rm = TRUE)
+    } else {
+      weighted.mean(x, weights, na.rm = TRUE)
+    }
+  } else if (!is.logical(x)) {
+    levels(factor(x))[1]
+  } else {
+    FALSE
+  }
+}
+
 ## Taken from Hmisc package to avoid importing for a minor feature
 ## Added "levels.median"
 #' @importFrom stats approx
