@@ -20,7 +20,8 @@ Imports: ggplot2,
   crayon,
   cli,
   jtools (>= 2.0.0),
-  rlang
+  rlang,
+  tibble
 Suggests:
   brms,
   broom,

@@ -6,7 +6,8 @@
 \usage{
 as_huxtable.sim_slopes(x, format = "{estimate} ({std.error})",
   sig.levels = c(`***` = 0.001, `**` = 0.01, `*` = 0.05, `#` = 0.1),
-  digits = getOption("jtools-digits", 2), conf.level = 0.95, ...)
+  digits = getOption("jtools-digits", 2), conf.level = 0.95,
+  intercept = attr(x, "cond.int"), int.format = format, ...)
 }
 \arguments{
 \item{x}{The \code{\link[=sim_slopes]{sim_slopes()}} object.}
@@ -26,6 +27,12 @@ is 2.}
 
 \item{conf.level}{How wide the confidence interval should be, if it
 is used. .95 (95\% interval) is the default.}
+
+\item{intercept}{Should conditional intercepts be included? Default is
+whatever the \code{cond.int} argument to \code{x} was.}
+
+\item{int.format}{If conditional intercepts were requested, how should
+they be formatted? Default is the same as \code{format}.}
 
 \item{...}{Ignored.}
 }
