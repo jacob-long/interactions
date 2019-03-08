@@ -23,19 +23,20 @@ Imports: ggplot2,
   rlang,
   tibble
 Suggests:
-  brms,
   broom,
   cowplot,
   glue,
   huxtable (>= 3.0.0),
   lme4,
-  rstanarm,
   sandwich,
   survey,
     knitr,
     rmarkdown,
     rmdformats,
     testthat
+Enhances:
+  brms,
+  rstanarm
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
