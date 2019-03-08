@@ -6,16 +6,7 @@
 #'
 #' @usage probe_interaction(model, pred, modx, mod2 = NULL, ...)
 #'
-#' @param model A regression model of type \code{lm} or
-#'    \code{\link[survey]{svyglm}}.
-#'    It should contain the interaction of interest.
-#'
-#' @param pred The predictor variable involved in the interaction.
-#'
-#' @param modx The moderator variable involved in the interaction.
-#'
-#' @param mod2 Optional. The name of the second moderator
-#'  variable involved in the interaction.
+#' @inheritParams interact_plot
 #'
 #' @param ... Other arguments accepted by \code{\link{sim_slopes}} and
 #'  \code{\link{interact_plot}}

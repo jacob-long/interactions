@@ -3,34 +3,6 @@
 #' \code{sim_slopes} conducts a simple slopes analysis for the purposes of
 #' understanding two- and three-way interaction effects in linear regression.
 #'
-#' @param pred The predictor variable involved in the interaction.
-#'
-#' @param modx The moderator variable involved in the interaction.
-#'
-#' @param mod2 Optional. The name of the second moderator
-#'  variable involved in the interaction.
-#'
-#' @param modx.values For which values of the moderator should simple slopes
-#'   analysis be performed? Default is \code{NULL}. If \code{NULL}, then the
-#'   values will be the customary +/- 1 standard deviation from the mean as
-#'   well as the mean itself. There is no specific limit on the number of
-#'   variables provided. If
-#'   \code{"plus-minus"}, uses just +/- 1 standard
-#'   deviation without the mean. You may also choose `"terciles"` to split
-#'   the data into equally-sized groups and choose the point at the mean of
-#'   each of those groups.
-#'
-#'   Factor variables
-#'   are not particularly suited to simple slopes analysis, but you could have
-#'   a numeric moderator with values of 0 and 1 and give \code{c(0,1)} to
-#'   compare the slopes at the different conditions. Two-level factor
-#'   variables are coerced to numeric 0/1 variables, but are not
-#'   standardized/centered like they could be if your input data had a numeric
-#'   0/1 variable.
-#'
-#' @param mod2.values Same as `modx.values`, but for the second moderator
-#' (`mod2`).
-#'
 #' @param centered A vector of quoted variable names that are to be
 #'   mean-centered. If `"all"`, all non-focal predictors as well as
 #'   the `pred` variable are centered. You
@@ -60,6 +32,8 @@
 #'
 #' @param ... Arguments passed to \code{\link{johnson_neyman}} and
 #'   `summ`.
+#'
+#' @inheritParams interact_plot
 #'
 #' @details This allows the user to perform a simple slopes analysis for the
 #'   purpose of probing interaction effects in a linear regression. Two- and

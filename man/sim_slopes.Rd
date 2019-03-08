@@ -19,9 +19,14 @@ sim_slopes(model, pred, modx, mod2 = NULL, modx.values = NULL,
 Models from other classes may work as well but are not officially
 supported. The model should include the interaction of interest.}
 
-\item{pred}{The predictor variable involved in the interaction.}
+\item{pred}{The name of the predictor variable involved
+in the interaction. This can be a bare name or string. Note that it
+is evaluated using \code{rlang}, so programmers can use the \code{!!} syntax
+to pass variables instead of the verbatim names.}
 
-\item{modx}{The moderator variable involved in the interaction.}
+\item{modx}{The name of the moderator variable involved
+in the interaction. This can be a bare name or string. The same
+\code{rlang} proviso applies as with \code{pred}.}
 
 \item{mod2}{Optional. The name of the second moderator
 variable involved in the interaction. This can be a bare name or string.
@@ -95,7 +100,7 @@ digits for all jtools functions with
 \code{options("jtools-digits" = digits)} where digits is the desired
 number.}
 
-\item{pvals}{Show p values and significance stars? If \code{FALSE}, these
+\item{pvals}{Show p values? If \code{FALSE}, these
 are not printed. Default is \code{TRUE}.}
 
 \item{confint}{Show confidence intervals instead of standard errors? Default
