@@ -617,7 +617,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   }
 
   # Warn user if interaction term is absent
-  if (check_interactions(formula, c(pred, modx, mod2))) {
+  if (!check_interactions(formula, c(pred, modx, mod2))) {
     warn_wrap(c(pred, modx, mod2), " are not included in an interaction with
               one another in the model.")
   }

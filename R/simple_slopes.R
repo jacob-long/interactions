@@ -145,7 +145,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   if (mod2 == "NULL") {mod2 <- NULL}
 
   # Warn user if interaction term is absent
-  if (check_interactions(as.formula(formula(model)), c(pred, modx, mod2))) {
+  if (!check_interactions(as.formula(formula(model)), c(pred, modx, mod2))) {
     warn_wrap(c(pred, modx, mod2), " are not included in an interaction with
               one another in the model.")
   }
