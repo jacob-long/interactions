@@ -40,16 +40,17 @@ test_that("sim_slopes works for lm", {
 })
 
 test_that("sim_slopes works for weighted lm", {
-  expect_s3_class(sim_slopes(model = fitw,
+  # Out of range warning
+  expect_warning(sim_slopes(model = fitw,
                              pred = Murder,
                              modx = Illiteracy,
                              mod2 = HSGrad,
-                             centered = "all"), class = "sim_slopes")
-  expect_s3_class(sim_slopes(model = fitw,
+                             centered = "all"))
+  expect_s3_class(suppressWarnings(sim_slopes(model = fitw,
                              pred = Murder,
                              modx = Illiteracy,
                              mod2 = HSGrad,
-                             centered = "all"), class = "sim_slopes")
+                             centered = "all")), class = "sim_slopes")
 })
 
 test_that("sim_slopes works for lm w/ logical", {

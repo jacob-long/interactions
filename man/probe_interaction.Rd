@@ -7,16 +7,25 @@
 probe_interaction(model, pred, modx, mod2 = NULL, ...)
 }
 \arguments{
-\item{model}{A regression model of type \code{lm} or
-\code{\link[survey]{svyglm}}.
-It should contain the interaction of interest.}
+\item{model}{A regression model. The function is tested with \code{lm},
+\code{glm}, \code{\link[survey]{svyglm}}, \code{\link[lme4]{merMod}},
+\code{\link[quantreg]{rq}}, \code{\link[brms]{brmsfit}},
+\code{stanreg} models.
+Models from other classes may work as well but are not officially
+supported. The model should include the interaction of interest.}
 
-\item{pred}{The predictor variable involved in the interaction.}
+\item{pred}{The name of the predictor variable involved
+in the interaction. This can be a bare name or string. Note that it
+is evaluated using \code{rlang}, so programmers can use the \code{!!} syntax
+to pass variables instead of the verbatim names.}
 
-\item{modx}{The moderator variable involved in the interaction.}
+\item{modx}{The name of the moderator variable involved
+in the interaction. This can be a bare name or string. The same
+\code{rlang} proviso applies as with \code{pred}.}
 
 \item{mod2}{Optional. The name of the second moderator
-variable involved in the interaction.}
+variable involved in the interaction. This can be a bare name or string.
+The same \code{rlang} proviso applies as with \code{pred}.}
 
 \item{...}{Other arguments accepted by \code{\link{sim_slopes}} and
 \code{\link{interact_plot}}}
@@ -84,7 +93,7 @@ probe_interaction(model = regmodel3, pred = ell, modx = sch.wide,
 }
 \seealso{
 Other interaction tools: \code{\link{johnson_neyman}},
-  \code{\link{sim_slopes}}
+  \code{\link{sim_margins}}, \code{\link{sim_slopes}}
 }
 \author{
 Jacob Long <\email{long.1377@osu.edu}>

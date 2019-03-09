@@ -2,9 +2,21 @@
 
 
 if (getRversion() >= "3.6.0") {
+  S3method(broom::glance, sim_margins)
+} else {
+  export(glance.sim_margins)
+}
+
+if (getRversion() >= "3.6.0") {
   S3method(broom::glance, sim_slopes)
 } else {
   export(glance.sim_slopes)
+}
+
+if (getRversion() >= "3.6.0") {
+  S3method(broom::tidy, sim_margins)
+} else {
+  export(tidy.sim_margins)
 }
 
 if (getRversion() >= "3.6.0") {
@@ -14,21 +26,33 @@ if (getRversion() >= "3.6.0") {
 }
 
 if (getRversion() >= "3.6.0") {
+  S3method(huxtable::as_huxtable, sim_margins)
+} else {
+  export(as_huxtable.sim_margins)
+}
+
+if (getRversion() >= "3.6.0") {
   S3method(huxtable::as_huxtable, sim_slopes)
 } else {
   export(as_huxtable.sim_slopes)
 }
+S3method(nobs,sim_margins)
 S3method(nobs,sim_slopes)
+S3method(plot,sim_margins)
 S3method(plot,sim_slopes)
 S3method(print,johnson_neyman)
 S3method(print,probe_interaction)
+S3method(print,sim_margins)
 S3method(print,sim_slopes)
 export(cat_plot)
+export(glance.sim_margins)
 export(glance.sim_slopes)
 export(interact_plot)
 export(johnson_neyman)
 export(probe_interaction)
+export(sim_margins)
 export(sim_slopes)
+export(tidy.sim_margins)
 export(tidy.sim_slopes)
 import(ggplot2)
 import(jtools)
@@ -40,6 +64,7 @@ importFrom(crayon,inverse)
 importFrom(crayon,italic)
 importFrom(crayon,red)
 importFrom(crayon,underline)
+importFrom(stats,aggregate)
 importFrom(stats,approx)
 importFrom(stats,as.formula)
 importFrom(stats,coef)
@@ -47,6 +72,8 @@ importFrom(stats,coefficients)
 importFrom(stats,complete.cases)
 importFrom(stats,df.residual)
 importFrom(stats,ecdf)
+importFrom(stats,family)
+importFrom(stats,formula)
 importFrom(stats,getCall)
 importFrom(stats,lm)
 importFrom(stats,median)

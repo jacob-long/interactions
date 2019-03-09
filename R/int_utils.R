@@ -6,16 +6,7 @@
 #'
 #' @usage probe_interaction(model, pred, modx, mod2 = NULL, ...)
 #'
-#' @param model A regression model of type \code{lm} or
-#'    \code{\link[survey]{svyglm}}.
-#'    It should contain the interaction of interest.
-#'
-#' @param pred The predictor variable involved in the interaction.
-#'
-#' @param modx The moderator variable involved in the interaction.
-#'
-#' @param mod2 Optional. The name of the second moderator
-#'  variable involved in the interaction.
+#' @inheritParams interact_plot
 #'
 #' @param ... Other arguments accepted by \code{\link{sim_slopes}} and
 #'  \code{\link{interact_plot}}
@@ -244,7 +235,16 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
   if (is.numeric(modxvals2) & force.cat == FALSE) {
     # The proper order for interact_plot depends on presence of second moderator
     modxvals2 <- sort(modxvals2, decreasing = (!any.mod2 & !facet.modx))
-
+    if (any(modxvals2 > range(d[[modx]])[2])) {
+      warn_wrap(paste(modxvals2[which(modxvals2 > range(d[[modx]])[2])],
+                      collapse = " and "), " is outside the observed range of ",
+                modx)
+    }
+    if (any(modxvals2 < range(d[[modx]])[1])) {
+      warn_wrap(paste(modxvals2[which(modxvals2 < range(d[[modx]])[1])],
+                      collapse = " and "), " is outside the observed range of ",
+                modx)
+    }
   }
 
   return(modxvals2)
@@ -258,7 +258,8 @@ auto_mod_vals <-
            mod2 = FALSE, sims = FALSE) {
 
     # Default to +/- 1 SD unless modx is factor
-    if (is.null(modx.values) & length(unique(d[[modx]])) > 2) {
+    if ((is.null(modx.values) || modx.values == "mean-plus-minus") &
+        length(unique(d[[modx]])) > 2) {
 
       modxvals2 <- c(modmean - modsd,
                      modmean,
@@ -500,6 +501,38 @@ ss_dep_check <- function(fun_name, dots) {
 
 }
 
+#### Check for interactions ##################################################
+
+any_interaction <- function(formula) {
+  any(attr(terms(formula), "order") > 1)
+}
+
+get_interactions <- function(formula) {
+  if (any_interaction(formula)) {
+    ts <- terms(formula)
+    labs <- paste("~", attr(ts, "term.labels"))
+    forms <- lapply(labs, as.formula)
+    forms <- forms[which(attr(ts, "order") > 1)]
+    ints <- lapply(forms, all.vars)
+    names(ints) <- attr(ts, "term.labels")[which(attr(ts, "order") > 1)]
+    return(ints)
+  } else {
+    NULL
+  }
+}
+
+check_interactions <- function(formula, vars) {
+  vars <- vars[!is.null(vars)]
+  if (any_interaction(formula)) {
+    checks <- sapply(get_interactions(formula), function(x, vars) {
+      if (all(vars %in% x)) TRUE else FALSE
+    }, vars = vars)
+    any(checks)
+  } else {
+    FALSE
+  }
+}
+
 #### predict helpers ########################################################
 
 values_checks <- function(pred.values = NULL, modx.values, mod2.values) {
@@ -583,12 +616,11 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     NULL
   }
 
-  # Drop unneeded columns from data frame
-  # if (off == TRUE) {offs <- d[[offname]]}
-  # d <- d[all_vars(formula)]
-  # # For setting dimensions correctly later
-  # nc <- sum(names(d) %nin% c(wname, offname))
-  # if (off == TRUE) {d[[offname]] <- offs}
+  # Warn user if interaction term is absent
+  if (!check_interactions(formula, c(pred, modx, mod2))) {
+    warn_wrap(c(pred, modx, mod2), " are not included in an interaction with
+              one another in the model.")
+  }
 
 ### Getting moderator values ##################################################
 
@@ -691,12 +723,16 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
       at_list[[mod2]] <- combos[i, mod2]
     }
 
-    pms[[i]] <- jtools::make_predictions(
+    suppressMessages({pms[[i]] <- jtools::make_predictions(
         model = model, data = d, pred = pred, pred.values = pred.predicted,
         at = at_list, set.offset = set.offset, center = centered,
-        interval = interval, scale = outcome.scale, ...
-    )
+        interval = interval, outcome.scale = outcome.scale, ...
+    )})
     pms[[i]] <- pms[[i]][complete.cases(pms[[i]]), ]
+  }
+
+  if (off == TRUE) {
+    msg_wrap("Outcome is based on a total of ", set.offset, " exposures.")
   }
 
   pm <- do.call("rbind", pms)

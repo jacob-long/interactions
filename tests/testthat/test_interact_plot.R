@@ -91,6 +91,7 @@ test_that("interact_plot works for weighted lm", {
                                    pred = Murder,
                                    modx = Illiteracy,
                                    mod2 = HSGrad,
+                                   modx.values = c(1, 1.5, 2),
                                    centered = "all"))
   expect_silent(print(p))
 })
@@ -119,9 +120,9 @@ test_that("interact_plot accepts user-specified values and labels", {
                                    modx = Illiteracy,
                                    mod2 = HSGrad,
                                    centered = "all",
-                                   modxvals = c(0, 1, 3),
+                                   modxvals = c(1.5, 2, 2.5),
                                    modx.labels = c("None","Low","High"),
-                                   mod2vals = c(40, 60, 80),
+                                   mod2vals = c(58, 60, 62),
                                    mod2.labels = c("Low","Average","High")))
   expect_silent(print(p))
   expect_error(p <- interact_plot(model = fit2,
@@ -193,9 +194,9 @@ if (requireNamespace("lme4")) {
     expect_error(p <- interact_plot(mve, pred = mode, modx = Gender))
     expect_silent(p <- interact_plot(mv, pred = mode_numeric, modx = Gender))
     expect_silent(print(p))
-    expect_message(p <- interact_plot(mv, pred = mode_numeric, modx = Gender,
-                                      interval = TRUE))
-    expect_silent(print(p))
+    # expect_message(p <- interact_plot(mv, pred = mode_numeric, modx = Gender,
+    #                                   interval = TRUE))
+    # expect_silent(print(p))
   })
 
 }

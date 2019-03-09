@@ -148,7 +148,7 @@ and application. \emph{Psychometrika}, \emph{15}, 349-367.
 }
 \seealso{
 Other interaction tools: \code{\link{probe_interaction}},
-  \code{\link{sim_slopes}}
+  \code{\link{sim_margins}}, \code{\link{sim_slopes}}
 }
 \author{
 Jacob Long <\email{long.1377@osu.edu}>

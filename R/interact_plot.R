@@ -24,8 +24,15 @@
 #'  variable involved in the interaction. This can be a bare name or string.
 #'  The same `rlang` proviso applies as with `pred`.
 #'
-#' @param modx.values For which values of the moderator should lines be plotted?
-#'   Default is \code{NULL}. If \code{NULL}, then the customary +/- 1 standard
+#' @param modx.values For which values of the moderator should lines be
+#'   plotted? There are two basic options:
+#'
+#'   * A vector of values (e.g., `c(1, 2, 3)`)
+#'   * A single argument asking to calculate a set of values. See details
+#'   below.
+#'
+#'   Default is \code{NULL}. If \code{NULL} (or `mean-plus-minus`),
+#'   then the customary +/- 1 standard
 #'   deviation from the mean as well as the mean itself are used for continuous
 #'   moderators. If \code{"plus-minus"}, plots lines when the moderator is at
 #'   +/- 1 standard deviation without the mean. You may also choose `"terciles"`

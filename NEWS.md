@@ -1,3 +1,47 @@
+# interactions 1.1.0
+
+## New function: `sim_margins()`
+
+This is, as the name suggests, related to `sim_slopes()`. However, instead of
+*slopes*, what is being estimated are 
+[marginal effects](https://cran.r-project.org/web/packages/margins/vignettes/TechnicalDetails.pdf. 
+In the case of OLS linear regression, this is basically the same thing. The 
+slope in OLS is the expected change in the outcome for each 1-unit increase in
+the predictor. For other models, however, the actual change in the outcome
+when there's a 1-unit increase in a variable depends on the level of other 
+covariates and the initial value of the predictor. In a logit model, 
+for instance, the change in probability will be different if the initial 
+probability was 50% (could go quite a bit up or down) than if it was 99.9% 
+(can't go up).
+
+`sim_margins()` uses the [`margins`](https://cran.r-project.org/package=margins)
+package under the hood to estimate marginal effects. Unlike `sim_slopes()`, 
+in which by default all covariates not involved in the interaction are 
+mean-centered, in `sim_margins()` these covariates are always left at their
+observed values because they influence the level of the marginal effect. 
+Instead, the marginal effect is calculated with the covariates and focal 
+predictor (`pred`) at their observed values and the moderator(s) held at the
+specified values (e.g., the mean and 1 standard deviation above/below the mean).
+I advise using `sim_margins()` rather than `sim_slopes()` when analyzing models
+other than OLS regression.
+
+## Bug fixes
+
+* `interact_plot()` and `cat_plot()` now respect the user's selection of 
+`outcome.scale`; in 1.0.0, it always plotted on the response scale. (#12)
+* The `modx.values` argument is now better documented to explain that you may
+use it to specify the exact values you want. Thanks to Jakub Lysek for asking
+the question that prompted this. (#8)
+* `modx.values` now accepts `"mean-plus-minus"` as a manual specification of
+the default auto-calculated values for continuous moderators. `NULL` still 
+defaults to this, but you can now make this explicit in your code if desired
+for clarity or to guard against future changes in the default behavior.
+* Users are now warned when `modx.values` or `mod2.values` include values
+outside the observed range of the `modx`/`mod2`. (#9)
+* Users are now warned when `pred`, `modx`, and `mod2` are not all involved in
+an interaction with each other in the provided model. (#10)
+
+
 # interactions 1.0.0
 
 This is the first release, but a look at the NEWS for
@@ -8,20 +52,20 @@ What follows is an accounting of changes to functions in this package since
 they were last in `jtools`.
 
 * Plots made by `interactions` now have a new theme, which you can use yourself, 
-called `theme_nice` (from the `jtools` package). The previous default,
-`theme_apa`, is still available but I don't like it as a default since I don't
+called `theme_nice()` (from the `jtools` package). The previous default,
+`theme_apa()`, is still available but I don't like it as a default since I don't
 think the APA has defined the nicest-looking design guidelines for general use.
-* `interact_plot` now has appropriate coloring for observed data when the 
+* `interact_plot()` now has appropriate coloring for observed data when the 
 moderator is numeric (#1). In previous versions I had to use a workaround that 
 involved tweaking the alpha of the observed data points. 
-* `interact_plot` and `cat_plot` now use *tidy evaluation* for the `pred`,
+* `interact_plot()` and `cat_plot()` now use *tidy evaluation* for the `pred`,
 `modx`, and `mod2` arguments. This means you can pass a variable that contains 
 the name of `pred`/`modx`/`mod2`,
 which is most useful if you are creating a function, for loop, etc. If using a
 variable, put a `!!` from the `rlang` package before it
 (e.g., `pred = !! variable`). For most users, these changes will not affect 
 their usage.
-* `sim_slopes` no longer prints coefficient tables as data frames because this 
+* `sim_slopes()` no longer prints coefficient tables as data frames because this 
 caused RStudio notebook users issues with the output not being printed to the
 console and having the notebook format them in less-than-ideal ways. The tables
 now have a markdown format that might remind you of Stata's coefficient tables.
@@ -30,7 +74,7 @@ Thanks to Kim Henry for contacting me about this.
 ## Use partial residuals for plotting 
 
 One negative when visualizing predictions alongside original data 
-with `interact_plot` or similar
+with `interact_plot()` or similar
 tools is that the observed data may be too spread out to pick up on any 
 patterns. However, sometimes your model is controlling for the causes of this
 scattering, especially with multilevel models that have random intercepts. 
@@ -38,23 +82,23 @@ Partial residuals include the effects of all the controlled-for variables
 and let you see how well your model performs with all of those things accounted
 for. 
 
-You can plot partial residuals instead of the observed data in `interact_plot`
-and `cat_plot` via the argument `partial.residuals = TRUE`.
+You can plot partial residuals instead of the observed data in `interact_plot()`
+and `cat_plot()` via the argument `partial.residuals = TRUE`.
 
-## Important changes to `make_predictions` and removal of `plot_predictions`
+## Important changes to `make_predictions()` and removal of `plot_predictions()`
 
-In the `jtools` 1.0.0 release, I introduced `make_predictions` as a lower-level
-way to emulate the functionality of `effect_plot`, `interact_plot`, and 
-`cat_plot`. This would return a list object with predicted data, the original 
+In the `jtools` 1.0.0 release, I introduced `make_predictions()` as a lower-level
+way to emulate the functionality of `effect_plot()`, `interact_plot()`, and 
+`cat_plot()`. This would return a list object with predicted data, the original 
 data, and a bunch of attributes containing information about how to plot it.
 One could then take this object, with class `predictions`, and use it as the 
-main argument to `plot_predictions`, which was another new function that 
-creates the plots you would see in `effect_plot` et al.
+main argument to `plot_predictions()`, which was another new function that 
+creates the plots you would see in `effect_plot()` et al.
 
-I have simplified `make_predictions` to be less specific to those plotting 
-functions and eliminated `plot_predictions`, which was ultimately too complex
+I have simplified `make_predictions()` to be less specific to those plotting 
+functions and eliminated `plot_predictions()`, which was ultimately too complex
 to maintain and caused problems for separating the interaction tools into a 
-separate package. `make_predictions` by default simply creates a new data frame
+separate package. `make_predictions()` by default simply creates a new data frame
 of predicted values along a `pred` variable. It no longer accepts `modx` or 
 `mod2` arguments. Instead, it accepts an argument called `at` where a user can
 specify any number of variables and values to generate predictions *at*. This
