@@ -183,12 +183,15 @@ sim_margins <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   if (!is.null(mod2)) {
     at_list[[mod2]] <- mod2vals2
   }
+
+  design <- if ("svyglm" %in% class(model)) model$survey.design else NULL
+
   # Get the margins
   suppressWarnings({ # can't have confusing warnings from margins
     margs <- margins::margins(model, data = d, at = at_list, vce = vce,
                      # don't need modx, but it works around margins issue #112
                      variables = c(pred, modx),
-                     iterations = iterations
+                     iterations = iterations, design = design
              )
   })
   # Get the summary data frame, drop the modx rows, drop the "factor" column
