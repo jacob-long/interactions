@@ -52,6 +52,7 @@
 #'
 #'
 #' @importFrom stats coef coefficients lm predict sd update getCall vcov relevel
+#' @importFrom stats family aggregate formula
 #' @import jtools
 #' @export
 #'
