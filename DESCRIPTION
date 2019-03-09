@@ -25,6 +25,7 @@ Imports: ggplot2,
 Suggests:
   broom,
   cowplot,
+  ggstance,
   glue,
   huxtable (>= 3.0.0),
   lme4,
