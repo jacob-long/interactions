@@ -258,7 +258,7 @@ auto_mod_vals <-
            mod2 = FALSE, sims = FALSE) {
 
     # Default to +/- 1 SD unless modx is factor
-    if ((is.null(modx.values) | modx.values == "mean-plus-minus") &
+    if ((is.null(modx.values) || modx.values == "mean-plus-minus") &
         length(unique(d[[modx]])) > 2) {
 
       modxvals2 <- c(modmean - modsd,
