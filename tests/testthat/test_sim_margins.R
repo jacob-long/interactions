@@ -50,18 +50,21 @@ test_that("sim_margins works for weighted lm", {
   expect_s3_class(sim_margins(model = fitw,
                              pred = Murder,
                              modx = Illiteracy,
-                             mod2 = HSGrad), class = "sim_margins")
+                             mod2 = HSGrad,
+                             modx.values = c(1.0, 1.5, 2.0)), class = "sim_margins")
   expect_s3_class(sim_margins(model = fitw,
                               pred = Murder,
                               modx = Illiteracy,
                               mod2 = HSGrad,
                               vce = "bootstrap",
+                              modx.values = c(1.0, 1.5, 2.0),
                               iterations = 50), class = "sim_margins")
   expect_s3_class(sim_margins(model = fitw,
                               pred = Murder,
                               modx = Illiteracy,
                               mod2 = HSGrad,
                               vce = "simulation",
+                              modx.values = c(1.0, 1.5, 2.0),
                               iterations = 50), class = "sim_margins")
 })
 
