@@ -704,7 +704,8 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   if (facpred == TRUE) {
     pred.predicted <- levels(factor(d[[pred]]))
   } else {
-    pred.predicted <- seq(from = min(d[[pred]]), to = max(d[[pred]]),
+    pred.predicted <- seq(from = min(d[[pred]], na.rm = TRUE),
+                          to = max(d[[pred]], na.rm = TRUE),
                           length.out = preds.per.level)
   }
 
@@ -894,9 +895,13 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
 }
 
 drop_factor_levels <- function(d, var, values, labels) {
-
+  # Need to save the rownames because of tibble's stupidity
+  the_row_names <- rownames(d)
+  the_row_names <- the_row_names[d[[var]] %in% values]
   d <- d[d[[var]] %in% values,]
   d[[var]] <- factor(d[[var]], levels = values)
+  # Can't use rowname assignment method because of tibble's stupidity
+  attr(d, "row.names") <- the_row_names
   return(d)
 
 }
