@@ -33,6 +33,12 @@
 #' @param ... Arguments passed to \code{\link{johnson_neyman}} and
 #'   `summ`.
 #'
+#' @param v.cov A function to calculate variances for the model. Examples
+#'  could be [sandwich::vcovPC()].
+#'
+#' @param v.cov.args A list of arguments for the `v.cov` function. For
+#'  whichever argument should be the fitted model, put `"model"`.
+#'
 #' @inheritParams interact_plot
 #'
 #' @details This allows the user to perform a simple slopes analysis for the
@@ -124,7 +130,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
                        digits = getOption("jtools-digits", default = 2),
                        pvals = TRUE, confint = FALSE, ci.width = .95,
                        cluster = NULL, modx.labels = NULL, mod2.labels = NULL,
-                       ...) {
+                       v.cov = NULL, v.cov.args = NULL, ...) {
 
   # Capture extra arguments
   dots <- list(...)
@@ -146,8 +152,9 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
   # Warn user if interaction term is absent
   if (!check_interactions(as.formula(formula(model)), c(pred, modx, mod2))) {
-    warn_wrap(c(pred, modx, mod2), " are not included in an interaction with
-              one another in the model.")
+    warn_wrap(paste(c(pred, modx, mod2), collapse = " and "),
+              " are not included in an interaction with one another in the
+              model.")
   }
 
   if (length(dots) > 0) { # See if there were any extra args
@@ -379,19 +386,21 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
 
     # Getting SEs, robust or otherwise
-    if (robust != FALSE) {
-
+    if (robust != FALSE & is.null(v.cov)) {
       # For J-N
       covmat <- get_robust_se(newmod, robust, cluster, dt)$vcov
-
-    } else {
-
+    } else if (is.null(v.cov)) {
       # For J-N
       covmat <- vcov(newmod)
-
+    } else {
+      vcovargs <- v.cov.args
+      vcovargs[[which(sapply(vcovargs, function(x) length(x[[1]]) == 1 &&
+                               x[[1]] == "model"))]] <-
+        newmod
+      covmat <- do.call(v.cov, vcovargs)
     }
 
-    if (robust == FALSE) {covmat <- NULL}
+    # if (robust == FALSE & is.null()) {covmat <- NULL}
 
     if (johnson_neyman == TRUE) {
       args <- list(newmod, pred = substitute(pred), modx = substitute(modx),
@@ -463,20 +472,38 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     } else {
       which.cols <- NULL
     }
+
     # Getting SEs, robust or otherwise
     if (robust == TRUE) {
-
+      if (!is.null(v.cov)) {
+        vcovargs <- v.cov.args
+        vcovargs[[which(sapply(vcovargs, function(x) length(x[[1]]) == 1 &&
+                                 x[[1]] == "model"))]] <-
+          newmod
+        covmat <- do.call(v.cov, vcovargs)
+      } else {
+        covmat <- NULL
+      }
       # Use j_summ to get the coefficients
       sum <- summ(newmod, robust = robust, model.fit = FALSE,
                   confint = TRUE, ci.width = ci.width, vifs = FALSE,
                   cluster = cluster, which.cols = which.cols, pvals = pvals,
-                  ...)
+                  vcov = covmat, ...)
 
     } else {
-
+      if (is.null(v.cov)) {
+        # For J-N
+        covmat <- vcov(newmod)
+      } else {
+        vcovargs <- v.cov.args
+        vcovargs[[which(sapply(vcovargs, function(x) length(x[[1]]) == 1 &&
+                                 x[[1]] == "model"))]] <-
+          newmod
+        covmat <- do.call(v.cov, vcovargs)
+      }
       sum <- summ(newmod, model.fit = FALSE, confint = TRUE,
                   ci.width = ci.width, vifs = FALSE,
-                  which.cols = which.cols, pvals = pvals, ...)
+                  which.cols = which.cols, pvals = pvals, vcov = covmat, ...)
 
     }
 

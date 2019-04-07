@@ -9,7 +9,8 @@ sim_slopes(model, pred, modx, mod2 = NULL, modx.values = NULL,
   cond.int = FALSE, johnson_neyman = TRUE, jnplot = FALSE,
   jnalpha = 0.05, robust = FALSE, digits = getOption("jtools-digits",
   default = 2), pvals = TRUE, confint = FALSE, ci.width = 0.95,
-  cluster = NULL, modx.labels = NULL, mod2.labels = NULL, ...)
+  cluster = NULL, modx.labels = NULL, mod2.labels = NULL,
+  v.cov = NULL, v.cov.args = NULL, ...)
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
@@ -125,6 +126,12 @@ moderator values, provided in the same order as the \code{mod2.values}
 argument. If \code{NULL}, the values themselves are used as labels unless
 \code{mod2.values} is also \code{NULL}. In that case, "+1 SD" and "-1 SD"
 are used.}
+
+\item{v.cov}{A function to calculate variances for the model. Examples
+could be \code{\link[sandwich:vcovPC]{sandwich::vcovPC()}}.}
+
+\item{v.cov.args}{A list of arguments for the \code{v.cov} function. For
+whichever argument should be the fitted model, put \code{"model"}.}
 
 \item{...}{Arguments passed to \code{\link{johnson_neyman}} and
 \code{summ}.}
