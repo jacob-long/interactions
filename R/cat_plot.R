@@ -168,7 +168,7 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   modx.labels = NULL, mod2.labels = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, main.title = NULL, legend.main = NULL,
   colors = "CUD Bright", partial.residuals = FALSE, point.alpha = 0.6,
-  color.class = NULL, ...) {
+  color.class = NULL, at = NULL, ...) {
 
   # Capture extra arguments
   dots <- list(...)
@@ -229,7 +229,7 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
                         facet.modx = FALSE, d = d,
                         survey = "svyglm" %in% class(model), weights = weights,
                         preds.per.level = 100,
-                        partial.residuals = partial.residuals, ...)
+                        partial.residuals = partial.residuals, at = at, ...)
 
 
   # These are the variables created in the helper functions

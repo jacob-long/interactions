@@ -327,6 +327,7 @@
 
 interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                           mod2.values = NULL, centered = "all", data = NULL,
+                          at = NULL,
                           plot.points = FALSE, interval = FALSE,
                           int.type = c("confidence", "prediction"),
                           int.width = .95, outcome.scale = "response",
@@ -398,7 +399,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                         facet.modx = facet.modx, d = d,
                         survey = "svyglm" %in% class(model), weights = weights,
                         preds.per.level = 100,
-                        partial.residuals = partial.residuals, ...)
+                        partial.residuals = partial.residuals, at = at, ...)
 
   # These are the variables created in the helper functions
   meta <- attributes(pred_out)

@@ -558,7 +558,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
                       modx.labels, mod2.labels, wname, weights,
                       linearity.check, interval, set.offset, facvars, centered,
                       preds.per.level, force.cat = FALSE, facet.modx = FALSE,
-                      partial.residuals = FALSE, outcome.scale, ...) {
+                      partial.residuals = FALSE, outcome.scale, at, ...) {
   # offset?
   offname <- jtools::get_offset_name(model)
   off <- !is.null(offname)
@@ -721,6 +721,10 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     }
     if (!is.null(mod2)) {
       at_list[[mod2]] <- combos[i, mod2]
+    }
+
+    if (!is.null(at)) {
+      at_list[names(at)] <- at
     }
 
     suppressMessages({pms[[i]] <- jtools::make_predictions(
