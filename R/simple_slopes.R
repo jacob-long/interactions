@@ -482,7 +482,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
     summat <- sum$coeftable
     if (pvals == FALSE) {summat <- summat[,colnames(summat) %nin% "p"]}
-    slopep <- summat[pred, ]
+    slopep <- summat[if (make.names(pred) != pred) bt(pred) else pred, ]
     intp <- summat["(Intercept)", ]
 
     retmat[i,1] <- modxvals2[i]

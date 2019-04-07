@@ -154,7 +154,9 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
 
   # Evaluate the modx, mod2, pred args
   pred <- quo_name(enexpr(pred))
+  if (make.names(pred) != pred) pred <- bt(pred)
   modx <- quo_name(enexpr(modx))
+  if (make.names(modx) != modx) modx <- bt(modx)
   if (modx == "NULL") {modx <- NULL}
 
   # Handling df argument
@@ -168,8 +170,8 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
 
   # Structure
   out <- list()
-  out <- structure(out, pred = pred, modx = modx, alpha = alpha, plot = plot,
-                   digits = digits, control.fdr = control.fdr)
+  out <- structure(out, pred = un_bt(pred), modx = un_bt(modx), alpha = alpha,
+                   plot = plot, digits = digits, control.fdr = control.fdr)
 
   # Construct interaction term
 

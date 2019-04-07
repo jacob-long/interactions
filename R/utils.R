@@ -45,6 +45,20 @@ mean_or_base <- function(x, weights = NA) {
   }
 }
 
+## Taken from panelr for handling non-synactic variable names
+bt <- function(x) {
+  if (!is.null(x)) {
+    btv <- paste0("`", x, "`")
+    btv <- gsub("``", "`", btv, fixed = TRUE)
+    btv <- btv %not% c("", "`")
+  } else btv <- NULL
+  return(btv)
+}
+
+un_bt <- function(x) {
+  gsub("`", "", x)
+}
+
 ## Taken from Hmisc package to avoid importing for a minor feature
 ## Added "levels.median"
 #' @importFrom stats approx
