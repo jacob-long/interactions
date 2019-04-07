@@ -158,13 +158,23 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
 
   }
 
+  is_fac <- if (!is.numeric(d[[modx]]) | force.cat == TRUE) TRUE else FALSE
+
   # Testing whether modx.values refers to pre-defined arg or list of factor levels
-  char1 <- FALSE
-  if (is.character(modx.values) & length(modx.values) == 1) {char1 <- TRUE}
+  predefined_args <- c("mean-plus-minus", "plus-minus", "terciles")
+  if (is.character(modx.values) & length(modx.values) == 1) {
+    char1 <- if (modx.values %in% predefined_args) TRUE else FALSE
+    if (is_fac == TRUE & char1 == TRUE) {
+      stop_wrap(modx.values, " is not supported for a non-numeric moderator.")
+    } else if (is_fac == FALSE & char1 == FALSE) {
+      stop_wrap(modx.values, " is not a valid ",
+                ifelse(is.mod2, yes = "mod2.values", no = "modx.values"),
+                " argument for a numeric moderator.")
+    }
+  } else {char1 <- FALSE}
 
   # If using a preset, send to auto_mod_vals function
-  if (is.numeric(d[[modx]]) && force.cat == FALSE &&
-      (is.null(modx.values) | is.character(modx.values))) {
+  if (is_fac == FALSE && (is.null(modx.values) | is.character(modx.values))) {
 
     modxvals2 <- auto_mod_vals(d, modx.values = modx.values, modx = modx,
                                modmean = modmean, modsd = modsd,
@@ -175,7 +185,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
   }
 
   # For user-specified numbers or factors, go here
-  if (is.null(modx.values) && (!is.numeric(d[[modx]]) | force.cat == TRUE)) {
+  if (is.null(modx.values) & is_fac == TRUE) {
 
     modxvals2 <- ulevels(d[[modx]])
     if (is.null(modx.labels)) {
@@ -189,8 +199,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
     }
     names(modxvals2) <- modx.labels
 
-  } else if (!is.null(modx.values) &
-             ((is.numeric(modx.values) & force.cat == FALSE) | char1 == FALSE)) {
+  } else if (!is.null(modx.values) & char1 == FALSE) {
     # Use user-supplied values otherwise
 
     if (!is.null(modx.labels)) {
@@ -232,7 +241,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
 
   }
 
-  if (is.numeric(modxvals2) & force.cat == FALSE) {
+  if (is_fac == FALSE) {
     # The proper order for interact_plot depends on presence of second moderator
     modxvals2 <- sort(modxvals2, decreasing = (!any.mod2 & !facet.modx))
     if (any(modxvals2 > range(d[[modx]])[2])) {
