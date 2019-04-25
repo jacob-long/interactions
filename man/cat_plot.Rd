@@ -18,7 +18,7 @@ cat_plot(model, pred, modx = NULL, mod2 = NULL, data = NULL,
   mod2.labels = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, main.title = NULL, legend.main = NULL,
   colors = "CUD Bright", partial.residuals = FALSE,
-  point.alpha = 0.6, color.class = NULL, ...)
+  point.alpha = 0.6, color.class = NULL, at = NULL, ...)
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
@@ -230,6 +230,12 @@ observed data be? Default is 0.6, and it can range from 0 (transparent) to
 1 (opaque).}
 
 \item{color.class}{Deprecated. Now known as \code{colors}.}
+
+\item{at}{If you want to manually set the values of other variables in the
+model, do so by providing a named list where the names are the variables
+and the list values are vectors of the values. This can be useful
+especially when you are exploring interactions or other conditional
+predictions.}
 
 \item{...}{extra arguments passed to \code{make_predictions}}
 }

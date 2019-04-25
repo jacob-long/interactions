@@ -4,7 +4,7 @@
 
 This is, as the name suggests, related to `sim_slopes()`. However, instead of
 *slopes*, what is being estimated are 
-[marginal effects](https://cran.r-project.org/web/packages/margins/vignettes/TechnicalDetails.pdf. 
+[marginal effects](https://cran.r-project.org/web/packages/margins/vignettes/TechnicalDetails.pdf). 
 In the case of OLS linear regression, this is basically the same thing. The 
 slope in OLS is the expected change in the outcome for each 1-unit increase in
 the predictor. For other models, however, the actual change in the outcome
@@ -40,7 +40,20 @@ for clarity or to guard against future changes in the default behavior.
 outside the observed range of the `modx`/`mod2`. (#9)
 * Users are now warned when `pred`, `modx`, and `mod2` are not all involved in
 an interaction with each other in the provided model. (#10)
+* `cat_plot()` was ignoring `mod2.values` arguments but now works properly. 
+(#17)
+* Missing values in the original data are now handled better in 
+`interact_plot()` and `cat_plot()`.
+* `sim_slopes()` now handles non-syntactic variable names better.
+* `interactions` now requires you to have a relatively new version of `rlang`.
+Users with older versions were experiencing cryptic errors. (#15)
 
+## Feature updates
+
+* `interact_plot()` and `cat_plot()` now have an `at` argument for more granular
+control over the values of covariates.
+* `sim_slopes()` now allows for custom specification of robust standard error 
+estimators via providing a function to `v.cov` and arguments to `v.cov.args`.
 
 # interactions 1.0.0
 

@@ -158,13 +158,23 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
 
   }
 
+  is_fac <- if (!is.numeric(d[[modx]]) | force.cat == TRUE) TRUE else FALSE
+
   # Testing whether modx.values refers to pre-defined arg or list of factor levels
-  char1 <- FALSE
-  if (is.character(modx.values) & length(modx.values) == 1) {char1 <- TRUE}
+  predefined_args <- c("mean-plus-minus", "plus-minus", "terciles")
+  if (is.character(modx.values) & length(modx.values) == 1) {
+    char1 <- if (modx.values %in% predefined_args) TRUE else FALSE
+    if (is_fac == TRUE & char1 == TRUE) {
+      stop_wrap(modx.values, " is not supported for a non-numeric moderator.")
+    } else if (is_fac == FALSE & char1 == FALSE) {
+      stop_wrap(modx.values, " is not a valid ",
+                ifelse(is.mod2, yes = "mod2.values", no = "modx.values"),
+                " argument for a numeric moderator.")
+    }
+  } else {char1 <- FALSE}
 
   # If using a preset, send to auto_mod_vals function
-  if (is.numeric(d[[modx]]) && force.cat == FALSE &&
-      (is.null(modx.values) | is.character(modx.values))) {
+  if (is_fac == FALSE && (is.null(modx.values) | is.character(modx.values))) {
 
     modxvals2 <- auto_mod_vals(d, modx.values = modx.values, modx = modx,
                                modmean = modmean, modsd = modsd,
@@ -175,7 +185,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
   }
 
   # For user-specified numbers or factors, go here
-  if (is.null(modx.values) && (!is.numeric(d[[modx]]) | force.cat == TRUE)) {
+  if (is.null(modx.values) & is_fac == TRUE) {
 
     modxvals2 <- ulevels(d[[modx]])
     if (is.null(modx.labels)) {
@@ -189,8 +199,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
     }
     names(modxvals2) <- modx.labels
 
-  } else if (!is.null(modx.values) &
-             ((is.numeric(modx.values) & force.cat == FALSE) | char1 == FALSE)) {
+  } else if (!is.null(modx.values) & char1 == FALSE) {
     # Use user-supplied values otherwise
 
     if (!is.null(modx.labels)) {
@@ -232,7 +241,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
 
   }
 
-  if (is.numeric(modxvals2) & force.cat == FALSE) {
+  if (is_fac == FALSE) {
     # The proper order for interact_plot depends on presence of second moderator
     modxvals2 <- sort(modxvals2, decreasing = (!any.mod2 & !facet.modx))
     if (any(modxvals2 > range(d[[modx]])[2])) {
@@ -558,7 +567,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
                       modx.labels, mod2.labels, wname, weights,
                       linearity.check, interval, set.offset, facvars, centered,
                       preds.per.level, force.cat = FALSE, facet.modx = FALSE,
-                      partial.residuals = FALSE, outcome.scale, ...) {
+                      partial.residuals = FALSE, outcome.scale, at, ...) {
   # offset?
   offname <- jtools::get_offset_name(model)
   off <- !is.null(offname)
@@ -618,8 +627,9 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
 
   # Warn user if interaction term is absent
   if (!check_interactions(formula, c(pred, modx, mod2))) {
-    warn_wrap(c(pred, modx, mod2), " are not included in an interaction with
-              one another in the model.")
+    warn_wrap(paste(c(pred, modx, mod2), collapse = " and "),
+              " are not included in an interaction with one another in the
+              model.")
   }
 
 ### Getting moderator values ##################################################
@@ -694,7 +704,8 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   if (facpred == TRUE) {
     pred.predicted <- levels(factor(d[[pred]]))
   } else {
-    pred.predicted <- seq(from = min(d[[pred]]), to = max(d[[pred]]),
+    pred.predicted <- seq(from = min(d[[pred]], na.rm = TRUE),
+                          to = max(d[[pred]], na.rm = TRUE),
                           length.out = preds.per.level)
   }
 
@@ -721,6 +732,10 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     }
     if (!is.null(mod2)) {
       at_list[[mod2]] <- combos[i, mod2]
+    }
+
+    if (!is.null(at)) {
+      at_list[names(at)] <- at
     }
 
     suppressMessages({pms[[i]] <- jtools::make_predictions(
@@ -763,7 +778,12 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     d[[modx]] <- factor(d[[modx]], levels = modxvals2, labels = modx.labels)
   }
   if (!is.null(modx)) {
-    pm$modx_group <- factor(pm[[modx]], levels = modxvals2, labels = modx.labels)
+    if (is.numeric(d[[modx]])) {
+      pm$modx_group <- factor(pm[[modx]], levels = modxvals2,
+                              labels = modx.labels)
+    } else {
+      pm$modx_group <- factor(pm[[modx]], levels = modx.labels)
+    }
   }
 
   # Setting labels for second moderator
@@ -880,9 +900,13 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
 }
 
 drop_factor_levels <- function(d, var, values, labels) {
-
+  # Need to save the rownames because of tibble's stupidity
+  the_row_names <- rownames(d)
+  the_row_names <- the_row_names[d[[var]] %in% values]
   d <- d[d[[var]] %in% values,]
   d[[var]] <- factor(d[[var]], levels = values)
+  # Can't use rowname assignment method because of tibble's stupidity
+  attr(d, "row.names") <- the_row_names
   return(d)
 
 }

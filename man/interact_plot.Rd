@@ -5,7 +5,7 @@
 \title{Plot interaction effects in regression models}
 \usage{
 interact_plot(model, pred, modx, modx.values = NULL, mod2 = NULL,
-  mod2.values = NULL, centered = "all", data = NULL,
+  mod2.values = NULL, centered = "all", data = NULL, at = NULL,
   plot.points = FALSE, interval = FALSE, int.type = c("confidence",
   "prediction"), int.width = 0.95, outcome.scale = "response",
   linearity.check = FALSE, facet.modx = FALSE, robust = FALSE,
@@ -79,6 +79,12 @@ and can be crucial for models with variable transformations in the formula
 see a warning if the function detects problems that would likely be
 solved by providing the data with this argument and the function will
 attempt to retrieve the original data from the global environment.}
+
+\item{at}{If you want to manually set the values of other variables in the
+model, do so by providing a named list where the names are the variables
+and the list values are vectors of the values. This can be useful
+especially when you are exploring interactions or other conditional
+predictions.}
 
 \item{plot.points}{Logical. If \code{TRUE}, plots the actual data points as
 a scatterplot on top of the interaction lines. The color of the dots will
