@@ -5,6 +5,3 @@
 
 ## R CMD check results
 There were no ERRORs, WARNINGs, or NOTEs.
-
-## Other
-This is the first CRAN submission, so there will be a note for that.
