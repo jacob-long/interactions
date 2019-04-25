@@ -778,7 +778,12 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     d[[modx]] <- factor(d[[modx]], levels = modxvals2, labels = modx.labels)
   }
   if (!is.null(modx)) {
-    pm$modx_group <- factor(pm[[modx]], levels = modxvals2, labels = modx.labels)
+    if (is.numeric(d[[modx]])) {
+      pm$modx_group <- factor(pm[[modx]], levels = modxvals2,
+                              labels = modx.labels)
+    } else {
+      pm$modx_group <- factor(pm[[modx]], levels = modx.labels)
+    }
   }
 
   # Setting labels for second moderator
