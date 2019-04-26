@@ -4,7 +4,7 @@
 
 This is, as the name suggests, related to `sim_slopes()`. However, instead of
 *slopes*, what is being estimated are 
-[marginal effects](https://cran.r-project.org/web/packages/margins/vignettes/TechnicalDetails.pdf). 
+[marginal effects](https://cran.r-project.org/package=margins/vignettes/TechnicalDetails.pdf). 
 In the case of OLS linear regression, this is basically the same thing. The 
 slope in OLS is the expected change in the outcome for each 1-unit increase in
 the predictor. For other models, however, the actual change in the outcome
