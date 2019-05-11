@@ -219,12 +219,14 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   weights <- get_weights(model, d)$weights_name
 
   pred_out <- prep_data(model = model, pred = pred, modx = modx,
+                        pred.values = pred.values,
                         modx.values = modx.values, mod2 = mod2,
                         mod2.values = mod2.values, centered = centered,
                         interval = interval, int.type = int.type,
                         int.width = int.width, outcome.scale = outcome.scale,
                         linearity.check = FALSE, robust = robust,
                         cluster = cluster, vcov = vcov, set.offset = set.offset,
+                        pred.labels = pred.labels,
                         modx.labels = modx.labels, mod2.labels = mod2.labels,
                         facet.modx = FALSE, d = d,
                         survey = "svyglm" %in% class(model), weights = weights,
@@ -443,11 +445,12 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
   # Get scale colors, provide better legend title
   p <- p + scale_colour_manual(name = legend.main,
                                values = colors,
-                               breaks = names(colors))
-  p <- p + scale_fill_manual(name = legend.main,
+                               breaks = names(colors)) +
+    scale_fill_manual(name = legend.main,
                              values = colors,
-                             breaks = names(colors))
-  p <- p + scale_shape(name = legend.main)
+                             breaks = names(colors)) +
+    scale_shape(name = legend.main) +
+    scale_x_discrete(limits = pred.values, labels = pred.labels)
 
   if (vary.lty == TRUE) { # Add line-specific changes
     p <- p + scale_linetype_manual(name = legend.main, values = ltypes,

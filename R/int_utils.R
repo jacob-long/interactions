@@ -136,7 +136,8 @@ print.probe_interaction <- function(x, ...) {
 mod_vals <- function(d, modx, modx.values, survey, weights,
                      design = design, modx.labels = NULL,
                      any.mod2 = FALSE, is.mod2 = FALSE,
-                     sims = FALSE, facet.modx = FALSE, force.cat = FALSE) {
+                     sims = FALSE, facet.modx = FALSE, force.cat = FALSE,
+                     add.varname = TRUE) {
 
   # Get moderator mean
   if (survey == FALSE & is.numeric(d[[modx]])) {
@@ -180,7 +181,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
                                modmean = modmean, modsd = modsd,
                                modx.labels = modx.labels,
                                mod2 = (is.mod2 | facet.modx),
-                               sims = sims)
+                               sims = sims, add.varname = add.varname)
 
   }
 
@@ -190,7 +191,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
     modxvals2 <- ulevels(d[[modx]])
     if (is.null(modx.labels)) {
 
-      if (is.mod2 | facet.modx) {
+      if ((is.mod2 | facet.modx) & add.varname == TRUE) {
         modx.labels <- paste(modx, "=", ulevels(d[[modx]]))
       } else {
         modx.labels <- ulevels(d[[modx]])
@@ -214,7 +215,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
 
     } else {
 
-      names(modx.values) <- if (is.mod2 | facet.modx) {
+      names(modx.values) <- if ((is.mod2 | facet.modx) & add.varname == TRUE) {
         paste(modx, "=", modx.values)
       } else {
         modx.values
@@ -233,7 +234,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
   if (is.null(modx.labels)) {
     # Name the modx.labels object with modxvals2 names
 
-    modx.labels <- if (is.mod2 | facet.modx) {
+    modx.labels <- if ((is.mod2 | facet.modx) & add.varname == TRUE) {
       paste(modx, "=", modxvals2)
     } else {
       names(modxvals2)
@@ -264,7 +265,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
 
 auto_mod_vals <-
   function(d, modx, modx.values, modmean, modsd, modx.labels = NULL,
-           mod2 = FALSE, sims = FALSE) {
+           mod2 = FALSE, sims = FALSE, add.varname = TRUE) {
 
     # Default to +/- 1 SD unless modx is factor
     if ((is.null(modx.values) || modx.values == "mean-plus-minus") &
@@ -320,7 +321,7 @@ auto_mod_vals <-
 
       } else {
 
-        if (mod2 == TRUE & sims == FALSE) {
+        if (mod2 == TRUE & sims == FALSE & add.varname == TRUE) {
           names(modxvals2) <-
             sapply(modxvals2, FUN = function(x) {paste(modx, "=", round(x,3))})
         } else {
@@ -640,7 +641,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
                          survey = survey, weights = weights,
                          design = design,
                          modx.labels = pred.labels, is.mod2 = TRUE,
-                         facet.modx = facet.modx)
+                         facet.modx = facet.modx, add.varname = FALSE)
     pred.labels <- names(pred.values)
 
   }

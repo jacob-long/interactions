@@ -4,6 +4,8 @@ Bugfixes:
 
 * `sim_slopes()` no longer fails getting Johnson-Neyman intervals for `merMod`
 models. (#20)
+* `cat_plot()` no longer ignores `pred.values` and `pred.labels` arguments.
+Thanks to [Paul Djupe](http://pauldjupe.com/) for alerting me to this.
 
 # interactions 1.1.0
 
