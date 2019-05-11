@@ -174,34 +174,20 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
                    plot = plot, digits = digits, control.fdr = control.fdr)
 
   # Construct interaction term
-
+  ## Create helper function to use either fixef() or coef() depending on input
+  get_coef <- if (inherits(model, "merMod")) lme4::fixef else coef
   ## Hard to predict which order lm() will have the predictors in
-  ### First, have to handle the weirdness of merMods
-  if (inherits(model, "merMod")) {
-    # first possible ordering
-    intterm1 <- paste(pred, ":", modx, sep = "")
-    # is it in the coef names?
-    intterm1tf <- any(intterm1 %in% names(lme4::fixef(model)))
-    # second possible ordering
-    intterm2 <- paste(modx, ":", pred, sep = "")
-    # is it in the coef names?
-    intterm2tf <- any(intterm2 %in% names(lme4::fixef(model)))
+  # first possible ordering
+  intterm1 <- paste(pred, ":", modx, sep = "")
+  # is it in the coef names?
+  intterm1tf <- any(intterm1 %in% names(get_coef(model)))
+  # second possible ordering
+  intterm2 <- paste(modx, ":", pred, sep = "")
+  # is it in the coef names?
+  intterm2tf <- any(intterm2 %in% names(get_coef(model)))
+  # Taking care of other business, creating coefs object for later
+  coefs <- get_coef(model)
 
-    # Taking care of other business, creating coefs object for later
-    coefs <- lme4::fixef(model)
-  } else {
-    # first possible ordering
-    intterm1 <- paste(pred, ":", modx, sep = "")
-    # is it in the coef names?
-    intterm1tf <- any(intterm1 %in% names(coef(model)))
-    # second possible ordering
-    intterm2 <- paste(modx, ":", pred, sep = "")
-    # is it in the coef names?
-    intterm2tf <- any(intterm2 %in% names(coef(model)))
-
-    # Taking care of other business, creating coefs object for later
-    coefs <- coef(model)
-  }
 
   ## Now we know which of the two is found in the coefficents
   # Using this to get the index of the TRUE one
@@ -306,9 +292,9 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
     # Covariance of predictor and interaction terms (gamma_1 by gamma_3)
     covy1y3 <- vmat[intterm,pred]
     # Actual interaction coefficient (gamma_3)
-    y3 <- coef(model)[intterm]
+    y3 <- get_coef(model)[intterm]
     # Actual predictor coefficient (gamma_1)
-    y1 <- coef(model)[pred]
+    y1 <- get_coef(model)[pred]
 
   }
 

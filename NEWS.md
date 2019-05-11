@@ -1,3 +1,10 @@
+# interactions 1.1.1
+
+Bugfixes:
+
+* `sim_slopes()` no longer fails getting Johnson-Neyman intervals for `merMod`
+models. (#20)
+
 # interactions 1.1.0
 
 ## New function: `sim_margins()`
