@@ -314,7 +314,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   # Need to make a matrix filled with NAs to store values from looped
   # model-making
   holdvals <- rep(NA, length(modxvals2) * (length(the_col_names) + 1))
-  retmat <- matrix(holdvals, nrow = length(modxvals2))
+  retmat <- as.data.frame(matrix(holdvals, nrow = length(modxvals2)))
 
   # Create a list to hold Johnson-Neyman objects
   jns <- list()
@@ -810,7 +810,7 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
   cols <- c("estimate", "std.error", "statistic", "p.value", "modx",
             "modx.value", "mod2", "mod2.value")
   # Figure out how many rows the data frame will be
-  num_coefs <- ifelse(is.list(x$slopes),
+  num_coefs <- ifelse(!is.data.frame(x$slopes),
                       yes = length(x$slopes) * nrow(x$slopes[[1]]),
                       no = nrow(x$slopes))
   # Create NA-filled data frame
