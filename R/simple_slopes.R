@@ -302,6 +302,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   tcol <- try(colnames(summary(model)$coefficients)[3], silent = TRUE)
   if (class(tcol) != "try-error") {
     tcol <- gsub("value", "val.", tcol)
+    if (tcol == "df") tcol <- "t val." # kludge for lmerModTest
     which.cols <- c("Est.", "S.E.", unlist(make_ci_labs(ci.width)), tcol)
     if (pvals == TRUE) {which.cols <- c(which.cols, "p")}
   } else {
@@ -462,15 +463,6 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       newmod <- eval(call)
     } else {
       newmod <- update(model, data = dt)
-    }
-
-    # Need proper name for test statistic
-    tcol <- try(colnames(summary(newmod)$coefficients)[3], silent = TRUE)
-    if (class(tcol) != "try-error") {
-      tcol <- gsub("value", "val.", tcol)
-      which.cols <- c("Est.", "S.E.", unlist(make_ci_labs(ci.width)), tcol, "p")
-    } else {
-      which.cols <- NULL
     }
 
     # Getting SEs, robust or otherwise

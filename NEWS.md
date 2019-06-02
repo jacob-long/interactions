@@ -9,6 +9,8 @@ Thanks to [Paul Djupe](http://pauldjupe.com/) for alerting me to this.
 * The `tidy()` method for `sim_slopes` objects no longer returns numbers as
 strings. This had downstream effects on, e.g., the `plot()` method for 
 `sim_slopes`. (#22; thanks to Noah Greifer)
+* `sim_slopes()` now handles `lmerModTest` objects properly. Thanks to Eric 
+Shuman for bringing it to my attention.
 
 # interactions 1.1.0
 
