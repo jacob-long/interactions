@@ -102,7 +102,7 @@ test_that("sim_margins works for lm w/ non-focal character", {
 
 context("sim_margins methods")
 
-if (requireNamespace("huxtable") && requireNamespace("generics")) {
+if (requireNamespace("huxtable") && requireNamespace("broom")) {
   test_that("as_huxtable.sim_margins works", {
     ss3 <- sim_margins(model = fit, pred = Murder, modx = Illiteracy,
                       mod2 = HSGrad)
@@ -124,7 +124,7 @@ if (requireNamespace("huxtable") && requireNamespace("generics")) {
   })
 }
 
-if (requireNamespace("ggstance") && requireNamespace("generics")) {
+if (requireNamespace("ggstance") && requireNamespace("broom")) {
   test_that("plot.sim_margins works", {
     ss3 <- sim_margins(model = fit, pred = Murder, modx = Illiteracy,
                       mod2 = HSGrad)
