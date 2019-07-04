@@ -37,12 +37,10 @@ GLMs, models from the `survey` package, and multilevel models from
 
 ## Installation
 
-For the moment, the package has just been submitted to CRAN and may not
-yet be available as you read this. If that is the case, please install
-from Github.
+The package is now available via CRAN.
 
 ``` r
-source("https://install-github.me/jacob-long/interactions")
+install.packages("interactions")
 ```
 
 ## Usage
@@ -90,23 +88,23 @@ sim_slopes(fiti, pred = hp, modx = wt, jnplot = TRUE)
 
     #> SIMPLE SLOPES ANALYSIS 
     #> 
-    #> Slope of hp when wt = 4.20 (+ 1 SD): 
+    #> Slope of hp when wt = 2.24 (- 1 SD): 
     #> 
-    #>   Est.   S.E.   t val.      p
-    #> ------  -----  -------  -----
-    #>  -0.00   0.01    -0.31   0.76
+    #>    Est.   S.E.   t val.      p
+    #> ------- ------ -------- ------
+    #>   -0.06   0.01    -5.66   0.00
     #> 
     #> Slope of hp when wt = 3.22 (Mean): 
     #> 
-    #>   Est.   S.E.   t val.      p
-    #> ------  -----  -------  -----
-    #>  -0.03   0.01    -4.07   0.00
+    #>    Est.   S.E.   t val.      p
+    #> ------- ------ -------- ------
+    #>   -0.03   0.01    -4.07   0.00
     #> 
-    #> Slope of hp when wt = 2.24 (- 1 SD): 
+    #> Slope of hp when wt = 4.20 (+ 1 SD): 
     #> 
-    #>   Est.   S.E.   t val.      p
-    #> ------  -----  -------  -----
-    #>  -0.06   0.01    -5.66   0.00
+    #>    Est.   S.E.   t val.      p
+    #> ------- ------ -------- ------
+    #>   -0.00   0.01    -0.31   0.76
 
 The Johnson-Neyman plot can really help you get a handle on what the
 interval is telling you, too. Note that you can look at the
@@ -158,8 +156,8 @@ the Github issues system over trying to reach out to me in other ways.
 Pull requests for contributions are encouraged.
 
 Please note that this project is released with a [Contributor Code of
-Conduct](CONDUCT.md). By participating in this project you agree to
-abide by its terms.
+Conduct](https://github.com/jacob-long/interactions/blob/master/CONDUCT.md).
+By participating in this project you agree to abide by its terms.
 
 ## License
 

@@ -49,12 +49,10 @@ and `brms`.
 
 ## Installation
 
-For the moment, the package has just been submitted to CRAN and may not yet
-be available as you read this. If that is the case, please
-install from Github.
+The package is now available via CRAN.
 
 ```r
-source("https://install-github.me/jacob-long/interactions")
+install.packages("interactions")
 ```
 
 ## Usage
@@ -131,7 +129,7 @@ issues system over trying to reach out to me in other ways. Pull requests for
 contributions are encouraged.
 
 Please note that this project is released with a 
-[Contributor Code of Conduct](CONDUCT.md). By participating in this project
+[Contributor Code of Conduct](https://github.com/jacob-long/interactions/blob/master/CONDUCT.md). By participating in this project
 you agree to abide by its terms.
 
 ## License
