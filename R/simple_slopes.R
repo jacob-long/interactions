@@ -790,12 +790,6 @@ print.sim_slopes <- function(x, ...) {
 #' @param ... Ignored.
 #' @rdname sim_slopes_tidiers
 #' @export
-#' @rawNamespace
-#' if (getRversion() >= "3.6.0") {
-#'   S3method(broom::tidy, sim_slopes)
-#' } else {
-#'   export(tidy.sim_slopes)
-#' }
 
 tidy.sim_slopes <- function(x, conf.level = .95, ...) {
 
@@ -885,12 +879,6 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
 
 #' @rdname sim_slopes_tidiers
 #' @export
-#' @rawNamespace
-#' if (getRversion() >= "3.6.0") {
-#'   S3method(broom::glance, sim_slopes)
-#' } else {
-#'   export(glance.sim_slopes)
-#' }
 
 glance.sim_slopes <- function(x, ...) {
   data.frame(N = length(residuals(x$mods[[1]])))

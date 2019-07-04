@@ -351,12 +351,6 @@ print.sim_margins <- function(x, ...) {
 #' @param ... Ignored.
 #' @rdname sim_margins_tidiers
 #' @export
-#' @rawNamespace
-#' if (getRversion() >= "3.6.0") {
-#'   S3method(broom::tidy, sim_margins)
-#' } else {
-#'   export(tidy.sim_margins)
-#' }
 
 tidy.sim_margins <- function(x, conf.level = .95, ...) {
 
@@ -447,12 +441,6 @@ tidy.sim_margins <- function(x, conf.level = .95, ...) {
 
 #' @rdname sim_margins_tidiers
 #' @export
-#' @rawNamespace
-#' if (getRversion() >= "3.6.0") {
-#'   S3method(broom::glance, sim_margins)
-#' } else {
-#'   export(glance.sim_margins)
-#' }
 
 glance.sim_margins <- function(x, ...) {
   tibble::as_tibble(data.frame(N = nobs(x)))

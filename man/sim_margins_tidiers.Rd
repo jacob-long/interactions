@@ -5,9 +5,9 @@
 \alias{glance.sim_margins}
 \title{Tidiers for \code{\link[=sim_margins]{sim_margins()}} objects.}
 \usage{
-tidy.sim_margins(x, conf.level = 0.95, ...)
+\method{tidy}{sim_margins}(x, conf.level = 0.95, ...)
 
-glance.sim_margins(x, ...)
+\method{glance}{sim_margins}(x, ...)
 }
 \arguments{
 \item{x}{The \code{sim_margins} object}

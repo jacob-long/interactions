@@ -69,7 +69,7 @@ test_that("sim_slopes works for lm w/ non-focal character", {
 
 context("sim_slopes methods")
 
-if (requireNamespace("huxtable") && requireNamespace("broom")) {
+if (requireNamespace("huxtable") && requireNamespace("generics")) {
   test_that("as_huxtable.sim_slopes works", {
     ss3 <- sim_slopes(model = fit, pred = Murder, modx = Illiteracy,
                       mod2 = HSGrad)
@@ -79,7 +79,7 @@ if (requireNamespace("huxtable") && requireNamespace("broom")) {
   })
 }
 
-if (requireNamespace("ggstance") && requireNamespace("broom")) {
+if (requireNamespace("ggstance") && requireNamespace("generics")) {
   test_that("plot.sim_slopes works", {
     ss3 <- sim_slopes(model = fit, pred = Murder, modx = Illiteracy,
                       mod2 = HSGrad)

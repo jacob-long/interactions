@@ -19,11 +19,11 @@ LazyData: true
 Imports: ggplot2,
   crayon,
   cli,
+  generics,
   jtools (>= 2.0.0),
   rlang (>= 0.3.0),
   tibble
 Suggests:
-  broom,
   cowplot,
   ggstance,
   glue,

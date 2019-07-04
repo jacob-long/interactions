@@ -198,3 +198,12 @@ cut2 <- function(x, cuts, m = 150, g, levels.mean = FALSE,
   #   label(y) <- xlab
   y
 }
+
+
+#'@export
+#'@importFrom generics tidy
+generics::tidy
+
+#'@export
+#'@importFrom generics glance
+generics::glance

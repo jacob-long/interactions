@@ -5,9 +5,9 @@
 \alias{glance.sim_slopes}
 \title{Tidiers for \code{\link[=sim_slopes]{sim_slopes()}} objects.}
 \usage{
-tidy.sim_slopes(x, conf.level = 0.95, ...)
+\method{tidy}{sim_slopes}(x, conf.level = 0.95, ...)
 
-glance.sim_slopes(x, ...)
+\method{glance}{sim_slopes}(x, ...)
 }
 \arguments{
 \item{x}{The \code{sim_slopes} object}
