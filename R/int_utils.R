@@ -744,7 +744,8 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
         at = at_list, set.offset = set.offset, center = centered,
         interval = interval, outcome.scale = outcome.scale, ...
     )})
-    pms[[i]] <- pms[[i]][complete.cases(pms[[i]]), ]
+    pms[[i]] <-
+      pms[[i]][complete.cases(pms[[i]][all.vars(as.formula(formula(model)))]), ]
   }
 
   if (off == TRUE) {

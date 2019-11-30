@@ -1,3 +1,9 @@
+# interactions 1.1.2
+
+Bugfixes: 
+
+* Plotting functions no longer fail with incomplete source data.
+
 # interactions 1.1.1
 
 Bugfixes:
