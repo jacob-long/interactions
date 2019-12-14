@@ -509,8 +509,12 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
              "12223242", "F282", "F4448444", "224282F2", "F1")
   ltypes <- types[seq_along(modxvals2)]
 
-  # Reverse the order of the linetypes if second moderator
-  if (!is.null(mod2)) ltypes <- rev(ltypes)
+  # Reverse the order of the linetypes to make thick line go to biggest value
+  if (is.numeric(modxvals2) & all(sort(modxvals2) == modxvals2)) {
+    ltypes <- rev(ltypes)
+  } else if (!is.null(mod2) & !(is.numeric(modxvals2) & !all(sort(modxvals2) == modxvals2))) { # also flip for factor second moderators
+    ltypes <- rev(ltypes)
+  }
 
   if (gradient == FALSE) {
     names(colors) <- modx.labels

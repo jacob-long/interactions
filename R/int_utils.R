@@ -174,6 +174,8 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
     }
   } else {char1 <- FALSE}
 
+  user_specified <- length(modx.values) > 1
+
   # If using a preset, send to auto_mod_vals function
   if (is_fac == FALSE && (is.null(modx.values) | is.character(modx.values))) {
 
@@ -242,7 +244,7 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
 
   }
 
-  if (is_fac == FALSE) {
+  if (is_fac == FALSE & user_specified == FALSE) {
     # The proper order for interact_plot depends on presence of second moderator
     modxvals2 <- sort(modxvals2, decreasing = (!any.mod2 & !facet.modx))
     if (any(modxvals2 > range(d[[modx]])[2])) {

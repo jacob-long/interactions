@@ -3,6 +3,8 @@
 Bugfixes: 
 
 * Plotting functions no longer fail with incomplete source data.
+* Plotting functions now respect the order of `modx.values` and `mod2.values`
+arguments.
 
 # interactions 1.1.1
 
