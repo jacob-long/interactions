@@ -434,7 +434,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                       modxvals2 = modxvals2, mod2vals2 = mod2vals2,
                       weights = weights, rug = rug, rug.sides = rug.sides,
                       point.size = point.size, point.shape = point.shape,
-                      facet.modx = facet.modx)
+                      facet.modx = facet.modx, point.alpha = point.alpha)
 
 }
 

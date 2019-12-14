@@ -5,6 +5,7 @@ Bugfixes:
 * Plotting functions no longer fail with incomplete source data.
 * Plotting functions now respect the order of `modx.values` and `mod2.values`
 arguments. (#29)
+* `interact_plot()` no longer ignores the `point.alpha` argument. (#25)
 
 # interactions 1.1.1
 
