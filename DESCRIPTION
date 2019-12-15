@@ -36,7 +36,8 @@ Suggests:
   survey,
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    vdiffr
 Enhances:
   brms,
   rstanarm

@@ -1,8 +1,5 @@
 context("interact_plot lm")
 
-device <- getOption("device")
-options(device = "pdf")
-
 states <- as.data.frame(state.x77)
 states$HSGrad <- states$`HS Grad`
 states$o70 <- 0
@@ -21,6 +18,8 @@ fitw <- lm(Income ~ HSGrad*Murder*Illiteracy + o70 + Area, data = states,
 fitl <- lm(Income ~ HSGrad*o70l, data = states)
 fitc <- lm(Income ~ HSGrad*Murder + o70c, data = states)
 
+library(vdiffr)
+
 if (requireNamespace("survey")) {
   suppressMessages(library(survey, quietly = TRUE))
   data(api)
@@ -30,152 +29,124 @@ if (requireNamespace("survey")) {
 }
 
 test_that("interact_plot works for lm", {
-  expect_silent(p <- interact_plot(model = fit,
-                                   pred = Murder,
-                                   modx = Illiteracy,
-                                   mod2 = HSGrad,
-                                   centered = "all"))
-  expect_silent(print(p))
-  expect_warning(p <- interact_plot(model = fit,
-                                    pred = Murder,
-                                    modx = Illiteracy,
-                                    mod2 = HSGrad,
-                                    centered = "HSGrad"))
-  expect_silent(print(p))
-  expect_silent(p <- interact_plot(model = fit,
-                                   pred = Murder,
-                                   modx = Illiteracy,
-                                   mod2 = HSGrad,
-                                   centered = "Area"))
-  expect_silent(print(p))
-  expect_silent(p <- interact_plot(model = fit,
-                                   pred = Murder,
-                                   modx = Illiteracy,
-                                   mod2 = HSGrad,
-                                   centered = "none"))
-  expect_silent(print(p))
+  plma <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                        mod2 = HSGrad, centered = "all")
+  expect_doppelganger("plma", plma)
+  expect_warning(
+    plmm <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                          mod2 = HSGrad, centered = "HSGrad")
+  )
+  expect_doppelganger("plmm", plmm)
+  plm1 <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                        mod2 = HSGrad, centered = "Area")
+  expect_doppelganger("plm1", plm1)
+  plm0 <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                        mod2 = HSGrad, centered = "none")
+  expect_doppelganger("plm0", plm0)
 })
 
 test_that("interact_plot: robust standard errors work", {
-  expect_silent(p <- interact_plot(model = fit,
-                                   pred = Murder,
-                                   modx = Illiteracy,
-                                   mod2 = HSGrad,
-                                   centered = "all",
-                                   robust = TRUE))
-  expect_silent(print(p))
+  plmrob <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                        mod2 = HSGrad, centered = "all", robust = TRUE)
+  expect_doppelganger("plmrob", plmrob)
 })
 
 test_that("rug plots work", {
-  expect_silent(p <- interact_plot(model = fit,
-                                   pred = Murder,
-                                   modx = Illiteracy,
-                                   mod2 = HSGrad,
-                                   centered = "all",
-                                   rug = TRUE))
-  expect_silent(print(p))
+  plmrugb <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                     mod2 = HSGrad, centered = "all", rug = TRUE)
+  expect_doppelganger("plmrugb", plmrugb)
 
-  expect_silent(p <- interact_plot(model = fit,
-                                   pred = Murder,
-                                   modx = Illiteracy,
-                                   mod2 = HSGrad,
-                                   centered = "all",
-                                   rug = TRUE,
-                                   rug.sides = "lb"))
-  expect_silent(print(p))
+  plmruglb <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                            mod2 = HSGrad, centered = "all", rug = TRUE,
+                            rug.sides = "lb")
+  expect_doppelganger("plmruglb", plmruglb)
 })
 
 
 test_that("interact_plot works for weighted lm", {
-  expect_silent(p <- interact_plot(model = fitw,
-                                   pred = Murder,
-                                   modx = Illiteracy,
-                                   mod2 = HSGrad,
-                                   modx.values = c(1, 1.5, 2),
-                                   centered = "all"))
-  expect_silent(print(p))
+  plmw <- interact_plot(model = fitw, pred = Murder, modx = Illiteracy,
+                        mod2 = HSGrad, modx.values = c(1, 1.5, 2),
+                        centered = "all")
+  expect_doppelganger("plmw", plmw)
 })
 
 test_that("interact_plot works for lm w/ logical", {
-  expect_silent(p <- interact_plot(model = fitl,
-                                   pred = HSGrad,
-                                   modx = o70l))
-  expect_silent(print(p))
+  plmtf <- interact_plot(model = fitl, pred = HSGrad, modx = o70l)
+  expect_doppelganger("plmtf", plmtf)
 })
 
 test_that("interact_plot works for lm w/ non-focal character", {
-  expect_silent(sim_slopes(model = fitc,
-                           pred = HSGrad,
-                           modx = Murder,
-                           johnson_neyman = FALSE))
-  expect_silent(p <- interact_plot(model = fitc,
-                                   pred = HSGrad,
-                                   modx = Murder))
-  expect_silent(print(p))
+  plmnfchar <- interact_plot(model = fitc, pred = HSGrad, modx = Murder)
+  expect_doppelganger("plmnfchar", plmnfchar)
 })
 
 test_that("interact_plot accepts user-specified values and labels", {
-  expect_silent(p <- interact_plot(model = fit,
-                                   pred = Murder,
-                                   modx = Illiteracy,
-                                   mod2 = HSGrad,
-                                   centered = "all",
-                                   modxvals = c(1.5, 2, 2.5),
-                                   modx.labels = c("None","Low","High"),
-                                   mod2vals = c(58, 60, 62),
-                                   mod2.labels = c("Low","Average","High")))
-  expect_silent(print(p))
-  expect_error(p <- interact_plot(model = fit2,
-                                  pred = o70,
-                                  modx = HSGrad,
-                                  pred.labels = c("Under","Over")))
-  expect_silent(p <- interact_plot(model = fit2n,
-                                   pred = o70n,
-                                   modx = HSGrad,
-                                   pred.labels = c("Under","Over")))
-  expect_silent(print(p))
+  plmlabelsc <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                              mod2 = HSGrad, centered = "all",
+                              modxvals = c(1.5, 2, 2.5),
+                              modx.labels = c("None","Low","High"),
+                              mod2vals = c(58, 60, 62),
+                              mod2.labels = c("Low","Average","High"))
+  expect_doppelganger("plmlabelsc", plmlabelsc)
+
+  # Alternate input
+  plmlabelsc2 <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                              mod2 = HSGrad, centered = "all",
+                              modxvals = c("None" = 1.5, "Low" = 2,
+                                           "High" = 2.5),
+                              mod2vals = c("Low" = 58, "Average" = 60,
+                                           "High" = 62))
+  expect_doppelganger("plmlabelsc2", plmlabelsc2)
+
+  # Reject logical/factor pred
+  expect_error(interact_plot(model = fit2, pred = o70, modx = HSGrad,
+                             pred.labels = c("Under","Over")))
+  plmlabelscpred <- interact_plot(model = fit2n, pred = o70n, modx = HSGrad,
+                                  pred.labels = c("Under","Over"))
+  expect_doppelganger("plmlabelscpred", plmlabelscpred)
+
+  # Sort properly
+  plmlabelscs <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                              mod2 = HSGrad, centered = "all",
+                              modxvals = c(2.5, 2, 1.5),
+                              modx.labels = c("High","Low","None"),
+                              mod2vals = c(62, 60, 58),
+                              mod2.labels = c("High","Average","Low"))
+  expect_doppelganger("plmlabelscs", plmlabelscs)
 })
 
 test_that("interact_plot terciles modxval/mod2val works", {
-  expect_message(p <- interact_plot(model = fit,
-                                    pred = Murder,
-                                    modx = Illiteracy,
-                                    mod2 = HSGrad,
-                                    modxvals = "terciles",
-                                    mod2vals = "terciles",
-                                    centered = "none"))
-  expect_silent(print(p))
+  expect_message(
+    plmtercs <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                              mod2 = HSGrad, modxvals = "terciles",
+                              mod2vals = "terciles", centered = "none")
+  )
+  expect_doppelganger("plmtercs", plmtercs)
 })
 
 test_that("interact_plot linearity.check works", {
-  expect_message(p <- interact_plot(model = fit,
-                                    pred = Murder,
-                                    modx = Illiteracy,
-                                    modxvals = "terciles",
-                                    linearity.check = TRUE,
-                                    plot.points = TRUE))
-  expect_silent(print(p))
-  expect_silent(p <- interact_plot(model = fit,
-                                   pred = Murder,
-                                   modx = Illiteracy,
-                                   linearity.check = TRUE))
-  expect_silent(print(p))
+  plmlinearchp <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                                modxvals = "terciles", linearity.check = TRUE,
+                                plot.points = TRUE)
+  expect_doppelganger("plmlinearchp", plmlinearchp)
+  plmlinearchnp <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
+                                 modxvals = "terciles", linearity.check = TRUE)
+  expect_doppelganger("plmlinearchnp", plmlinearchnp)
 })
 
 context("interact_plot svyglm")
 
 if (requireNamespace("survey")) {
   test_that("interact_plot works for svyglm", {
-    expect_silent(p <- interact_plot(regmodel, pred = ell, modx = meals,
-                                     mod2 = both,
-                                     centered = "all"))
-    expect_silent(print(p))
-    expect_warning(p <- interact_plot(regmodel, pred = ell, modx = meals,
-                                      mod2 = both,
-                                      centered = "ell"))
-    expect_silent(print(p))
+    psvya <- interact_plot(regmodel, pred = ell, modx = meals,  mod2 = both,
+                           centered = "all")
+    expect_doppelganger("psvya", psvya)
+    expect_warning(
+      psvy1 <- interact_plot(regmodel, pred = ell, modx = meals, mod2 = both,
+                             centered = "ell")
+    )
+    expect_doppelganger("psvy1", psvy1)
   })
-
 }
 
 context("interact_plot merMod")
@@ -191,12 +162,14 @@ if (requireNamespace("lme4")) {
               offset = log(size))
 
   test_that("interact_plot works for lme4", {
-    expect_error(p <- interact_plot(mve, pred = mode, modx = Gender))
-    expect_silent(p <- interact_plot(mv, pred = mode_numeric, modx = Gender))
-    expect_silent(print(p))
-    # expect_message(p <- interact_plot(mv, pred = mode_numeric, modx = Gender,
-    #                                   interval = TRUE))
-    # expect_silent(print(p))
+    expect_error(interact_plot(mve, pred = mode, modx = Gender))
+    plme4 <- interact_plot(mv, pred = mode_numeric, modx = Gender)
+    expect_doppelganger("plme4", plme4)
+    # expect_message(
+      plme4i <- interact_plot(mv, pred = mode_numeric, modx = Gender,
+                              interval = TRUE)
+    # )
+    expect_doppelganger("plme4i", plme4i)
   })
 
 }
@@ -213,14 +186,17 @@ pmod <- glm(counts ~ talent*money, offset = log(exposures), data = poisdat,
             family = poisson)
 
 test_that("interact_plot handles offsets", {
-  expect_message(p <- interact_plot(pmod, pred = talent, modx = money))
-  expect_silent(print(p))
+  expect_message(
+    pglmoff <- interact_plot(pmod, pred = talent, modx = money)
+  )
+  expect_doppelganger("pglmoff", pglmoff)
 })
 
 test_that("interact_plot handles offsets with robust SE", {
-  expect_message(p <- interact_plot(pmod, pred = talent, modx = money,
-                                    robust = TRUE))
-  expect_silent(print(p))
+  expect_message(
+    pglmrob <- interact_plot(pmod, pred = talent, modx = money, robust = TRUE)
+  )
+  expect_doppelganger("pglmrob", pglmrob)
 })
 
 test_that("sim_slopes handles offsets", {
@@ -250,10 +226,11 @@ if (requireNamespace("brms")) {
   context("brmsfit plots 2")
   bfit <- readRDS("brmfit.rds")
   test_that("brmsfit objects are supported", {
-    expect_silent(print(cat_plot(bfit, pred = "Trt",
-                                 interval = TRUE)))
-    expect_silent(print(interact_plot(bfit, pred = "log_Base4_c", modx = "Trt",
-                                      interval = TRUE)))
+    pbfcat <- cat_plot(bfit, pred = "Trt", interval = TRUE)
+    expect_doppelganger("pbfcat", pbfcat)
+    pbfcont <- interact_plot(bfit, pred = "log_Base4_c", modx = "Trt",
+                             interval = TRUE)
+    expect_doppelganger("pbfcont", pbfcont)
   })
 }
 
@@ -263,11 +240,9 @@ if (requireNamespace("rstanarm") & requireNamespace("lme4")) {
   library(lme4)
   data(cbpp)
   test_that("stanreg objects are supported", {
-    expect_silent(print(interact_plot(rsfit, pred = "size",
-                                      modx = "period", interval = TRUE,
-                                      data = cbpp)))
+    prsacont <- interact_plot(rsfit, pred = "size", modx = "period",
+                              interval = TRUE, data = cbpp)
+    expect_doppelganger("prsacont", prsacont)
   })
 }
 
-options(device = device)
-dev.off()

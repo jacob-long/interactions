@@ -1,7 +1,6 @@
 context("cat_plot lm")
 
-device <- getOption("device")
-options(device = "pdf")
+library(vdiffr)
 
 if (requireNamespace("lme4", quietly = TRUE)) {
   library(lme4, quietly = TRUE)
@@ -16,77 +15,75 @@ diamond <- diamond[samps,]
 fit <- lm(price ~ cut * color, data = diamond)
 
 test_that("cat_plot handles simple plot (bar)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut))
-  expect_silent(print(p))
+  plmbar <- cat_plot(fit, pred = color, modx = cut)
+  expect_doppelganger("plmbar", plmbar)
 })
 
 test_that("cat_plot handles intervals (bar)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, interval = TRUE))
-  expect_silent(print(p))
+  plmbari <- cat_plot(fit, pred = color, modx = cut, interval = TRUE)
+  expect_doppelganger("plmbari", plmbari)
 })
 
 test_that("cat_plot handles plotted points (bar)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                              plot.points = TRUE))
-  expect_silent(print(p))
+  plmbarpp <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
+                       plot.points = TRUE)
+  expect_doppelganger("plmbarpp", plmbarpp)
 })
 
 test_that("cat_plot handles simple plot (line)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, geom = "line"))
-  expect_silent(print(p))
+  plmline <- cat_plot(fit, pred = color, modx = cut, geom = "line")
+  expect_doppelganger("plmline", plmline)
 })
 
 test_that("cat_plot handles intervals (line)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                              geom = "line"))
-  expect_silent(print(p))
+  plmlinei <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
+                        geom = "line")
+  expect_doppelganger("plmlinei", plmlinei)
 })
 
 test_that("cat_plot handles plotted points (line)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                              plot.points = TRUE, geom = "line"))
-  expect_silent(print(p))
+  plmlinepp <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
+                        plot.points = TRUE, geom = "line")
+  expect_doppelganger("plmlinepp", plmlinepp)
 })
 
 test_that("cat_plot handles point.shape (line)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                              plot.points = TRUE, geom = "line", point.shape = TRUE))
-  expect_silent(print(p))
+  plmlineps <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
+                        plot.points = TRUE, geom = "line", point.shape = TRUE)
+  expect_doppelganger("plmlineps", plmlineps)
 })
 
-test_that("cat_plot handles point.shape (line)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                              plot.points = TRUE, geom = "line", point.shape = TRUE,
-                              vary.lty = TRUE))
-  expect_silent(print(p))
+test_that("cat_plot handles linetypes (line)", {
+  plmlinelt <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
+                        geom = "line", vary.lty = TRUE, plot.points = TRUE)
+  expect_doppelganger("plmlinelt", plmlinelt)
 })
 
 test_that("cat_plot handles simple plot (point)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, geom = "point"))
-  expect_silent(print(p))
+  plmpt <- cat_plot(fit, pred = color, modx = cut, geom = "point")
+  expect_doppelganger("plmpt", plmpt)
 })
 
 test_that("cat_plot handles intervals (point)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                              geom = "point"))
-  expect_silent(print(p))
+  plmpti <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
+                     geom = "point")
+  expect_doppelganger("plmpti", plmpti)
 })
 
 test_that("cat_plot handles plotted points (point)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                              plot.points = TRUE, geom = "point"))
-  expect_silent(print(p))
+  plmptpp <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
+                      plot.points = TRUE, geom = "point")
+  expect_doppelganger("plmptpp", plmptpp)
 })
 
 test_that("cat_plot handles point.shape (point)", {
-  expect_silent(p <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                              plot.points = TRUE, geom = "point",
-                              point.shape = TRUE))
-  expect_silent(print(p))
+  plmptps <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
+                      plot.points = TRUE, geom = "point", point.shape = TRUE)
+  expect_doppelganger("plmptps", plmptps)
 })
 
 test_that("cat_plot handles simple plot (boxplot)", {
-  expect_error(p <- cat_plot(fit, pred = color, modx = cut, geom = "boxplot"))
+  expect_error(cat_plot(fit, pred = color, modx = cut, geom = "boxplot"))
 })
 
 context("cat_plot glm")
@@ -102,8 +99,8 @@ pmod <- glm(counts ~ talent*money, offset = log(exposures), data = poisdat,
             family = poisson)
 
 test_that("cat_plot handles offsets", {
-  expect_s3_class(p <- cat_plot(pmod, pred = talent), "gg")
-  expect_silent(print(p))
+  pglmcatoff <- cat_plot(pmod, pred = talent)
+  expect_doppelganger("pglmcatoff", pglmcatoff)
 })
 
 context("cat_plot survey")
@@ -115,16 +112,16 @@ if (requireNamespace("survey")) {
                       fpc = ~fpc)
   regmodel <- svyglm(api00 ~ ell * meals * both + sch.wide, design = dstrat)
   test_that("cat_plot handles svyglm", {
-    expect_silent(p <- cat_plot(regmodel, pred = both))
-    expect_silent(print(p))
+    psvycat <- cat_plot(regmodel, pred = both)
+    expect_doppelganger("psvycat", psvycat)
   })
 }
 
 context("cat_plot merMod")
 
 test_that("cat_plot handles merMod", {
-  expect_silent(p <- cat_plot(mv, pred = mode, modx = Gender, interval = FALSE))
-  expect_silent(print(p))
+  plme4cat <- cat_plot(mv, pred = mode, modx = Gender, interval = FALSE)
+  expect_doppelganger("plme4cat", plme4cat)
 })
 
 
@@ -146,139 +143,126 @@ fit3 <- lm(cty ~ cyl * fwd * auto, data = mpg2)
 
 
 test_that("cat_plot does 3-way interactions (bar)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "bar"))
-  expect_silent(print(p))
+  p3bar <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "bar")
+  expect_doppelganger("p3bar", p3bar)
 })
 
 test_that("cat_plot does intervals w/ 3-way interactions (bar)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "bar",
-                              interval = TRUE))
-  expect_silent(print(p))
+  p3bari <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "bar",
+                     interval = TRUE)
+  expect_doppelganger("p3bari", p3bari)
 })
 
 test_that("cat_plot does plot.points w/ 3-way interactions (bar)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "bar",
-                              interval = TRUE, plot.points = TRUE))
-  expect_silent(print(p))
+  p3barpp <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "bar",
+                      interval = TRUE, plot.points = TRUE)
+  expect_doppelganger("p3barpp", p3barpp)
 })
 
 test_that("cat_plot does point.shape w/ 3-way interactions (bar)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "bar",
-                              interval = TRUE, plot.points = TRUE, point.shape = TRUE))
-  expect_silent(print(p))
+  p3barps <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "bar",
+                      interval = TRUE, plot.points = TRUE, point.shape = TRUE)
+  expect_doppelganger("p3barps", p3barps)
 })
 
 test_that("cat_plot does 3-way interactions (line)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line"))
-  expect_silent(print(p))
+  p3line <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line")
+  expect_doppelganger("p3line", p3line)
 })
 
 test_that("cat_plot does intervals w/ 3-way interactions (line)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
-                              interval = TRUE))
-  expect_silent(print(p))
+  p3linei <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
+                      interval = TRUE)
+  expect_doppelganger("p3linei", p3linei)
 })
 
 test_that("cat_plot does plot.points w/ 3-way interactions (line)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
-                              interval = TRUE, plot.points = TRUE))
-  expect_silent(print(p))
+  p3linepp <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
+                       interval = TRUE, plot.points = TRUE)
+  expect_doppelganger("p3linepp", p3linepp)
 })
 
 test_that("cat_plot does point.shape w/ 3-way interactions (line)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
-                              interval = TRUE, plot.points = TRUE, point.shape = TRUE))
-  expect_silent(print(p))
+  p3lineps <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
+                       interval = TRUE, plot.points = TRUE, point.shape = TRUE)
+  expect_doppelganger("p3lineps", p3lineps)
 })
 
 test_that("cat_plot does vary.lty w/ 3-way interactions (line)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
-                              interval = TRUE, plot.points = TRUE, point.shape = TRUE,
-                              vary.lty = TRUE))
-  expect_silent(print(p))
+  p3linelty <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto,
+                        geom = "line", interval = TRUE, plot.points = TRUE,
+                        point.shape = TRUE, vary.lty = TRUE)
+  expect_doppelganger("p3linelty", p3linelty)
 })
 
 test_that("cat_plot does 3-way interactions (point)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "point"))
-  expect_silent(print(p))
+  p3pt <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "point")
+  expect_doppelganger("p3pt", p3pt)
 })
 
 test_that("cat_plot does intervals w/ 3-way interactions (point)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "point",
-                              interval = TRUE))
-  expect_silent(print(p))
+  p3pti <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "point",
+                    interval = TRUE)
+  expect_doppelganger("p3pti", p3pti)
 })
 
 test_that("cat_plot does plot.points w/ 3-way interactions (point)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "point",
-                              interval = TRUE, plot.points = TRUE))
-  expect_silent(print(p))
+  p3ptpp <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "point",
+                     interval = TRUE, plot.points = TRUE)
+  expect_doppelganger("p3ptpp", p3ptpp)
 })
 
 test_that("cat_plot does point.shape w/ 3-way interactions (point)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "point",
-                              interval = TRUE, plot.points = TRUE, point.shape = TRUE))
-  expect_silent(print(p))
-})
-
-test_that("cat_plot does 3-way interactions (line)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line"))
-  expect_silent(print(p))
-})
-
-test_that("cat_plot does plot.points w/ 3-way interactions (line)", {
-  expect_silent(p <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
-                              plot.points = TRUE))
-  expect_silent(print(p))
+  p3ptps <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "point",
+                     interval = TRUE, plot.points = TRUE, point.shape = TRUE)
+  expect_doppelganger("p3ptps", p3ptps)
 })
 
 context("cat_plot no interaction")
 
 test_that("cat_plot handles simple plot w/ no mod. (bar)", {
-  expect_silent(p <- cat_plot(fit, pred = color))
-  expect_silent(print(p))
+  p0bar <- cat_plot(fit, pred = color, geom = "bar")
+  expect_doppelganger("p0bar", p0bar)
 })
 
 test_that("cat_plot handles intervals w/ no mod. (bar)", {
-  expect_silent(p <- cat_plot(fit, pred = color, interval = TRUE))
-  expect_silent(print(p))
+  p0bari <- cat_plot(fit, pred = color, interval = TRUE, geom = "bar")
+  expect_doppelganger("p0bari", p0bari)
 })
 
 test_that("cat_plot handles plotted points w/ no mod. (bar)", {
-  expect_silent(p <- cat_plot(fit, pred = color, interval = TRUE,
-                              plot.points = TRUE))
-  expect_silent(print(p))
+  p0barpp <- cat_plot(fit, pred = color, interval = TRUE, plot.points = TRUE,
+                      geom = "bar")
+  expect_doppelganger("p0barpp", p0barpp)
 })
 
 test_that("cat_plot handles simple plot w/ no mod. (point)", {
-  expect_silent(p <- cat_plot(fit, pred = color, geom = "point"))
-  expect_silent(print(p))
+  p0pt <- cat_plot(fit, pred = color, geom = "point")
+  expect_doppelganger("p0pt", p0pt)
 })
 
 test_that("cat_plot handles intervals w/ no mod. (point)", {
-  expect_silent(p <- cat_plot(fit, pred = color, interval = TRUE,
-                              geom = "point"))
-  expect_silent(print(p))
+  p0pti <- cat_plot(fit, pred = color, interval = TRUE, geom = "point")
+  expect_doppelganger("p0pti", p0pti)
 })
 
 test_that("cat_plot handles plotted points w/ no mod. (point)", {
-  expect_silent(p <- cat_plot(fit, pred = color, interval = TRUE,
-                              plot.points = TRUE, geom = "point"))
-  expect_silent(print(p))
+  p0ptpp <- cat_plot(fit, pred = color, interval = TRUE, plot.points = TRUE,
+                     geom = "point")
+  expect_doppelganger("p0ptpp", p0ptpp)
 })
 
 test_that("cat_plot handles point.shape w/ no mod. (point)", {
-  expect_silent(p <- cat_plot(fit, pred = color, interval = TRUE,
-                              plot.points = TRUE, geom = "point",
-                              point.shape = TRUE))
-  expect_silent(print(p))
+  p0ptps <- cat_plot(fit, pred = color, interval = TRUE, plot.points = TRUE,
+                     geom = "point", point.shape = TRUE)
+  expect_doppelganger("p0ptps", p0ptps)
 })
 
 if (requireNamespace("brms")) {
   context("brmsfit plots")
   bfit <- readRDS("brmfit.rds")
   test_that("brmsfit objects are supported", {
-    expect_silent(print(cat_plot(bfit, pred = "Trt",
-                                 interval = TRUE)))
+    pcatbfit <- cat_plot(bfit, pred = "Trt", interval = TRUE)
+    expect_doppelganger("pcatbfit", pcatbfit)
   })
 }
