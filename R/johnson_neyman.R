@@ -162,6 +162,11 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
   # Handling df argument
   if (df == "residual") {
     df <- df.residual(model)
+    if (is.null(df)) {
+      warn_wrap("Tried to calculate residual degrees of freedom but result was
+                NULL. Using normal approximation instead.")
+      df <- Inf
+    }
   } else if (df == "normal") {
     df <- Inf
   } else if (!is.numeric(df)) {
@@ -175,7 +180,19 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
 
   # Construct interaction term
   ## Create helper function to use either fixef() or coef() depending on input
-  get_coef <- if (inherits(model, "merMod")) lme4::fixef else coef
+  get_coef <- function(mod) {
+    if (inherits(mod, "merMod") | inherits(mod, "brmsfit")) {
+      coef <- lme4::fixef(model)
+      if (inherits(mod, "brmsfit")) {
+        coefs <- coef[,1, drop = TRUE]
+        names(coefs) <- rownames(coef)
+        coef <- coefs
+      }
+      return(coef)
+    } else {
+      coef(mod)
+    }
+  }
   ## Hard to predict which order lm() will have the predictors in
   # first possible ordering
   intterm1 <- paste(pred, ":", modx, sep = "")
