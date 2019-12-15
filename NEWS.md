@@ -6,6 +6,8 @@ Bugfixes:
 * Plotting functions now respect the order of `modx.values` and `mod2.values`
 arguments. (#29)
 * `interact_plot()` no longer ignores the `point.alpha` argument. (#25)
+* Plotting functions now allow you to specify labels for `modx.values` or
+`mod2.values` by passing a named vector to those arguments. (#30)
 
 # interactions 1.1.1
 

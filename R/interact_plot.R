@@ -388,6 +388,15 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   }
   weights <- get_weights(model, d)$weights_name
 
+  # If modx.values is named, use the names as labels
+  if (is.null(modx.labels) & !is.null(names(modx.values))) {
+    modx.labels <- names(modx.values)
+  }
+  # If mod2.values is named, use the names as labels
+  if (is.null(mod2.labels) & !is.null(names(mod2.values))) {
+    mod2.labels <- names(mod2.values)
+  }
+
   pred_out <- prep_data(model = model, pred = pred, modx = modx,
                         modx.values = modx.values, mod2 = mod2,
                         mod2.values = mod2.values, centered = centered,
