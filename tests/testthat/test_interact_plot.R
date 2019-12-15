@@ -127,7 +127,7 @@ test_that("interact_plot terciles modxval/mod2val works", {
 test_that("interact_plot linearity.check works", {
   plmlinearchp <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
                                 modxvals = "terciles", linearity.check = TRUE,
-                                plot.points = TRUE)
+                                plot.points = TRUE, jitter = 0)
   expect_doppelganger("plmlinearchp", plmlinearchp)
   plmlinearchnp <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
                                  modxvals = "terciles", linearity.check = TRUE)

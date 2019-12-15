@@ -26,7 +26,7 @@ test_that("cat_plot handles intervals (bar)", {
 
 test_that("cat_plot handles plotted points (bar)", {
   plmbarpp <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                       plot.points = TRUE)
+                       plot.points = TRUE, jitter = 0)
   expect_doppelganger("plmbarpp", plmbarpp)
 })
 
@@ -43,19 +43,21 @@ test_that("cat_plot handles intervals (line)", {
 
 test_that("cat_plot handles plotted points (line)", {
   plmlinepp <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                        plot.points = TRUE, geom = "line")
+                        plot.points = TRUE, geom = "line", jitter = 0)
   expect_doppelganger("plmlinepp", plmlinepp)
 })
 
 test_that("cat_plot handles point.shape (line)", {
   plmlineps <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                        plot.points = TRUE, geom = "line", point.shape = TRUE)
+                        plot.points = TRUE, geom = "line", point.shape = TRUE,
+                        jitter = 0)
   expect_doppelganger("plmlineps", plmlineps)
 })
 
 test_that("cat_plot handles linetypes (line)", {
   plmlinelt <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                        geom = "line", vary.lty = TRUE, plot.points = TRUE)
+                        geom = "line", vary.lty = TRUE, plot.points = TRUE,
+                        jitter = 0)
   expect_doppelganger("plmlinelt", plmlinelt)
 })
 
@@ -72,13 +74,14 @@ test_that("cat_plot handles intervals (point)", {
 
 test_that("cat_plot handles plotted points (point)", {
   plmptpp <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                      plot.points = TRUE, geom = "point")
+                      plot.points = TRUE, geom = "point", jitter = 0)
   expect_doppelganger("plmptpp", plmptpp)
 })
 
 test_that("cat_plot handles point.shape (point)", {
   plmptps <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
-                      plot.points = TRUE, geom = "point", point.shape = TRUE)
+                      plot.points = TRUE, geom = "point", point.shape = TRUE,
+                      jitter = 0)
   expect_doppelganger("plmptps", plmptps)
 })
 
@@ -155,13 +158,14 @@ test_that("cat_plot does intervals w/ 3-way interactions (bar)", {
 
 test_that("cat_plot does plot.points w/ 3-way interactions (bar)", {
   p3barpp <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "bar",
-                      interval = TRUE, plot.points = TRUE)
+                      interval = TRUE, plot.points = TRUE, jitter = 0)
   expect_doppelganger("p3barpp", p3barpp)
 })
 
 test_that("cat_plot does point.shape w/ 3-way interactions (bar)", {
   p3barps <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "bar",
-                      interval = TRUE, plot.points = TRUE, point.shape = TRUE)
+                      interval = TRUE, plot.points = TRUE, point.shape = TRUE,
+                      jitter = 0)
   expect_doppelganger("p3barps", p3barps)
 })
 
@@ -178,20 +182,21 @@ test_that("cat_plot does intervals w/ 3-way interactions (line)", {
 
 test_that("cat_plot does plot.points w/ 3-way interactions (line)", {
   p3linepp <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
-                       interval = TRUE, plot.points = TRUE)
+                       interval = TRUE, plot.points = TRUE, jitter = 0)
   expect_doppelganger("p3linepp", p3linepp)
 })
 
 test_that("cat_plot does point.shape w/ 3-way interactions (line)", {
   p3lineps <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "line",
-                       interval = TRUE, plot.points = TRUE, point.shape = TRUE)
+                       interval = TRUE, plot.points = TRUE, point.shape = TRUE,
+                       jitter = 0)
   expect_doppelganger("p3lineps", p3lineps)
 })
 
 test_that("cat_plot does vary.lty w/ 3-way interactions (line)", {
   p3linelty <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto,
                         geom = "line", interval = TRUE, plot.points = TRUE,
-                        point.shape = TRUE, vary.lty = TRUE)
+                        point.shape = TRUE, vary.lty = TRUE, jitter = 0)
   expect_doppelganger("p3linelty", p3linelty)
 })
 
@@ -208,13 +213,14 @@ test_that("cat_plot does intervals w/ 3-way interactions (point)", {
 
 test_that("cat_plot does plot.points w/ 3-way interactions (point)", {
   p3ptpp <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "point",
-                     interval = TRUE, plot.points = TRUE)
+                     interval = TRUE, plot.points = TRUE, jitter = 0)
   expect_doppelganger("p3ptpp", p3ptpp)
 })
 
 test_that("cat_plot does point.shape w/ 3-way interactions (point)", {
   p3ptps <- cat_plot(fit3, pred = cyl, modx = fwd, mod2 = auto, geom = "point",
-                     interval = TRUE, plot.points = TRUE, point.shape = TRUE)
+                     interval = TRUE, plot.points = TRUE, point.shape = TRUE,
+                     jitter = 0)
   expect_doppelganger("p3ptps", p3ptps)
 })
 
@@ -232,7 +238,7 @@ test_that("cat_plot handles intervals w/ no mod. (bar)", {
 
 test_that("cat_plot handles plotted points w/ no mod. (bar)", {
   p0barpp <- cat_plot(fit, pred = color, interval = TRUE, plot.points = TRUE,
-                      geom = "bar")
+                      geom = "bar", jitter = 0)
   expect_doppelganger("p0barpp", p0barpp)
 })
 
@@ -248,13 +254,13 @@ test_that("cat_plot handles intervals w/ no mod. (point)", {
 
 test_that("cat_plot handles plotted points w/ no mod. (point)", {
   p0ptpp <- cat_plot(fit, pred = color, interval = TRUE, plot.points = TRUE,
-                     geom = "point")
+                     geom = "point", jitter = 0)
   expect_doppelganger("p0ptpp", p0ptpp)
 })
 
 test_that("cat_plot handles point.shape w/ no mod. (point)", {
   p0ptps <- cat_plot(fit, pred = color, interval = TRUE, plot.points = TRUE,
-                     geom = "point", point.shape = TRUE)
+                     geom = "point", point.shape = TRUE, jitter = 0)
   expect_doppelganger("p0ptps", p0ptps)
 })
 
