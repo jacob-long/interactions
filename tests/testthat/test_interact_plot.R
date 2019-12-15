@@ -19,6 +19,7 @@ fitl <- lm(Income ~ HSGrad*o70l, data = states)
 fitc <- lm(Income ~ HSGrad*Murder + o70c, data = states)
 
 library(vdiffr)
+Sys.setenv("VDIFFR_RUN_TESTS" = FALSE)
 
 if (requireNamespace("survey")) {
   suppressMessages(library(survey, quietly = TRUE))

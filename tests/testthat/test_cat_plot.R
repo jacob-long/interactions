@@ -1,6 +1,7 @@
 context("cat_plot lm")
 
 library(vdiffr)
+Sys.setenv("VDIFFR_RUN_TESTS" = FALSE)
 
 if (requireNamespace("lme4", quietly = TRUE)) {
   library(lme4, quietly = TRUE)
