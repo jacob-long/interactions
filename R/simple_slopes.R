@@ -240,7 +240,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   }
 
   # Now specify def or not (for labeling w/ print method)
-  if (is.character(modx.values) | is.null(modx.values)) {
+  if (is.character(modx.values) | is.null(modx.values) | !is.null(modx.labels)) {
 
     ss <- structure(ss, def = TRUE)
 
@@ -276,7 +276,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
 
     # Now specify def or not
-    if (is.character(mod2.values) | is.null(mod2.values)) {
+    if (is.character(mod2.values) | is.null(mod2.values) | !is.null(mod2.labels)) {
 
       ss <- structure(ss, def2 = TRUE)
 

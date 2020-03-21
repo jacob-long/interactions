@@ -8,6 +8,8 @@ arguments. (#29)
 * `interact_plot()` no longer ignores the `point.alpha` argument. (#25)
 * Plotting functions now allow you to specify labels for `modx.values` or
 `mod2.values` by passing a named vector to those arguments. (#30)
+* `sim_slopes()` now prints labels when requested with the `modx.labels` or
+`mod2.labels` arguments. (#32)
 
 # interactions 1.1.1
 
