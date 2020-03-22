@@ -616,10 +616,10 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
 
 
   # Get the formula from lm object if given
-  formula <- as.formula(formula(model))
+  formula <- get_formula(model, ...)
 
   # Pulling the name of the response variable for labeling
-  resp <- jtools::get_response_name(model)
+  resp <- jtools::get_response_name(model, ...)
 
   # Create a design object
   design <- if ("svyglm" %in% class(model)) {
@@ -746,8 +746,10 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
         at = at_list, set.offset = set.offset, center = centered,
         interval = interval, outcome.scale = outcome.scale, ...
     )})
+    # only looking for completeness in these variables
+    check_vars <- all.vars(get_formula(model, ...)) %just% names(pms[[i]])
     pms[[i]] <-
-      pms[[i]][complete.cases(pms[[i]][all.vars(as.formula(formula(model)))]), ]
+      pms[[i]][complete.cases(pms[[i]][check_vars]), ]
   }
 
   if (off == TRUE) {
@@ -760,7 +762,8 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   if (partial.residuals == TRUE) {
     suppressMessages({
       d <- partialize(model, vars = c(pred, modx, mod2), center = centered,
-                      data = d, scale = outcome.scale, set.offset = set.offset)
+                      data = d, scale = outcome.scale, set.offset = set.offset,
+                      ...)
     })
   }
 
@@ -806,7 +809,9 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   }
 
   # Dealing with transformations of the dependent variable
-  if (resp %nin% names(d)) {
+  # Have to make sure not to confuse situations with brmsfit objects and
+  # distributional DVs
+  if (resp %nin% names(d) & "dpar" %nin% names(list(...))) {
     trans_name <- as.character(deparse(formula[[2]]))
     d[[trans_name]] <- eval(formula[[2]], d)
   }

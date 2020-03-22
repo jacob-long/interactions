@@ -382,7 +382,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   if (linearity.check == TRUE) {facet.modx <- TRUE}
 
   if (is.null(data)) {
-    d <- get_data(model, warn = TRUE)
+    d <- get_data(model, warn = TRUE, ...)
   } else {
     d <- data
   }

@@ -11,6 +11,12 @@ arguments. (#29)
 * `sim_slopes()` now prints labels when requested with the `modx.labels` or
 `mod2.labels` arguments. (#32)
 
+Feature update:
+
+* Plotting functions now better support `brmsfit` objects, in particular 
+those with multiple dependent variables and distributional dependent variables.
+Use the `resp` and `dpar` arguments to specify which you want to use. 
+
 # interactions 1.1.1
 
 Bugfixes:
