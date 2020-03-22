@@ -4,10 +4,16 @@
 \alias{as_huxtable.sim_slopes}
 \title{Create tabular output for simple slopes analysis}
 \usage{
-as_huxtable.sim_slopes(x, format = "{estimate} ({std.error})",
+as_huxtable.sim_slopes(
+  x,
+  format = "{estimate} ({std.error})",
   sig.levels = c(`***` = 0.001, `**` = 0.01, `*` = 0.05, `#` = 0.1),
-  digits = getOption("jtools-digits", 2), conf.level = 0.95,
-  intercept = attr(x, "cond.int"), int.format = format, ...)
+  digits = getOption("jtools-digits", 2),
+  conf.level = 0.95,
+  intercept = attr(x, "cond.int"),
+  int.format = format,
+  ...
+)
 }
 \arguments{
 \item{x}{The \code{\link[=sim_slopes]{sim_slopes()}} object.}

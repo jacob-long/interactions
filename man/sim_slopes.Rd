@@ -4,13 +4,31 @@
 \alias{sim_slopes}
 \title{Perform a simple slopes analysis.}
 \usage{
-sim_slopes(model, pred, modx, mod2 = NULL, modx.values = NULL,
-  mod2.values = NULL, centered = "all", data = NULL,
-  cond.int = FALSE, johnson_neyman = TRUE, jnplot = FALSE,
-  jnalpha = 0.05, robust = FALSE, digits = getOption("jtools-digits",
-  default = 2), pvals = TRUE, confint = FALSE, ci.width = 0.95,
-  cluster = NULL, modx.labels = NULL, mod2.labels = NULL,
-  v.cov = NULL, v.cov.args = NULL, ...)
+sim_slopes(
+  model,
+  pred,
+  modx,
+  mod2 = NULL,
+  modx.values = NULL,
+  mod2.values = NULL,
+  centered = "all",
+  data = NULL,
+  cond.int = FALSE,
+  johnson_neyman = TRUE,
+  jnplot = FALSE,
+  jnalpha = 0.05,
+  robust = FALSE,
+  digits = getOption("jtools-digits", default = 2),
+  pvals = TRUE,
+  confint = FALSE,
+  ci.width = 0.95,
+  cluster = NULL,
+  modx.labels = NULL,
+  mod2.labels = NULL,
+  v.cov = NULL,
+  v.cov.args = NULL,
+  ...
+)
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
@@ -22,7 +40,7 @@ supported. The model should include the interaction of interest.}
 
 \item{pred}{The name of the predictor variable involved
 in the interaction. This can be a bare name or string. Note that it
-is evaluated using \code{rlang}, so programmers can use the \code{!!} syntax
+is evaluated using \code{rlang}, so programmers can use the \verb{!!} syntax
 to pass variables instead of the verbatim names.}
 
 \item{modx}{The name of the moderator variable involved
@@ -213,9 +231,10 @@ differences and provides Johnson-Neyman intervals.
 
 \code{\link[pequod]{simpleSlope}} performs a similar analysis.
 
-Other interaction tools: \code{\link{johnson_neyman}},
-  \code{\link{probe_interaction}},
-  \code{\link{sim_margins}}
+Other interaction tools: 
+\code{\link{johnson_neyman}()},
+\code{\link{probe_interaction}()},
+\code{\link{sim_margins}()}
 }
 \author{
 Jacob Long <\email{long.1377@osu.edu}>

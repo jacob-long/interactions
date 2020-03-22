@@ -4,21 +4,50 @@
 \alias{cat_plot}
 \title{Plot interaction effects between categorical predictors.}
 \usage{
-cat_plot(model, pred, modx = NULL, mod2 = NULL, data = NULL,
-  geom = c("point", "line", "bar"), pred.values = NULL,
-  modx.values = NULL, mod2.values = NULL, interval = TRUE,
-  plot.points = FALSE, point.shape = FALSE, vary.lty = FALSE,
-  centered = "all", int.type = c("confidence", "prediction"),
-  int.width = 0.95, line.thickness = 1.1, point.size = 1.5,
-  pred.point.size = 3.5, jitter = 0.1, geom.alpha = NULL,
-  dodge.width = NULL, errorbar.width = NULL,
+cat_plot(
+  model,
+  pred,
+  modx = NULL,
+  mod2 = NULL,
+  data = NULL,
+  geom = c("point", "line", "bar"),
+  pred.values = NULL,
+  modx.values = NULL,
+  mod2.values = NULL,
+  interval = TRUE,
+  plot.points = FALSE,
+  point.shape = FALSE,
+  vary.lty = FALSE,
+  centered = "all",
+  int.type = c("confidence", "prediction"),
+  int.width = 0.95,
+  line.thickness = 1.1,
+  point.size = 1.5,
+  pred.point.size = 3.5,
+  jitter = 0.1,
+  geom.alpha = NULL,
+  dodge.width = NULL,
+  errorbar.width = NULL,
   interval.geom = c("errorbar", "linerange"),
-  outcome.scale = "response", robust = FALSE, cluster = NULL,
-  vcov = NULL, pred.labels = NULL, modx.labels = NULL,
-  mod2.labels = NULL, set.offset = 1, x.label = NULL,
-  y.label = NULL, main.title = NULL, legend.main = NULL,
-  colors = "CUD Bright", partial.residuals = FALSE,
-  point.alpha = 0.6, color.class = NULL, at = NULL, ...)
+  outcome.scale = "response",
+  robust = FALSE,
+  cluster = NULL,
+  vcov = NULL,
+  pred.labels = NULL,
+  modx.labels = NULL,
+  mod2.labels = NULL,
+  set.offset = 1,
+  x.label = NULL,
+  y.label = NULL,
+  main.title = NULL,
+  legend.main = NULL,
+  colors = "CUD Bright",
+  partial.residuals = FALSE,
+  point.alpha = 0.6,
+  color.class = NULL,
+  at = NULL,
+  ...
+)
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
@@ -29,7 +58,7 @@ Models from other classes may work as well but are not officially
 supported. The model should include the interaction of interest.}
 
 \item{pred}{A categorical predictor variable that will appear on the x-axis.
-Note that it is evaluated using \code{rlang}, so programmers can use the \code{!!}
+Note that it is evaluated using \code{rlang}, so programmers can use the \verb{!!}
 syntax to pass variables instead of the verbatim names.}
 
 \item{modx}{A categorical moderator variable.}

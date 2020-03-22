@@ -4,18 +4,47 @@
 \alias{interact_plot}
 \title{Plot interaction effects in regression models}
 \usage{
-interact_plot(model, pred, modx, modx.values = NULL, mod2 = NULL,
-  mod2.values = NULL, centered = "all", data = NULL, at = NULL,
-  plot.points = FALSE, interval = FALSE, int.type = c("confidence",
-  "prediction"), int.width = 0.95, outcome.scale = "response",
-  linearity.check = FALSE, facet.modx = FALSE, robust = FALSE,
-  cluster = NULL, vcov = NULL, set.offset = 1, x.label = NULL,
-  y.label = NULL, pred.labels = NULL, modx.labels = NULL,
-  mod2.labels = NULL, main.title = NULL, legend.main = NULL,
-  colors = NULL, line.thickness = 1, vary.lty = TRUE,
-  point.size = 1.5, point.shape = FALSE, jitter = 0, rug = FALSE,
-  rug.sides = "b", partial.residuals = FALSE, point.alpha = 0.6,
-  color.class = NULL, ...)
+interact_plot(
+  model,
+  pred,
+  modx,
+  modx.values = NULL,
+  mod2 = NULL,
+  mod2.values = NULL,
+  centered = "all",
+  data = NULL,
+  at = NULL,
+  plot.points = FALSE,
+  interval = FALSE,
+  int.type = c("confidence", "prediction"),
+  int.width = 0.95,
+  outcome.scale = "response",
+  linearity.check = FALSE,
+  facet.modx = FALSE,
+  robust = FALSE,
+  cluster = NULL,
+  vcov = NULL,
+  set.offset = 1,
+  x.label = NULL,
+  y.label = NULL,
+  pred.labels = NULL,
+  modx.labels = NULL,
+  mod2.labels = NULL,
+  main.title = NULL,
+  legend.main = NULL,
+  colors = NULL,
+  line.thickness = 1,
+  vary.lty = TRUE,
+  point.size = 1.5,
+  point.shape = FALSE,
+  jitter = 0,
+  rug = FALSE,
+  rug.sides = "b",
+  partial.residuals = FALSE,
+  point.alpha = 0.6,
+  color.class = NULL,
+  ...
+)
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
@@ -27,7 +56,7 @@ supported. The model should include the interaction of interest.}
 
 \item{pred}{The name of the predictor variable involved
 in the interaction. This can be a bare name or string. Note that it
-is evaluated using \code{rlang}, so programmers can use the \code{!!} syntax
+is evaluated using \code{rlang}, so programmers can use the \verb{!!} syntax
 to pass variables instead of the verbatim names.}
 
 \item{modx}{The name of the moderator variable involved

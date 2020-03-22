@@ -78,7 +78,7 @@
 #' @param int.width How large should the interval be, relative to the standard
 #'   error? The default, .95, corresponds to roughly 1.96 standard errors and
 #'   a .05 alpha level for values outside the range. In other words, for a
-#'   confidence interval, .95 is analogous to a 95\% confidence interval.
+#'   confidence interval, .95 is analogous to a 95% confidence interval.
 #'
 #' @param outcome.scale For nonlinear models (i.e., GLMs), should the outcome
 #'   variable be plotted on the link scale (e.g., log odds for logit models) or

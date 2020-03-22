@@ -347,7 +347,7 @@ print.sim_margins <- function(x, ...) {
 #' @description You can use [broom::tidy()] and [broom::glance()] for "tidy"
 #'  methods of storing `sim_margins` output.
 #' @param x The `sim_margins` object
-#' @param conf.level The width of confidence intervals. Default is .95 (95\%).
+#' @param conf.level The width of confidence intervals. Default is .95 (95%).
 #' @param ... Ignored.
 #' @rdname sim_margins_tidiers
 #' @export
