@@ -59,6 +59,14 @@ un_bt <- function(x) {
   gsub("`", "", x)
 }
 
+# bt_if_needed <- function(string) {
+#   if (make.names(string) != string) {
+#     return(bt(string))
+#   } else {
+#     return(string)
+#   }
+# }
+
 ## Taken from Hmisc package to avoid importing for a minor feature
 ## Added "levels.median"
 #' @importFrom stats approx

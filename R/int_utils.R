@@ -914,3 +914,44 @@ drop_factor_levels <- function(d, var, values, labels) {
   return(d)
 
 }
+
+
+# get_contrasts <- function(model) {
+#   form <- as.formula(formula(model))
+#   as.data.frame(t(attr(terms(form), "factors")))
+# }
+#
+# get_int_term <- function(model, vars) {
+#   cons <- get_contrasts(model)
+#   # Check for non-syntactic names
+#   vars <- sapply(vars, bt_if_needed)
+#   cons_vars <- rowMeans(cons[, vars])
+#   matches <- names(cons_vars %just% 1)
+#
+#   if (length(matches) == 1) {
+#     return(matches)
+#   } else {
+#     # nasty hack but I think it works; trying to isolate lowest-order match
+#     lengths <- nchar(matches)
+#     return(matches[which(matches == min(lengths))])
+#   }
+# }
+#
+# threeway_contrasts_continuous <- function(model, pred, modx, mod2, modx.values,
+#                                           mod2.values, .vcov) {
+#   # Get all term labels
+#   b1_term <- pred
+#   b2_term <- modx
+#   b3_term <- mod2
+#   b4_term <- get_int_term(model, c(pred, modx))
+#   b5_term <- get_int_term(model, c(pred, mod2))
+#   b6_term <- get_int_term(model, c(modx, mod2))
+#   b7_term <- get_int_term(model, c(pred, modx, mod2))
+#
+#   # TODO: deal with this
+#   combos <- expand.grid(mod2.values, modx.values)
+#   names(combos) <- c(mod2, modx)
+#
+#   get_delta <- function(b1, b2, b3, b4, b5, b6, b7, w1, z1, w2, z2) {}
+#
+# }
