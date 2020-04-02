@@ -1,3 +1,10 @@
+# interactions 1.1.3
+
+Minor fix:
+
+* Plotting functions no longer fail when there is missing data in the moderator
+variable(s).
+
 # interactions 1.1.2
 
 Bugfixes: 

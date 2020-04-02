@@ -244,16 +244,20 @@ mod_vals <- function(d, modx, modx.values, survey, weights,
 
   }
 
+  # Hacky way to have a shorthand to drop NA
+  range2 <- function(...) {
+    range(..., na.rm = TRUE)
+  }
   if (is_fac == FALSE & user_specified == FALSE) {
     # The proper order for interact_plot depends on presence of second moderator
     modxvals2 <- sort(modxvals2, decreasing = (!any.mod2 & !facet.modx))
-    if (any(modxvals2 > range(d[[modx]])[2])) {
-      warn_wrap(paste(modxvals2[which(modxvals2 > range(d[[modx]])[2])],
+    if (any(modxvals2 > range2(d[[modx]])[2])) {
+      warn_wrap(paste(modxvals2[which(modxvals2 > range2(d[[modx]])[2])],
                       collapse = " and "), " is outside the observed range of ",
                 modx)
     }
-    if (any(modxvals2 < range(d[[modx]])[1])) {
-      warn_wrap(paste(modxvals2[which(modxvals2 < range(d[[modx]])[1])],
+    if (any(modxvals2 < range2(d[[modx]])[1])) {
+      warn_wrap(paste(modxvals2[which(modxvals2 < range2(d[[modx]])[1])],
                       collapse = " and "), " is outside the observed range of ",
                 modx)
     }

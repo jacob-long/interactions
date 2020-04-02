@@ -682,15 +682,26 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
     x
   }
 
+  # Some shorthand functions to automatically exclude NA
+  quant <- function(x, ...) {
+    quantile(x, ..., na.rm = TRUE)
+  }
+  min2 <- function(...) {
+    min(..., na.rm = TRUE)
+  }
+  max2 <- function(...) {
+    max(..., na.rm = TRUE)
+  }
+
   # Get scale colors, provide better legend title
   if (!is.numeric(d[[as_string(modx)]])) {
     p <- p + scale_colour_manual(name = legend.main, values = colors,
                                  breaks = names(colors),
                                  aesthetics = c("colour", "fill"))
   } else {
-    limits <- quantile(d[[modx]], probs = c(.1, .9))
-    if (min(modxvals2) < limits[1]) {limits[1] <- min(modxvals2)}
-    if (max(modxvals2) > limits[2]) {limits[2] <- max(modxvals2)}
+    limits <- quant(d[[modx]], probs = c(.1, .9))
+    if (min2(modxvals2) < limits[1]) {limits[1] <- min2(modxvals2)}
+    if (max2(modxvals2) > limits[2]) {limits[2] <- max2(modxvals2)}
     p <- p + scale_colour_gradientn(name = legend.main,
                                     breaks = modxvals2,
                                     labels = modx.labels,
