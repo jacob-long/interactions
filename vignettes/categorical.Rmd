@@ -15,7 +15,7 @@ vignette: >
 
 ```{r echo=FALSE}
 knitr::opts_chunk$set(message = F, warning = F, fig.width = 6, fig.height = 5,
-                      fig.options = list(type = "cairo"))
+                      dpi = 150, fig.options = list(type = "cairo"))
 library(jtools)
 library(interactions)
 ```

@@ -15,3 +15,5 @@
 ^\.vscode$
 ^revdep$
 ^_pkgdown\.yml$
+^doc$
+^Meta$

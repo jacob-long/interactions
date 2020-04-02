@@ -39,3 +39,5 @@ docs/
 tests/testthat/Rplots\.pdf
 
 CRAN-RELEASE
+doc
+Meta
