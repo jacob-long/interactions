@@ -466,7 +466,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
 
     # Getting SEs, robust or otherwise
-    if (robust == TRUE) {
+    if (robust != FALSE) {
       if (!is.null(v.cov)) {
         vcovargs <- v.cov.args
         vcovargs[[which(sapply(vcovargs, function(x) length(x[[1]]) == 1 &&
