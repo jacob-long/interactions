@@ -1,3 +1,7 @@
+# interactions 1.1.5
+
+* Made a small change to avoid testing errors in a forthcoming R release.
+
 # interactions 1.1.4
 
 Bugfix:

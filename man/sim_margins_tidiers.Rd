@@ -17,6 +17,6 @@
 \item{...}{Ignored.}
 }
 \description{
-You can use \code{\link[broom:tidy]{broom::tidy()}} and \code{\link[broom:glance]{broom::glance()}} for "tidy"
+You can use \code{\link[broom:reexports]{broom::tidy()}} and \code{\link[broom:reexports]{broom::glance()}} for "tidy"
 methods of storing \code{sim_margins} output.
 }

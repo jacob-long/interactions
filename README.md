@@ -162,4 +162,4 @@ By participating in this project you agree to abide by its terms.
 ## License
 
 The source code of this package is licensed under the [MIT
-License](http://opensource.org/licenses/mit-license.php).
+License](https://opensource.org/licenses/mit-license.php).

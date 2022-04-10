@@ -2,11 +2,7 @@
 title: "Exploring interactions with continuous predictors in regression models"
 author: "Jacob Long"
 date: "`r Sys.Date()`"
-output: 
-  html_document:
-    toc: true
-    toc_float: true
-    theme: "spacelab"
+output: html_vignette
 vignette: >
   %\VignetteIndexEntry{Exploring interactions with continuous predictors in regression models}
   %\VignetteEngine{knitr::rmarkdown}
@@ -17,8 +13,7 @@ vignette: >
 required <- c("survey", "huxtable", "sandwich", "cowplot")
 if (!all(sapply(required, requireNamespace, quietly = TRUE)))
   knitr::opts_chunk$set(eval = FALSE)
-knitr::opts_chunk$set(message = F, warning = F, fig.width = 6, fig.height = 5,
-                      dpi = 150, fig.options = list(type = "cairo"))
+knitr::opts_chunk$set(message = F, warning = F, fig.width = 6, fig.height = 5)
 library(jtools)
 library(interactions)
 ```

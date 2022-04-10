@@ -120,16 +120,16 @@
 #' Bauer, D. J., & Curran, P. J. (2005). Probing interactions in fixed and
 #'  multilevel regression: Inferential and graphical techniques.
 #'  \emph{Multivariate Behavioral Research}, \emph{40}(3), 373-400.
-#'  \url{http://doi.org/10.1207/s15327906mbr4003_5}
+#'  \doi{10.1207/s15327906mbr4003_5}
 #'
 #' Esarey, J., & Sumner, J. L. (2017). Marginal effects in interaction models:
 #'  Determining and controlling the false positive rate. Comparative Political
 #'  Studies, 1–33. Advance online publication.
-#'  \url{https://doi.org/10.1177/0010414017730080}
+#'  \doi{10.1177/0010414017730080}
 #'
 #' Johnson, P.O. & Fay, L.C. (1950). The Johnson-Neyman technique, its theory
 #'  and application. \emph{Psychometrika}, \emph{15}, 349-367.
-#'  \url{http://doi.org/10.1007/BF02288864}
+#'  \doi{10.1007/BF02288864}
 #'
 #' @examples
 #' # Using a fitted lm model

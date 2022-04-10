@@ -123,11 +123,12 @@ if (requireNamespace("survey")) {
 
 context("cat_plot merMod")
 
-test_that("cat_plot handles merMod", {
-  plme4cat <- cat_plot(mv, pred = mode, modx = Gender, interval = FALSE)
-  expect_doppelganger("plme4cat", plme4cat)
-})
-
+if (requireNamespace("lme4")) {
+  test_that("cat_plot handles merMod", {
+    plme4cat <- cat_plot(mv, pred = mode, modx = Gender, interval = FALSE)
+    expect_doppelganger("plme4cat", plme4cat)
+  })
+}
 
 context("cat_plot 3-way")
 

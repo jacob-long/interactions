@@ -91,7 +91,7 @@
 #' Bauer, D. J., & Curran, P. J. (2005). Probing interactions in fixed and
 #'  multilevel regression: Inferential and graphical techniques.
 #'  \emph{Multivariate Behavioral Research}, \emph{40}(3), 373-400.
-#'  \url{http://dx.doi.org/10.1207/s15327906mbr4003_5}
+#'  \doi{10.1207/s15327906mbr4003_5}
 #'
 #' Cohen, J., Cohen, P., West, S. G., & Aiken, L. S. (2003). \emph{Applied
 #' multiple regression/correlation analyses for the behavioral sciences} (3rd
@@ -687,7 +687,7 @@ print.sim_slopes <- function(x, ...) {
       }
 
       if (class(x$mod2.values) != "character") {
-        x$mod2.values <- format(x$mod2.values, nsmall = x$digits, digits = 0)
+        x$mod2.values <- format(x$mod2.values, nsmall = x$digits)
       }
 
       # Printing output to make it clear where each batch of second moderator
@@ -737,7 +737,7 @@ print.sim_slopes <- function(x, ...) {
     for (i in seq_along(x$modx.values)) {
 
       if (class(x$modx.values) != "character") {
-        x$modx.values <- format(x$modx.values, nsmall = x$digits, digits = 0)
+        x$modx.values <- format(x$modx.values, nsmall = x$digits)
       }
 
       slopes <-

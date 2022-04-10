@@ -1,8 +1,8 @@
 Package: interactions
 Type: Package
 Title: Comprehensive, User-Friendly Toolkit for Probing Interactions
-Version: 1.1.4
-Authors@R: person(c("Jacob","A."), "Long", email = "long.1377@osu.edu",
+Version: 1.1.5
+Authors@R: person(c("Jacob","A."), "Long", email = "jacob.long@sc.edu",
   role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1582-6214"))
 Description: A suite of functions for conducting and interpreting analysis 
   of statistical interaction in regression models that was formerly part of the 
@@ -16,7 +16,6 @@ URL: https://interactions.jacob-long.com
 BugReports: https://github.com/jacob-long/interactions/issues 
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Imports: ggplot2,
   crayon,
   cli,
@@ -41,6 +40,6 @@ Suggests:
 Enhances:
   brms,
   rstanarm
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)

@@ -271,7 +271,7 @@
 #'  multilevel regression: Inferential and graphical techniques.
 #'  \emph{Multivariate Behavioral
 #'  Research}, \emph{40}(3), 373-400.
-#'  \url{http://dx.doi.org/10.1207/s15327906mbr4003_5}
+#'  \doi{10.1207/s15327906mbr4003_5}
 #'
 #' Cohen, J., Cohen, P., West, S. G., & Aiken, L. S. (2003). \emph{Applied
 #' multiple
@@ -281,7 +281,7 @@
 #' Hainmueller, J., Mummolo, J., & Xu, Y. (2016). How much should we trust
 #'   estimates from multiplicative interaction models? Simple tools to improve
 #'   empirical practice. SSRN Electronic Journal.
-#'   \url{https://doi.org/10.2139/ssrn.2739221}
+#'   \doi{10.2139/ssrn.2739221}
 #'
 #' @examples
 #' # Using a fitted lm model

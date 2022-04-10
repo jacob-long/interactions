@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A \code{\link[=sim_margins]{sim_margins()}} object.}
 
-\item{...}{arguments passed to \code{\link[jtools:plot_coefs]{jtools::plot_coefs()}}}
+\item{...}{arguments passed to \code{\link[jtools:plot_summs]{jtools::plot_coefs()}}}
 }
 \description{
 This creates a coefficient plot to visually summarize the

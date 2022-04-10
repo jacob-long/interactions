@@ -39,7 +39,7 @@
 #' Bauer, D. J., & Curran, P. J. (2005). Probing interactions in fixed and
 #'  multilevel regression: Inferential and graphical techniques.
 #'  \emph{Multivariate Behavioral Research}, \emph{40}(3), 373-400.
-#'  \url{https://doi.org/10.1207/s15327906mbr4003_5}
+#'  \doi{10.1207/s15327906mbr4003_5}
 #'
 #' Cohen, J., Cohen, P., West, S. G., & Aiken, L. S. (2003). \emph{Applied
 #' multiple regression/correlation analyses for the behavioral sciences} (3rd
@@ -48,7 +48,7 @@
 #' Hanmer, M. J., & Kalkan, K. O. (2013). Behind the curve: Clarifying the best
 #' approach to calculating predicted probabilities and marginal effects from
 #' limited dependent variable models. *American Journal of Political Science*,
-#' *57*, 263–277. \url{https://doi.org/10.1111/j.1540-5907.2012.00602.x}
+#' *57*, 263–277. \doi{10.1111/j.1540-5907.2012.00602.x}
 #'
 #'
 #' @importFrom stats coef coefficients lm predict sd update getCall vcov relevel

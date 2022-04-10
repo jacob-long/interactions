@@ -186,7 +186,7 @@ is FALSE.}
 
 \item{interval.geom}{For categorical by categorical interactions.
 One of "errorbar" or "linerange". If the former,
-\code{\link[ggplot2:geom_errorbar]{ggplot2::geom_errorbar()}} is used. If the latter,
+\code{\link[ggplot2:geom_linerange]{ggplot2::geom_errorbar()}} is used. If the latter,
 \code{\link[ggplot2:geom_linerange]{ggplot2::geom_linerange()}} is used.}
 
 \item{outcome.scale}{For nonlinear models (i.e., GLMs), should the outcome
