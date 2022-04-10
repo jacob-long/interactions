@@ -3,13 +3,13 @@
 
 # interactions
 
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-ago/interactions)](https://cran.r-project.org/package=interactions)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-ago/interactions)](https://cran.r-project.org/package=interactions)
 [![GitHub
 tag](https://img.shields.io/github/tag/jacob-long/interactions.svg?label=Github)](https://github.com/jacob-long/interactions)
 [![Total
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/interactions)](https://cran.r-project.org/package=interactions)
 [![Build
-Status](https://travis-ci.org/jacob-long/interactions.svg?branch=master)](https://travis-ci.org/jacob-long/interactions)
+Status](https://github.com/jacob-long/interactions/workflows/R-CMD-check/badge.svg)](https://github.com/jacob-long/interactions/actions)
 [![AppVeyor Build
 status](https://ci.appveyor.com/api/projects/status/qfyn5cwomufqxath?svg=true)](https://ci.appveyor.com/project/jacob-long/interactions)
 [![codecov](https://codecov.io/gh/jacob-long/interactions/branch/master/graph/badge.svg)](https://codecov.io/gh/jacob-long/interactions)
@@ -25,9 +25,9 @@ have been spun off to this package for clarity and simplicity.
 
 Quick rundown of features:
 
-  - simple slopes analysis
-  - calculation of Johnson-Neyman intervals
-  - visualization of predicted and observed values using `ggplot2`
+-   simple slopes analysis
+-   calculation of Johnson-Neyman intervals
+-   visualization of predicted and observed values using `ggplot2`
 
 All of these are implemented in a consistent interface designed to be as
 simple as possible with tweaks and guts available to advanced users.
@@ -79,8 +79,7 @@ sim_slopes(fiti, pred = hp, modx = wt, jnplot = TRUE)
 
     #> JOHNSON-NEYMAN INTERVAL 
     #> 
-    #> When wt is OUTSIDE the interval [3.69, 5.90], the slope of hp is p <
-    #> .05.
+    #> When wt is OUTSIDE the interval [3.69, 5.90], the slope of hp is p < .05.
     #> 
     #> Note: The range of observed values of wt is [1.51, 5.42]
 
@@ -88,19 +87,19 @@ sim_slopes(fiti, pred = hp, modx = wt, jnplot = TRUE)
 
     #> SIMPLE SLOPES ANALYSIS 
     #> 
-    #> Slope of hp when wt = 2.24 (- 1 SD): 
+    #> Slope of hp when wt = 2.238793 (- 1 SD): 
     #> 
     #>    Est.   S.E.   t val.      p
     #> ------- ------ -------- ------
     #>   -0.06   0.01    -5.66   0.00
     #> 
-    #> Slope of hp when wt = 3.22 (Mean): 
+    #> Slope of hp when wt = 3.217250 (Mean): 
     #> 
     #>    Est.   S.E.   t val.      p
     #> ------- ------ -------- ------
     #>   -0.03   0.01    -4.07   0.00
     #> 
-    #> Slope of hp when wt = 4.20 (+ 1 SD): 
+    #> Slope of hp when wt = 4.195707 (+ 1 SD): 
     #> 
     #>    Est.   S.E.   t val.      p
     #> ------- ------ -------- ------
