@@ -41,3 +41,5 @@ tests/testthat/Rplots\.pdf
 CRAN-RELEASE
 doc
 Meta
+
+.DS_Store

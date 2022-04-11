@@ -17,3 +17,6 @@
 ^_pkgdown\.yml$
 ^doc$
 ^Meta$
+^make_hex\.R$
+^hex\.png$
+^LICENSE\.md$

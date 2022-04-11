@@ -1,10 +1,10 @@
 bibentry(
   bibtype = "Manual",
   title = "interactions: Comprehensive, User-Friendly Toolkit for Probing Interactions",
-  author =  person(c("Jacob","A."), "Long", email = "long.1377@osu.edu",
+  author =  person(c("Jacob","A."), "Long", email = "jacob.long@sc.edu",
                     role = c("aut", "cre")),
-  year = "2019",
-  note = "R package version 1.1.0",
+  year = "2022",
+  note = "R package version 1.1.6",
   url = "https://cran.r-project.org/package=interactions",
   key = "interactions"
 )

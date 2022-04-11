@@ -1,6 +1,15 @@
 template:
+  bootstrap: 5
   params:
-    bootswatch: readable
+    bootswatch: litera
+  bslib:  
+    primary: "#570008"
+    link-color: "#73000a"
+    base_font: {google: "Lato"}
+    font-family-sans-serif: font_google("Lato")
+    font-family-serif: font_google("Lato")
+    heading_font: {google: "Raleway"}
+    code_font: {google: "IBM Plex Mono"}
 
 navbar:
   type: inverse

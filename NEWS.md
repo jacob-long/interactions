@@ -1,3 +1,7 @@
+# interactions 1.1.6.9000
+
+* Website and some documentation have been revamped and upgraded.
+
 # interactions 1.1.5
 
 * Made a small change to avoid testing errors in a forthcoming R release.

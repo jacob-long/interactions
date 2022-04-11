@@ -1,8 +1,9 @@
 ## Test environments
-* Local Windows 10 install, R 4.1.0
-* Ubuntu (Trusty) (on Travis-CI), R-release, R-devel
+* Local macOS install, R 4.1.3
+* ubuntu-latest (via Github Actions), R-release, R-devel, oldrel-1
+* macOS-latest (via Github Actions), R-release
+* windows-latest (via Github Actions), R-release
 * Windows 2012 Server (on Appveyor) R-release, R-devel
 
 ## R CMD check results
-There is a NOTE regarding my change of email address because I have changed
-affiliations since last update.
+There were no NOTEs, WARNINGs, or ERRORs.

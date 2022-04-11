@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# interactions
+# interactions <img src="man/figures/logo.png" alt="interactions" height="250px" align="right" />
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-ago/interactions)](https://cran.r-project.org/package=interactions)
 [![GitHub
@@ -13,15 +13,18 @@ Status](https://github.com/jacob-long/interactions/workflows/R-CMD-check/badge.s
 [![AppVeyor Build
 status](https://ci.appveyor.com/api/projects/status/qfyn5cwomufqxath?svg=true)](https://ci.appveyor.com/project/jacob-long/interactions)
 [![codecov](https://codecov.io/gh/jacob-long/interactions/branch/master/graph/badge.svg)](https://codecov.io/gh/jacob-long/interactions)
-<!-- [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT) -->
+[![Project Status: Active - The project has reached a stable, usable
+state and is being actively
+developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![MIT
+License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
 
 This package consists of a number of tools that pertain to the analysis
 and exploration of statistical interactions in the context of
 regression. Some of these features, especially those that pertain to
 visualization, are not exactly impossible to do oneself but are tedious
-and error-prone when done “by hand.” Most things in `interactions` were
-once part of the [`jtools`](https://jtools.jacob-long.com) package and
-have been spun off to this package for clarity and simplicity.
+and error-prone when done “by hand.” Some parts of `interactions` were
+once part of the [`jtools`](https://jtools.jacob-long.com) package.
 
 Quick rundown of features:
 
@@ -107,7 +110,7 @@ sim_slopes(fiti, pred = hp, modx = wt, jnplot = TRUE)
 
 The Johnson-Neyman plot can really help you get a handle on what the
 interval is telling you, too. Note that you can look at the
-Johnson-Neyman interval directly with the `johnson_neyman` function.
+Johnson-Neyman interval directly with the `johnson_neyman()` function.
 
 The above all generalize to three-way interactions, too.
 
@@ -145,7 +148,7 @@ interact_plot(fitiris, pred = Petal.Width, modx = Species, plot.points = TRUE)
 You may also combine the plotting and simple slopes functions by using
 `probe_interaction`, which calls both functions simultaneously.
 Categorical by categorical interactions can be investigated using the
-`cat_plot` function.
+`cat_plot()` function.
 
 ## Contributing
 
