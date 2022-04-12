@@ -5,6 +5,8 @@
 correctly. (#56)
 * Users can now change the axis labels for `johnson_neyman()` plots via the 
 arguments `y.label` and `modx.label`. (#56)
+* `sim_slopes()` no longer displays results with factor moderators in the 
+reverse order of the factor's levels. (#55)
 
 # interactions 1.1.5
 

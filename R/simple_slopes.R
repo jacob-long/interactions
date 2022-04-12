@@ -135,6 +135,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   # Capture extra arguments
   dots <- list(...)
   if (length(dots) > 0) {
+    # Backwards compatibility from when these arguments had different names
     if ("modxvals" %in% names(dots)) {
       modx.values <- dots$modxvals
     }
@@ -190,6 +191,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   } else {design <- NULL}
   # Which variables are factors?
   facvars <- names(d)[!unlist(lapply(d, is.numeric))]
+  modx.factor <- modx %in% facvars
   fvars <- names(d)
 
   # Check for factor predictor
@@ -291,7 +293,9 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
   } else {
     mod2vals2 <- NULL
-    modxvals2 <- rev(modxvals2)
+    if (!modx.factor) {
+      modxvals2 <- rev(modxvals2)
+    }
   }
 
 #### Fit models ##############################################################
