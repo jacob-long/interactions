@@ -68,6 +68,16 @@
 #'  e.g., `c(0, 10)`.
 #'
 #' @param title The plot title. `"Johnson-Neyman plot"` by default.
+#' 
+#' @param y.label If you prefer to override the automatic labelling of the
+#'  y axis, you can specify your own label here. The y axis represents a 
+#'  *slope* so it is recommended that you do not simply give the name of the 
+#'  predictor variable but instead make clear that it is a slope. By default,
+#'  "Slope of [pred]" is used (with whatever `pred` is).
+#' 
+#' @param modx.label If you prefer to override the automatic labelling of
+#'  the x axis, you can specify your own label here. By default, the name 
+#'  `modx` is used.
 #'
 #' @details
 #'
@@ -111,7 +121,7 @@
 #'  \item{plot}{The \code{ggplot} object used for plotting. You can tweak the
 #'    plot like you could any other from \code{ggplot}.}
 #'
-#' @author Jacob Long <\email{long.1377@@osu.edu}>
+#' @author Jacob Long \email{jacob.long@@sc.edu}
 #'
 #' @family interaction tools
 #'
@@ -150,7 +160,8 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
                            digits = getOption("jtools-digits", 2),
                            critical.t = NULL, sig.color = "#00BFC4",
                            insig.color = "#F8766D", mod.range = NULL,
-                           title = "Johnson-Neyman plot") {
+                           title = "Johnson-Neyman plot", y.label = NULL,
+                           modx.label = NULL) {
 
   # Evaluate the modx, mod2, pred args
   pred <- quo_name(enexpr(pred))
@@ -213,9 +224,9 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
   intterm <- intterms[which(inttermstf)] # Keep the index that is TRUE
 
   # Getting the range of the moderator
-  modrange <- range(model.frame(model)[,modx])
-  modrangeo <- range(model.frame(model)[,modx]) # for use later
-  modsd <- sd(model.frame(model)[,modx]) # let's expand outside observed range
+  modrange <- range(model.frame(model)[,un_bt(modx)])
+  modrangeo <- range(model.frame(model)[,un_bt(modx)]) # for use later
+  modsd <- sd(model.frame(model)[,un_bt(modx)]) # let's expand outside observed range
   if (is.null(mod.range)) {
     modrange[1] <- modrange[1] - modsd
     modrange[2] <- modrange[2] + modsd
@@ -565,6 +576,20 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
 
       ggplot2::theme(legend.key.size = ggplot2::unit(1, "lines"))
 
+    # Let users relabel the axis without changing source data
+    if (!is.null(y.label)) {
+      # If I don't think they realize it's a slope, give a message.
+      if (!grepl("slope", tolower(y.label))) {
+        msg_wrap("The y-axis represents a slope. Make sure you choose a label
+        that makes it clear it is the slope of ", pred, " rather than the
+        value of ", pred, ".")
+      }
+      plot <- plot + ggplot2::ylab(y.label)
+    }
+
+    if (!is.null(modx.label)) {
+      plot <- plot + ggplot2::xlab(modx.label)
+    }
 
   out$plot <- plot
 

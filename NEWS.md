@@ -1,6 +1,10 @@
 # interactions 1.1.6.9000
 
 * Website and some documentation have been revamped and upgraded.
+* `johnson_neyman()` now handles non-syntactic variable names for `modx` 
+correctly. (#56)
+* Users can now change the axis labels for `johnson_neyman()` plots via the 
+arguments `y.label` and `modx.label`. (#56)
 
 # interactions 1.1.5
 

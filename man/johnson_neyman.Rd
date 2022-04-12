@@ -19,7 +19,9 @@ johnson_neyman(
   sig.color = "#00BFC4",
   insig.color = "#F8766D",
   mod.range = NULL,
-  title = "Johnson-Neyman plot"
+  title = "Johnson-Neyman plot",
+  y.label = NULL,
+  modx.label = NULL
 )
 }
 \arguments{
@@ -87,6 +89,16 @@ observed data is not highlighted in the plot. Provide the range as a vector,
 e.g., \code{c(0, 10)}.}
 
 \item{title}{The plot title. \code{"Johnson-Neyman plot"} by default.}
+
+\item{y.label}{If you prefer to override the automatic labelling of the
+y axis, you can specify your own label here. The y axis represents a
+\emph{slope} so it is recommended that you do not simply give the name of the
+predictor variable but instead make clear that it is a slope. By default,
+"Slope of \link{pred}" is used (with whatever \code{pred} is).}
+
+\item{modx.label}{If you prefer to override the automatic labelling of
+the x axis, you can specify your own label here. By default, the name
+\code{modx} is used.}
 }
 \value{
 \item{bounds}{The two numbers that make up the interval.}
@@ -165,6 +177,6 @@ Other interaction tools:
 \code{\link{sim_slopes}()}
 }
 \author{
-Jacob Long <\email{long.1377@osu.edu}>
+Jacob Long \email{jacob.long@sc.edu}
 }
 \concept{interaction tools}
