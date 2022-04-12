@@ -71,7 +71,7 @@
 #'  the
 #'  2nd moderator for 3-way interactions.}
 #'
-#' @author Jacob Long <\email{long.1377@@osu.edu}>
+#' @author Jacob Long \email{jacob.long@@sc.edu}
 #'
 #' @inheritParams interact_plot
 #' @inheritParams jtools::summ.lm

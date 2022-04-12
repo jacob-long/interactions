@@ -255,7 +255,7 @@
 #' @return The functions returns a \code{ggplot} object, which can be treated
 #'   like a user-created plot and expanded upon as such.
 #'
-#' @author Jacob Long <\email{long.1377@@osu.edu}>
+#' @author Jacob Long \email{jacob.long@@sc.edu}
 #'
 #' @seealso \code{\link[rockchalk]{plotSlopes}} from \pkg{rockchalk} performs a
 #'   similar function, but

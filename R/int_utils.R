@@ -38,7 +38,7 @@
 #'
 #' @family interaction tools
 #'
-#' @author Jacob Long <\email{long.1377@@osu.edu}>
+#' @author Jacob Long \email{jacob.long@@sc.edu}
 #'
 #' @examples
 #'

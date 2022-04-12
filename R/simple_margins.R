@@ -25,7 +25,7 @@
 #'    moderator}
 #'  \item{modx.values}{The values of the moderator used in the analysis}
 #'
-#' @author Jacob Long <\email{long.1377@@osu.edu}>
+#' @author Jacob Long \email{jacob.long@@sc.edu}
 #'
 #' @inheritParams sim_slopes
 #' @inheritParams margins::margins

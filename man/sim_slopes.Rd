@@ -237,6 +237,6 @@ Other interaction tools:
 \code{\link{sim_margins}()}
 }
 \author{
-Jacob Long <\email{long.1377@osu.edu}>
+Jacob Long \email{jacob.long@sc.edu}
 }
 \concept{interaction tools}

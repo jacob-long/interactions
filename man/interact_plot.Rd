@@ -385,5 +385,5 @@ its features.
 argument syntax to this function.
 }
 \author{
-Jacob Long <\email{long.1377@osu.edu}>
+Jacob Long \email{jacob.long@sc.edu}
 }
