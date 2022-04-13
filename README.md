@@ -15,7 +15,7 @@ status](https://ci.appveyor.com/api/projects/status/qfyn5cwomufqxath?svg=true)](
 [![codecov](https://codecov.io/gh/jacob-long/interactions/branch/master/graph/badge.svg)](https://codecov.io/gh/jacob-long/interactions)
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
-developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![MIT
 License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
 
