@@ -82,15 +82,14 @@ probe_interaction <- function(model, pred, modx, mod2 = NULL, ...) {
   ipnames <- names(formals(interact_plot))
 
   # Capture the arguments
-  dots <- eval(substitute(alist(...)))
+  dots <- list(...)
 
   # Capture explicit args
   args <- match.call()
 
   # Add the actual arguments
-  dots <- list(unlist(dots), model = args$model, modx = args$modx,
-               pred = args$pred, mod2 = args$mod2)
-  dots <- unlist(dots)
+  dots <- c(dots, model = args$model, modx = args$modx, pred = args$pred, 
+            mod2 = args$mod2)
 
   # Create list of arguments accepted by sim_slopes
   ssargs <- dots[names(dots) %in% ssnames]
@@ -380,7 +379,7 @@ center_ss <- function(d, weights, facvars = NULL, fvars, pred, resp, modx,
 center_ss_non_survey <- function(d, weights, facvars = NULL, fvars, pred,
                                    resp, modx, mod2, wname, offname, centered) {
 
-  omitvars <- c(resp, modx, mod2, wname, offname)
+  omitvars <- c(pred, resp, modx, mod2, wname, offname)
 
   # Dealing with two-level factors that aren't part of an interaction
   # /focal pred
@@ -447,7 +446,7 @@ center_ss_survey <- function(d, weights, facvars = NULL, fvars, pred, resp,
                              modx, survey, design, mod2, wname, offname,
                              centered) {
 
-  omitvars <- c(resp, modx, mod2, wname, offname)
+  omitvars <- c(pred, resp, modx, mod2, wname, offname)
 
   # Dealing with two-level factors that aren't part of an interaction
   # /focal pred

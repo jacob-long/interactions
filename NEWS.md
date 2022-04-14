@@ -1,4 +1,4 @@
-# interactions 1.1.6.9000
+# interactions 1.2.0.9000
 
 * Website and some documentation have been revamped and upgraded.
 * `johnson_neyman()` now handles non-syntactic variable names for `modx` 
@@ -7,6 +7,8 @@ correctly. (#56)
 arguments `y.label` and `modx.label`. (#56)
 * `sim_slopes()` no longer displays results with factor moderators in the 
 reverse order of the factor's levels. (#55)
+* `probe_interactions()` no longer errors when certain combinations of arguments
+are provided. (#50)
 
 # interactions 1.1.5
 
