@@ -19,12 +19,11 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [![MIT
 License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
 
-This package consists of a number of tools that pertain to the analysis
-and exploration of statistical interactions in the context of
-regression. Some of these features, especially those that pertain to
-visualization, are not exactly impossible to do oneself but are tedious
-and error-prone when done “by hand.” Some parts of `interactions` were
-once part of the [`jtools`](https://jtools.jacob-long.com) package.
+This package consists of a number of tools for the analysis and
+interpretation of statistical interactions in regression models. Some of
+these features, especially those that pertain to visualization, are not
+highly labor-intensive to do oneself but are tedious and error-prone
+when done “by hand.”
 
 Quick rundown of features:
 
@@ -36,11 +35,12 @@ All of these are implemented in a consistent interface designed to be as
 simple as possible with tweaks and guts available to advanced users.
 GLMs, models from the `survey` package, and multilevel models from
 `lme4` are fully supported as is visualization for Bayesian models from
-`rstanaram` and `brms`.
+`rstanaram` and `brms`. Several other model types work “out of the box”
+even though they are not officially supported.
 
 ## Installation
 
-The package is now available via CRAN.
+The package is available via CRAN.
 
 ``` r
 install.packages("interactions")
@@ -48,21 +48,21 @@ install.packages("interactions")
 
 ## Usage
 
-Unless you have a really keen eye and good familiarity with both the
-underlying mathematics and the scale of your variables, it can be very
-difficult to look at the output of regression model that includes an
-interaction and actually understand what the model is telling you.
+Unless you have a keen eye and good familiarity with both the underlying
+mathematics and the scale of your variables, it can be very difficult to
+look at the output of regression model that includes an interaction and
+completely understand what the model is telling you.
 
-This package contains several means of aiding understanding and doing
-statistical inference with interactions.
+This package contains several means of aiding the understanding of and
+doing statistical inference with interactions.
 
 ### Johnson-Neyman intervals and simple slopes analysis
 
 The “classic” way of probing an interaction effect is to calculate the
 slope of the focal predictor at different values of the moderator. When
-the moderator is binary, this is especially informative—e.g., what is
-the slope for men vs. women? But you can also arbitrarily choose points
-for continuous moderators.
+the moderator is categorical, this is especially informative—e.g., what
+is the slope for cats vs. dogs? But you can also arbitrarily choose
+points for continuous moderators.
 
 With that said, the more statistically rigorous way to explore these
 effects is to find the Johnson-Neyman interval, which tells you the
@@ -108,11 +108,13 @@ sim_slopes(fiti, pred = hp, modx = wt, jnplot = TRUE)
     #> ------- ------ -------- ------
     #>   -0.00   0.01    -0.31   0.76
 
-The Johnson-Neyman plot can really help you get a handle on what the
-interval is telling you, too. Note that you can look at the
-Johnson-Neyman interval directly with the `johnson_neyman()` function.
+The Johnson-Neyman plot can help you get a handle on what the interval
+is telling you, too. Note that you can look at the Johnson-Neyman
+interval directly with the `johnson_neyman()` function.
 
-The above all generalize to three-way interactions, too.
+The above all generalize to three-way interactions, too, although
+Johnson-Neyman intervals do not handle the second moderator in the way
+that they do the first.
 
 ### Visualizing interaction effects
 

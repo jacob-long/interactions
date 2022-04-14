@@ -20,3 +20,5 @@
 ^make_hex\.R$
 ^hex\.png$
 ^LICENSE\.md$
+^\.github$
+^pkgdown$
