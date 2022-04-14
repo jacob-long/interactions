@@ -671,28 +671,6 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
     }
   }
 
-  # Avoiding unnecessary import of scales --- this is scales::squish
-  squish <- function(x, range = c(0, 1), only.finite = TRUE) {
-    force(range)
-    finite <- if (only.finite)
-      is.finite(x)
-    else TRUE
-    x[finite & x < range[1]] <- range[1]
-    x[finite & x > range[2]] <- range[2]
-    x
-  }
-
-  # Some shorthand functions to automatically exclude NA
-  quant <- function(x, ...) {
-    quantile(x, ..., na.rm = TRUE)
-  }
-  min2 <- function(...) {
-    min(..., na.rm = TRUE)
-  }
-  max2 <- function(...) {
-    max(..., na.rm = TRUE)
-  }
-
   # Get scale colors, provide better legend title
   if (!is.numeric(d[[as_string(modx)]])) {
     p <- p + scale_colour_manual(name = legend.main, values = colors,

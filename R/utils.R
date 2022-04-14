@@ -207,6 +207,27 @@ cut2 <- function(x, cuts, m = 150, g, levels.mean = FALSE,
   y
 }
 
+# Some shorthand functions to automatically exclude NA
+quant <- function(x, ...) {
+  quantile(x, ..., na.rm = TRUE)
+}
+min2 <- function(...) {
+  min(..., na.rm = TRUE)
+}
+max2 <- function(...) {
+  max(..., na.rm = TRUE)
+}
+
+# Avoiding unnecessary import of scales --- this is scales::squish
+squish <- function(x, range = c(0, 1), only.finite = TRUE) {
+  force(range)
+  finite <- if (only.finite)
+    is.finite(x)
+  else TRUE
+  x[finite & x < range[1]] <- range[1]
+  x[finite & x > range[2]] <- range[2]
+  x
+}
 
 #'@export
 #'@importFrom generics tidy
