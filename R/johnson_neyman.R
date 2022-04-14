@@ -73,7 +73,7 @@
 #'  y axis, you can specify your own label here. The y axis represents a 
 #'  *slope* so it is recommended that you do not simply give the name of the 
 #'  predictor variable but instead make clear that it is a slope. By default,
-#'  "Slope of [pred]" is used (with whatever `pred` is).
+#'  "Slope of \[pred\]" is used (with whatever `pred` is).
 #' 
 #' @param modx.label If you prefer to override the automatic labelling of
 #'  the x axis, you can specify your own label here. By default, the name 

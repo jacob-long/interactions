@@ -94,7 +94,7 @@ e.g., \code{c(0, 10)}.}
 y axis, you can specify your own label here. The y axis represents a
 \emph{slope} so it is recommended that you do not simply give the name of the
 predictor variable but instead make clear that it is a slope. By default,
-"Slope of \link{pred}" is used (with whatever \code{pred} is).}
+"Slope of [pred]" is used (with whatever \code{pred} is).}
 
 \item{modx.label}{If you prefer to override the automatic labelling of
 the x axis, you can specify your own label here. By default, the name
