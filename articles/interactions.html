@@ -105,7 +105,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Exploring interactions with continuous predictors in regression models</h1>
                         <h4 data-toc-skip class="author">Jacob Long</h4>
             
-            <h4 data-toc-skip class="date">2022-04-13</h4>
+            <h4 data-toc-skip class="date">2022-04-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jacob-long/interactions/blob/HEAD/vignettes/interactions.Rmd" class="external-link"><code>vignettes/interactions.Rmd</code></a></small>
       <div class="d-none name"><code>interactions.Rmd</code></div>
@@ -470,16 +470,12 @@
 <col>
 <col>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Value of Murder</td>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Slope of Illiteracy</td>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Value of Murder</th>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Slope of Illiteracy</th>
 </tr>
 <tr>
-<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Value of Murder</th>
-<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">slope</th>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.00</td>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">535.50 (458.77)</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.00</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">535.50 (458.77)</td>
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">5.00</td>
@@ -601,21 +597,21 @@
 <span class="co"><span style="font-style: italic;">## </span>                                 Est.     S.E.   t val.      p</span>
 <span class="co">## --------------------------- --------- -------- -------- ------</span>
 <span class="co">## Slope of Illiteracy            -71.59   268.65    -0.27   0.79</span>
-<span class="co">## Conditional intercept         4667.28   125.81    37.10   0.00</span>
+<span class="co">## Conditional intercept         4755.88   247.48    19.22   0.00</span>
 <span class="co">## </span>
 <span class="co">## <span style="font-style: italic;">When Murder =  8.685043 (Mean): </span></span>
 <span class="co"><span style="font-style: italic;">## </span></span>
 <span class="co"><span style="font-style: italic;">## </span>                                 Est.     S.E.   t val.      p</span>
 <span class="co">## --------------------------- --------- -------- -------- ------</span>
 <span class="co">## Slope of Illiteracy           -437.12   175.82    -2.49   0.02</span>
-<span class="co">## Conditional intercept         4700.46    72.13    65.16   0.00</span>
+<span class="co">## Conditional intercept         5241.43   202.73    25.85   0.00</span>
 <span class="co">## </span>
 <span class="co">## <span style="font-style: italic;">When Murder = 11.949113 (+ 1 SD): </span></span>
 <span class="co"><span style="font-style: italic;">## </span></span>
 <span class="co"><span style="font-style: italic;">## </span>                                 Est.     S.E.   t val.      p</span>
 <span class="co">## --------------------------- --------- -------- -------- ------</span>
 <span class="co">## Slope of Illiteracy           -802.66   145.72    -5.51   0.00</span>
-<span class="co">## Conditional intercept         4733.63    95.05    49.80   0.00</span></code></pre>
+<span class="co">## Conditional intercept         5726.98   246.24    23.26   0.00</span></code></pre>
 <p>This example shows you that while the slope associated with <code>Illiteracy</code> is negative when <code>Murder</code> is high, the conditional intercept is also high when <code>Murder</code> is high. That tells you that increases in <code>Illiteracy</code> for high-<code>Murder</code> observations will tend towards being equal on <code>Income</code> to observations with lower values of <code>Murder</code>.</p>
 </div>
 <div class="section level4">
@@ -684,24 +680,24 @@
 <span class="co">## </span>
 <span class="co">## <span style="font-style: italic;">When avg.ed = 2.085002 (- 1 SD): </span></span>
 <span class="co"><span style="font-style: italic;">## </span></span>
-<span class="co"><span style="font-style: italic;">## </span>                                Est.   S.E.   t val.      p</span>
-<span class="co">## --------------------------- -------- ------ -------- ------</span>
-<span class="co">## Slope of growth                 1.05   0.19     5.66   0.00</span>
-<span class="co">## Conditional intercept         555.73   8.12    68.47   0.00</span>
+<span class="co"><span style="font-style: italic;">## </span>                                Est.    S.E.   t val.      p</span>
+<span class="co">## --------------------------- -------- ------- -------- ------</span>
+<span class="co">## Slope of growth                 1.05    0.19     5.66   0.00</span>
+<span class="co">## Conditional intercept         521.23   11.20    46.54   0.00</span>
 <span class="co">## </span>
 <span class="co">## <span style="font-style: italic;">When avg.ed = 2.787381 (Mean): </span></span>
 <span class="co"><span style="font-style: italic;">## </span></span>
 <span class="co"><span style="font-style: italic;">## </span>                                Est.   S.E.   t val.      p</span>
 <span class="co">## --------------------------- -------- ------ -------- ------</span>
 <span class="co">## Slope of growth                 0.58   0.15     3.80   0.00</span>
-<span class="co">## Conditional intercept         658.78   5.54   119.00   0.00</span>
+<span class="co">## Conditional intercept         639.78   6.80    94.09   0.00</span>
 <span class="co">## </span>
 <span class="co">## <span style="font-style: italic;">When avg.ed = 3.489761 (+ 1 SD): </span></span>
 <span class="co"><span style="font-style: italic;">## </span></span>
 <span class="co"><span style="font-style: italic;">## </span>                                Est.   S.E.   t val.      p</span>
 <span class="co">## --------------------------- -------- ------ -------- ------</span>
 <span class="co">## Slope of growth                 0.11   0.25     0.43   0.67</span>
-<span class="co">## Conditional intercept         761.83   7.55   100.89   0.00</span></code></pre>
+<span class="co">## Conditional intercept         758.34   6.85   110.66   0.00</span></code></pre>
 <p><img src="interactions_files/figure-html/unnamed-chunk-33-2.png" width="576"></p>
 <p>Note in the above example that you can provide arguments that only apply to one function and they will be used appropriately. On the other hand, you cannot apply their overlapping functions selectively. That is, you can’t have one <code>centered = "all"</code> and the other <code>centered = "none"</code>. If you want that level of control, just call each function separately.</p>
 <p>It returns an object with each of the two functions’ return objects:</p>
@@ -916,20 +912,20 @@
 <col>
 <tr><td colspan="2" style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal; font-style: italic;">enroll = 153</td></tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Value of avg.ed</td>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Slope of growth</td>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Value of avg.ed</th>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Slope of growth</th>
 </tr>
 <tr>
-<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Value of avg.ed</th>
-<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">slope</th>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.09</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1.25 (0.32)***</td>
 </tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.09</td>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1.25 (0.32)***</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.79</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.39 (0.22)#</td>
 </tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.79</td>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.39 (0.22)#</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3.49</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-0.48 (0.35)</td>
 </tr>
 <tr><td colspan="2" style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal; font-style: italic;">enroll = 595.28</td></tr>
 <tr>
@@ -937,16 +933,16 @@
 <td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Slope of growth</td>
 </tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3.49</td>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-0.48 (0.35)</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.09</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.72 (0.22)**</td>
 </tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.09</td>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.72 (0.22)**</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.79</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.34 (0.16)*</td>
 </tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.79</td>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.34 (0.16)*</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3.49</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-0.04 (0.24)</td>
 </tr>
 <tr><td colspan="2" style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal; font-style: italic;">enroll = 1037.51</td></tr>
 <tr>
@@ -954,12 +950,8 @@
 <td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Slope of growth</td>
 </tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3.49</td>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-0.04 (0.24)</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.09</td>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.18 (0.31)</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.09</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 1pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.18 (0.31)</td>
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2.79</td>

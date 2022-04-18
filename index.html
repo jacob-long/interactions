@@ -117,7 +117,7 @@
 </h1>
 </div>
 
-<p>This package consists of a number of tools that pertain to the analysis and exploration of statistical interactions in the context of regression. Some of these features, especially those that pertain to visualization, are not exactly impossible to do oneself but are tedious and error-prone when done “by hand.” Some parts of <code>interactions</code> were once part of the <a href="https://jtools.jacob-long.com" class="external-link"><code>jtools</code></a> package.</p>
+<p>This package consists of a number of tools for the analysis and interpretation of statistical interactions in regression models. Some of these features, especially those that pertain to visualization, are not highly labor-intensive to do oneself but are tedious and error-prone when done “by hand.”</p>
 <p>Quick rundown of features:</p>
 <ul>
 <li>simple slopes analysis</li>
@@ -125,23 +125,23 @@
 <li>visualization of predicted and observed values using <code>ggplot2</code>
 </li>
 </ul>
-<p>All of these are implemented in a consistent interface designed to be as simple as possible with tweaks and guts available to advanced users. GLMs, models from the <code>survey</code> package, and multilevel models from <code>lme4</code> are fully supported as is visualization for Bayesian models from <code>rstanaram</code> and <code>brms</code>.</p>
+<p>All of these are implemented in a consistent interface designed to be as simple as possible with tweaks and guts available to advanced users. GLMs, models from the <code>survey</code> package, and multilevel models from <code>lme4</code> are fully supported as is visualization for Bayesian models from <code>rstanaram</code> and <code>brms</code>. Several other model types work “out of the box” even though they are not officially supported.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The package is now available via CRAN.</p>
+<p>The package is available via CRAN.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"interactions"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>Unless you have a really keen eye and good familiarity with both the underlying mathematics and the scale of your variables, it can be very difficult to look at the output of regression model that includes an interaction and actually understand what the model is telling you.</p>
-<p>This package contains several means of aiding understanding and doing statistical inference with interactions.</p>
+<p>Unless you have a keen eye and good familiarity with both the underlying mathematics and the scale of your variables, it can be very difficult to look at the output of regression model that includes an interaction and completely understand what the model is telling you.</p>
+<p>This package contains several means of aiding the understanding of and doing statistical inference with interactions.</p>
 <div class="section level3">
 <h3 id="johnson-neyman-intervals-and-simple-slopes-analysis">Johnson-Neyman intervals and simple slopes analysis<a class="anchor" aria-label="anchor" href="#johnson-neyman-intervals-and-simple-slopes-analysis"></a>
 </h3>
-<p>The “classic” way of probing an interaction effect is to calculate the slope of the focal predictor at different values of the moderator. When the moderator is binary, this is especially informative—e.g., what is the slope for men vs. women? But you can also arbitrarily choose points for continuous moderators.</p>
+<p>The “classic” way of probing an interaction effect is to calculate the slope of the focal predictor at different values of the moderator. When the moderator is categorical, this is especially informative—e.g., what is the slope for cats vs. dogs? But you can also arbitrarily choose points for continuous moderators.</p>
 <p>With that said, the more statistically rigorous way to explore these effects is to find the Johnson-Neyman interval, which tells you the range of values of the moderator in which the slope of the predictor is significant vs.  nonsignificant at a specified alpha level.</p>
 <p>The <code>sim_slopes</code> function will by default find the Johnson-Neyman interval and tell you the predictor’s slope at specified values of the moderator; by default either both values of binary predictors or the mean and the mean +/- one standard deviation for continuous moderators.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -173,8 +173,8 @@
 <span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Est.   S.E.   t val.      p</span></span>
 <span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------- ------ -------- ------</span></span>
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   -0.00   0.01    -0.31   0.76</span></span></code></pre></div>
-<p>The Johnson-Neyman plot can really help you get a handle on what the interval is telling you, too. Note that you can look at the Johnson-Neyman interval directly with the <code><a href="reference/johnson_neyman.html">johnson_neyman()</a></code> function.</p>
-<p>The above all generalize to three-way interactions, too.</p>
+<p>The Johnson-Neyman plot can help you get a handle on what the interval is telling you, too. Note that you can look at the Johnson-Neyman interval directly with the <code><a href="reference/johnson_neyman.html">johnson_neyman()</a></code> function.</p>
+<p>The above all generalize to three-way interactions, too, although Johnson-Neyman intervals do not handle the second moderator in the way that they do the first.</p>
 </div>
 <div class="section level3">
 <h3 id="visualizing-interaction-effects">Visualizing interaction effects<a class="anchor" aria-label="anchor" href="#visualizing-interaction-effects"></a>
