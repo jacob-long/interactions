@@ -18,6 +18,8 @@ correctly. (#56)
 reverse order of the factor's levels. (#55)
 * `probe_interactions()` no longer errors when certain combinations of arguments
 are provided. (#50)
+* `sim_slopes()` no longer errors when ordered factors are moderators.
+Thanks to Jonathan Zadra for suggesting the fix. (#42)
 
 # interactions 1.1.5
 
