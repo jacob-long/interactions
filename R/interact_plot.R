@@ -353,6 +353,16 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
     if ("mod2vals" %in% names(dots)) {
       mod2.values <- dots$mod2vals
     }
+    # If it's a categorical predictor, I want a different default for the
+    # geom argument than cat_plot() uses so it looks more like what you'd 
+    # expect from this function
+    if ("geom" %nin% names(dots)) {
+      geom <- "line"
+    } else {
+      geom <- dots$geom
+    }
+  } else {
+    geom <- "line"
   }
 
   if (!is.null(color.class)) {
@@ -420,30 +430,58 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   pm <- pred_out$predicted
   d <- pred_out$original
 
-  # Check for factor predictor
+  # Check for factor predictor and send to plot_cat() if so
   if (!is.numeric(d[[pred]])) {
-    # I could assume the factor is properly ordered, but that's too risky
-    stop("Focal predictor (\"pred\") cannot be a factor. Either",
-         " use it as modx, convert it to a numeric dummy variable,",
-         " or use the cat_plot function for factor by factor interaction",
-         " plots.")
+    # Warn users that this is kinda janky
+    msg_wrap("Detected factor predictor. Plotting with cat_plot() instead.
+              Consult cat_plot() documentation (?cat_plot) for full details
+              on how to specify models with categorical predictors. If you 
+              experience errors or unexpected results, try using cat_plot() 
+              directly.")
+    # Gather arguments for plot_cat()
+    args <- list(predictions = pm, pred = pred, modx = modx, mod2 = mod2,
+                  data = d, modx.values = modxvals2, mod2.values = mod2vals2,
+                  interval = interval,
+                  plot.points = plot.points | partial.residuals,
+                  point.shape = point.shape, vary.lty = vary.lty,
+                  pred.labels = pred.labels, modx.labels = modx.labels,
+                  mod2.labels = mod2.labels, x.label = x.label, y.label = y.label,
+                  main.title = main.title, legend.main = legend.main,
+                  colors = colors, weights = weights, resp = resp,
+                  point.size = point.size, line.thickness = line.thickness,
+                  jitter = jitter, point.alpha = point.alpha, geom = geom)
+    # Deal with cat_plot() arguments provided via ...
+    if (length(dots) > 0) {
+      # Make sure it's not geom which I've already handled
+      if (length(dots %not% "geom") > 0) {
+        # Append to this list
+        args <- c(args, dots %not% "geom")
+      }
+    }
+    # Call internal plotting function
+    return(do.call("plot_cat", args))
+    # Using plot_cat turns out to be more robust than cat_plot. I'm doing 
+    # something dumb and/or badly with environments that makes calling 
+    # plot_cat() within a function fail inside of testthat (and inside of
+    # any arbitrary function that calls interact_plot() with a categorical
+    # predictor even in the "normal" environment).
+  } else {
+    # Send to internal plotting function
+    plot_mod_continuous(predictions = pm, pred = pred, modx = modx, resp = resp,
+                        mod2 = mod2, data = d,
+                        plot.points = plot.points | partial.residuals,
+                        interval = interval, linearity.check = linearity.check,
+                        x.label = x.label, y.label = y.label,
+                        pred.labels = pred.labels, modx.labels = modx.labels,
+                        mod2.labels = mod2.labels, main.title = main.title,
+                        legend.main = legend.main, colors = colors,
+                        line.thickness = line.thickness,
+                        vary.lty = vary.lty, jitter = jitter,
+                        modxvals2 = modxvals2, mod2vals2 = mod2vals2,
+                        weights = weights, rug = rug, rug.sides = rug.sides,
+                        point.size = point.size, point.shape = point.shape,
+                        facet.modx = facet.modx, point.alpha = point.alpha)
   }
-
-  # Send to internal plotting function
-  plot_mod_continuous(predictions = pm, pred = pred, modx = modx, resp = resp,
-                      mod2 = mod2, data = d,
-                      plot.points = plot.points | partial.residuals,
-                      interval = interval, linearity.check = linearity.check,
-                      x.label = x.label, y.label = y.label,
-                      pred.labels = pred.labels, modx.labels = modx.labels,
-                      mod2.labels = mod2.labels, main.title = main.title,
-                      legend.main = legend.main, colors = colors,
-                      line.thickness = line.thickness,
-                      vary.lty = vary.lty, jitter = jitter,
-                      modxvals2 = modxvals2, mod2vals2 = mod2vals2,
-                      weights = weights, rug = rug, rug.sides = rug.sides,
-                      point.size = point.size, point.shape = point.shape,
-                      facet.modx = facet.modx, point.alpha = point.alpha)
 
 }
 

@@ -19,7 +19,7 @@ fitl <- lm(Income ~ HSGrad*o70l, data = states)
 fitc <- lm(Income ~ HSGrad*Murder + o70c, data = states)
 
 library(vdiffr)
-Sys.setenv("VDIFFR_RUN_TESTS" = FALSE)
+# Sys.setenv("VDIFFR_RUN_TESTS" = FALSE)
 
 if (requireNamespace("survey")) {
   suppressMessages(library(survey, quietly = TRUE))
@@ -99,9 +99,10 @@ test_that("interact_plot accepts user-specified values and labels", {
                                            "High" = 62))
   expect_doppelganger("plmlabelsc2", plmlabelsc2)
 
-  # Reject logical/factor pred
-  expect_error(interact_plot(model = fit2, pred = o70, modx = HSGrad,
-                             pred.labels = c("Under","Over")))
+  # ~~Reject~~ Accept logical/factor pred
+  expect_doppelganger("plmlabelscpred interact_plot to cat_plot",
+                      interact_plot(model = fit2, pred = o70, modx = HSGrad,
+                                    pred.labels = c("Under","Over")))
   plmlabelscpred <- interact_plot(model = fit2n, pred = o70n, modx = HSGrad,
                                   pred.labels = c("Under","Over"))
   expect_doppelganger("plmlabelscpred", plmlabelscpred)
@@ -163,7 +164,8 @@ if (requireNamespace("lme4")) {
               offset = log(size))
 
   test_that("interact_plot works for lme4", {
-    expect_error(interact_plot(mve, pred = mode, modx = Gender))
+    expect_doppelganger("plme4 interact_plot to cat_plot",
+                        interact_plot(mve, pred = mode, modx = Gender))
     plme4 <- interact_plot(mv, pred = mode_numeric, modx = Gender)
     expect_doppelganger("plme4", plme4)
     # expect_message(

@@ -20,6 +20,11 @@ test_that("cat_plot handles simple plot (bar)", {
   expect_doppelganger("plmbar", plmbar)
 })
 
+test_that("interact_plot handles simple cat plot (bar)", {
+  plmbar <- interact_plot(fit, pred = color, modx = cut)
+  expect_doppelganger("plmbar interact_plot", plmbar)
+})
+
 test_that("cat_plot handles intervals (bar)", {
   plmbari <- cat_plot(fit, pred = color, modx = cut, interval = TRUE)
   expect_doppelganger("plmbari", plmbari)
@@ -40,6 +45,12 @@ test_that("cat_plot handles intervals (line)", {
   plmlinei <- cat_plot(fit, pred = color, modx = cut, interval = TRUE,
                         geom = "line")
   expect_doppelganger("plmlinei", plmlinei)
+})
+
+test_that("interact_plot handles cat_plot intervals (line)", {
+  plmlinei <- interact_plot(fit, pred = color, modx = cut, interval = TRUE,
+                        geom = "line", data = diamond)
+  expect_doppelganger("plmlinei interact_plot", plmlinei)
 })
 
 test_that("cat_plot handles plotted points (line)", {
@@ -84,6 +95,13 @@ test_that("cat_plot handles point.shape (point)", {
                       plot.points = TRUE, geom = "point", point.shape = TRUE,
                       jitter = 0)
   expect_doppelganger("plmptps", plmptps)
+})
+
+test_that("interact_plot handles cat_plot point.shape (point)", {
+  plmptps <- interact_plot(fit, pred = color, modx = cut, interval = TRUE,
+                      plot.points = TRUE, geom = "point", point.shape = TRUE,
+                      jitter = 0, data = diamond)
+  expect_doppelganger("plmptps interact_plot", plmptps)
 })
 
 test_that("cat_plot handles simple plot (boxplot)", {

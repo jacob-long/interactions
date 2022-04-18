@@ -1,5 +1,8 @@
 # interactions 1.2.0.9000
 
+* `interact_plot()` now has provisional support for factor predictors (`pred`).
+Users will receive a message because of the possibility for unexpected 
+behavior. `cat_plot()` likewise has support for continuous moderators. (#54)
 * Website and some documentation have been revamped and upgraded.
 * `johnson_neyman()` now handles non-syntactic variable names for `modx` 
 correctly. (#56)

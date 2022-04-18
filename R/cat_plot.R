@@ -50,9 +50,9 @@
 #'   vary by the values of the factor? This is especially useful if you aim to
 #'   be black and white printing- or colorblind-friendly.
 #'
-#' @param colors Any palette argument accepted by
-#'   \code{\link[ggplot2]{scale_colour_brewer}}. Default is "Set2".
-#'   You may also simply supply a vector of colors accepted by
+#' @param colors Any palette argument accepted by [jtools::get_colors()]. 
+#'   Default is "CUD Bright" for factor moderators and "blue" for continuous 
+#'   moderators. You may also simply supply a vector of colors accepted by
 #'   `ggplot2` and of equal length to the number of moderator levels.
 #'
 #' @param interval.geom For categorical by categorical interactions.
@@ -167,7 +167,7 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   robust = FALSE, cluster = NULL, vcov = NULL, pred.labels = NULL,
   modx.labels = NULL, mod2.labels = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, main.title = NULL, legend.main = NULL,
-  colors = "CUD Bright", partial.residuals = FALSE, point.alpha = 0.6,
+  colors = NULL, partial.residuals = FALSE, point.alpha = 0.6,
   color.class = NULL, at = NULL, ...) {
 
   # Capture extra arguments
@@ -328,10 +328,13 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
     d[[pred]] <- factor(d[[pred]], levels = pred.levels, labels = pred.labels)
   }
 
+  # Create an indicator for my frequent queries about whether modx is 
+  # continuous
+  numeric_modx <- FALSE
   if (!is.null(modx)) {
-    gradient <- is.numeric(d[[modx]]) & !vary.lty
-  } else {gradient <- FALSE}
-
+    numeric_modx <- is.numeric(d[[modx]])
+  }
+  
   # Prepare names for tidy evaluation
   pred <- sym(pred)
   resp <- sym(resp)
@@ -339,18 +342,24 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
   if (!is.null(mod2)) {mod2 <- sym(mod2)}
   if (!is.null(weights)) {weights <- sym(weights)}
 
-  # Checking if user provided the colors his/herself
+  # Checking if user provided the colors
+  if (is.null(colors)) {colors <- if (!numeric_modx) "CUD Bright" else "blue"}
+  # Retrieve colors
   colors <- suppressWarnings(get_colors(colors, length(modx.labels),
-                                        gradient = gradient))
+                             gradient = numeric_modx))
 
   # Manually set linetypes
   types <- c("solid", "4242", "2222", "dotdash", "dotted", "twodash",
              "12223242", "F282", "F4448444", "224282F2", "F1")
   ltypes <- types[seq_along(modx.labels)]
 
+  # use named vectors to keep these aesthetics and their labels together
   names(ltypes) <- modx.labels
-  names(colors) <- modx.labels
+  if (!numeric_modx) {
+    names(colors) <- modx.labels
+  }
 
+  # Specify a sensible default transparency for the geom depending on what it is
   if (is.null(geom.alpha)) {
     a_level <- 1
     if (plot.points == TRUE) {
@@ -364,9 +373,11 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
     }
   } else {a_level <- geom.alpha}
 
+  # Set a sensible default dodge depending on what the geom is
   if (is.null(dodge.width)) {
     dodge.width <- if (geom %in% c("bar", "point")) {0.9} else {0}
   }
+  # Set a sensible default errorbar width depending on what the geom is
   if (is.null(errorbar.width)) {
     errorbar.width <- if (geom == "point") {
       0.9
@@ -375,10 +386,18 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
     } else {0.5}
   }
 
+  # Can't have point shapes if modx is numeric
+  if (numeric_modx) {
+    point.shape <- FALSE
+  }
+
+  # Create arguments for ggplot calls
   shape <- if (point.shape == TRUE) {modx} else {NULL}
-  lty <- if (vary.lty == TRUE) {modx} else {NULL}
+  fill <- if (point.shape == TRUE) {modx} else {NULL}
+  lty <- if (vary.lty == TRUE) {if (numeric_modx) sym("modx_group") else modx} else {NULL}
   grp <- if (!is.null(modx)) modx else 1
 
+  # Make base plot object
   p <- ggplot(pm, aes(x = !! pred, y = !! resp, group = !! grp,
                       colour = !! modx, fill = !! modx,
                       shape = !! shape, linetype = !! lty))
@@ -415,10 +434,16 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
     p <- p + facets
   }
 
-  # For factor vars, plotting the observed points
-  # and coloring them by factor looks great
+  # For factor vars, plotting the observed points and coloring them by factor
+  # looks great. Requires creating a separate layer to plot this other dataset.
+  # If the moderator is numeric, will create a gradient color scheme.
   if (plot.points == TRUE) {
 
+    if (!numeric_modx & point.shape) {
+      shape_arg <- modx
+    } else {
+      shape_arg <- NULL
+    }
     constants <- list(alpha = point.alpha)
     if (is.null(weights)) {
       # Only use constant size if weights are not used
@@ -429,7 +454,7 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
                    inherit.aes = TRUE, show.legend = FALSE,
                    mapping = aes(x = !! pred, y = !! resp, size = !! weights,
                                  group = !! grp, colour = !! modx,
-                                 shape = !! shape),
+                                 shape = !! shape_arg),
                    position = if (!is.null(modx)) {
                       position_jitterdodge(dodge.width = dodge.width,
                                            jitter.width = jitter[1],
@@ -442,7 +467,7 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
 
   }
 
-  # Using theme_apa for theming...but using legend title and side positioning
+  # Position of legend depends on facetting
   if (is.null(mod2)) {
     p <- p + theme_nice(legend.pos = "right")
   } else {
@@ -451,14 +476,25 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
   }
   p <- p + labs(x = x.label, y = y.label) # better labels for axes
 
-  # Get scale colors, provide better legend title
-  p <- p + scale_colour_manual(name = legend.main,
-                               values = colors,
-                               breaks = names(colors)) +
-    scale_fill_manual(name = legend.main,
-                             values = colors,
-                             breaks = names(colors)) +
-    scale_shape(name = legend.main) +
+  # Need different color scales depending on whether the moderator is numeric
+  if (!numeric_modx) {
+    p <- p + scale_colour_manual(name = legend.main, values = colors,
+                                 breaks = names(colors),
+                                 aesthetics = c("colour", "fill"))
+  } else {
+    limits <- quant(d[[modx]], probs = c(.1, .9))
+    if (min2(modx.values) < limits[1]) {limits[1] <- min2(modx.values)}
+    if (max2(modx.values) > limits[2]) {limits[2] <- max2(modx.values)}
+    p <- p + scale_colour_gradientn(name = legend.main,
+                                    breaks = modx.values,
+                                    labels = modx.labels,
+                                    colors = colors,
+                                    limits = limits,
+                                    oob = squish,
+                                    aesthetics = c("colour", "fill"),
+                                    guide = "legend")
+  }
+  p <- p + scale_shape(name = legend.main) +
     scale_x_discrete(limits = pred.values, labels = pred.labels)
 
   if (vary.lty == TRUE) { # Add line-specific changes
@@ -476,6 +512,5 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
 
   # Return the plot
   return(p)
-
 
 }

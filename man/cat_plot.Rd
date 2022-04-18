@@ -41,7 +41,7 @@ cat_plot(
   y.label = NULL,
   main.title = NULL,
   legend.main = NULL,
-  colors = "CUD Bright",
+  colors = NULL,
   partial.residuals = FALSE,
   point.alpha = 0.6,
   color.class = NULL,
@@ -245,9 +245,9 @@ for the plot. If \code{NULL}, no main title is used.}
 appears above the legend. If \code{NULL}, the name of the moderating
 variable is used.}
 
-\item{colors}{Any palette argument accepted by
-\code{\link[ggplot2]{scale_colour_brewer}}. Default is "Set2".
-You may also simply supply a vector of colors accepted by
+\item{colors}{Any palette argument accepted by \code{\link[jtools:get_colors]{jtools::get_colors()}}.
+Default is "CUD Bright" for factor moderators and "blue" for continuous
+moderators. You may also simply supply a vector of colors accepted by
 \code{ggplot2} and of equal length to the number of moderator levels.}
 
 \item{partial.residuals}{Instead of plotting the observed data, you may plot
