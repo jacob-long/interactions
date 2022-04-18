@@ -194,12 +194,29 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   modx.factor <- modx %in% facvars
   fvars <- names(d)
 
+  # Need to deal with possibility pred will appear in coefficient table with 
+  # backticks because it is non-syntactic
+  pred_names <- c(pred, bt(pred))
+  pred_factor <- FALSE
   # Check for factor predictor
-  if (is.factor(d[[pred]])) {
-    # I could assume the factor is properly ordered, but that's too risky
-    stop(wrap_str("Focal predictor (\"pred\") cannot be a factor. Either
-          use it as modx or convert it to a numeric dummy variable."))
+  if (is.factor(d[[pred]]) | is.character(d[[pred]])) {
+    # Need to know what the coefficients will be called (name + level)
+    if (is.factor(d[[pred]])) {
+      pred_names <- c(sapply(pred_names, function(x) {paste0(x, colnames(contrasts(d[[pred]])))}))
+    } else {
+    pred_names <- 
+      c(sapply(pred_names, function(x) paste0(x, ulevels(d[[pred]]))))
+    }
+    pred_factor <- TRUE
   }
+  # Only keep the ones represented among the coefficients
+  if (!is.null(attr(class(model), "package")) && "lme4" %in%
+        attr(class(model), "package")) {
+    pred_names <- pred_names %just% names(fixef(model))
+  } else {
+    pred_names <- pred_names %just% names(coef(model))
+  }
+
 
   wname <- get_weights(model, d)$weights_name
   wts <- get_weights(model, d)$weights
@@ -235,9 +252,9 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
                         modx.labels = modx.labels,
                         any.mod2 = !is.null(mod2), sims = TRUE)
 
-  if (!is.numeric(d[[modx]]) & johnson_neyman == TRUE) {
+  if ((pred_factor | !is.numeric(d[[modx]])) & johnson_neyman == TRUE) {
         warn_wrap("Johnson-Neyman intervals are not available for factor
-                   moderators.", call. = FALSE)
+                   predictors or moderators.", call. = FALSE)
         johnson_neyman <- FALSE
   }
 
@@ -318,8 +335,10 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
   # Need to make a matrix filled with NAs to store values from looped
   # model-making
-  holdvals <- rep(NA, length(modxvals2) * (length(the_col_names) + 1))
-  retmat <- as.data.frame(matrix(holdvals, nrow = length(modxvals2)))
+  holdvals <- rep(NA, length(modxvals2) * (length(the_col_names) + 1) * 
+                    length(pred_names))
+  retmat <- as.data.frame(matrix(holdvals,
+    nrow = length(modxvals2) * length(pred_names)))
 
   # Create a list to hold Johnson-Neyman objects
   jns <- list()
@@ -328,7 +347,9 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   colnames(retmat) <- c(paste("Value of ", modx, sep = ""), the_col_names)
 
   # Create another matrix to hold intercepts (no left-hand column needed)
-  retmati <- retmat
+  holdvals <- rep(NA, length(modxvals2) * ncol(retmat))
+  retmati <- as.data.frame(matrix(holdvals, nrow = length(modxvals2)))
+  colnames(retmati) <- colnames(retmat)
 
   mod2val_len <- length(mod2vals2)
   if (mod2val_len == 0) {mod2val_len <- 1}
@@ -369,7 +390,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       if (is.numeric(dt[[mod2]])) {
         dt[[mod2]] <- dt[[mod2]] - mod2vals2[j]
       } else {
-        dt[[mod2]] <- factor(dt[[mod2]])
+        dt[[mod2]] <- factor(dt[[mod2]], ordered = FALSE)
         dt[[mod2]] <- relevel(dt[[mod2]], ref = as.character(mod2vals2[j]))
         dt[[mod2]] <- stats::C(dt[[mod2]], "contr.treatment")
       }
@@ -435,7 +456,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     if (is.numeric(dt[[modx]])) {
       dt[[modx]] <- dt[[modx]] - modxvals2[i]
     } else {
-      dt[[modx]] <- factor(dt[[modx]])
+      dt[[modx]] <- factor(dt[[modx]], ordered = FALSE)
       dt[[modx]] <- relevel(dt[[modx]], ref = as.character(modxvals2[i]))
       dt[[modx]] <- stats::C(dt[[modx]], "contr.treatment")
     }
@@ -446,7 +467,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       if (is.numeric(dt[[mod2]])) {
         dt[[mod2]] <- dt[[mod2]] - mod2vals2[j]
       } else {
-        dt[[mod2]] <- factor(dt[[mod2]])
+        dt[[mod2]] <- factor(dt[[mod2]], ordered = FALSE)
         dt[[mod2]] <- relevel(dt[[mod2]], ref = as.character(mod2vals2[j]))
         dt[[mod2]] <- stats::C(dt[[mod2]], "contr.treatment")
       }
@@ -505,14 +526,24 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
     summat <- sum$coeftable
     if (pvals == FALSE) {summat <- summat[,colnames(summat) %nin% "p"]}
-    slopep <- summat[if (make.names(pred) != pred) bt(pred) else pred, ]
+    slopep <- summat[pred_names, , drop = FALSE]
     intp <- summat["(Intercept)", ]
 
-    retmat[i,1] <- modxvals2[i]
-    retmat[i,2:ncol(retmat)] <- slopep[]
+    # Have to account for variable amount of rows needed due to factor 
+    # predictors
+    rows <- split(1:nrow(retmat),
+                    ceiling(seq_along(1:nrow(retmat))/length(pred_names)))
+    # if (length(pred_names) == 1) {rows <- 1:nrow(retmat)}
+
+    retmat[rows[[i]],1] <- modxvals2[i]
+    retmat[rows[[i]],2:ncol(retmat)] <- slopep[]
 
     retmati[i,1] <- modxvals2[i]
     retmati[i,2:ncol(retmat)] <- intp[]
+
+    if (length(pred_names) > 1) {
+      pred_coefs <- rep(rownames(slopep), length(modxvals2))
+    } else {pred_coefs <- NULL}
 
     mods[[i + (j - 1) * modxval_len]] <- newmod
 
@@ -524,17 +555,20 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       imats[[j]] <- retmati
 
       # Now reset the return matrices
-      holdvals <- rep(NA, length(modxvals2) * ncol(retmat))
-      retmat <- matrix(holdvals, nrow = length(modxvals2))
+      holdvals <- rep(NA, length(modxvals2) * ncol(retmat) * length(pred_names))
+      retmat <- as.data.frame(
+        matrix(holdvals, nrow = length(modxvals2) * length(pred_names))
+      )
 
       # Create another matrix to hold intercepts (no left-hand column needed)
-      retmati <- retmat
+      holdvals <- rep(NA, length(modxvals2) * ncol(retmat))
+      retmati <- as.data.frame(matrix(holdvals, nrow = length(modxvals2)))
 
       # Value labels
       colnames(retmat) <-
-        c(paste("Value of ", modx, sep = ""), names(slopep))
+        c(paste("Value of ", modx, sep = ""), colnames(slopep))
       colnames(retmati) <-
-        c(paste("Value of ", modx, sep = ""), names(slopep))
+        c(paste("Value of ", modx, sep = ""), colnames(slopep))
 
     }
 
@@ -544,16 +578,36 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     ss <- structure(ss, modx.values = modxvals2, robust = robust,
                     cond.int = cond.int, johnson_neyman = johnson_neyman,
                     jnplot = jnplot, jns = jns, confint = confint,
-                    ci.width = ci.width)
+                    ci.width = ci.width, pred_names = pred_names)
 
     ss$mods <- mods
     ss$jn <- jns
 
     if (!is.null(mod2)) {
+      if (!is.null(pred_coefs)) {
+        for (i in 1:length(mats)) {
+          mats[[i]]["Coef."] <- pred_coefs
+          ocols <- names(mats[[i]]) 
+          mats[[i]] <- mats[[i]][c(ocols[1], "Coef.", ocols[-1] %not% "Coef.")]
+
+          imats[[i]]["Coef."] <- "(Intercept)"
+          ocols <- names(imats[[i]]) 
+          imats[[i]] <- imats[[i]][c(ocols[1], "Coef.", ocols[-1] %not% "Coef.")]
+        }
+      }
       ss$slopes <- mats
       ss$ints <- imats
       ss <- structure(ss, mod2.values = mod2vals2)
     } else {
+      if (!is.null(pred_coefs)) {
+        retmat["Coef."] <- pred_coefs
+        ocols <- names(retmat) 
+        retmat <- retmat[c(ocols[1], "Coef.", ocols[-1] %not% "Coef.")]
+
+        retmati["Coef."] <- "(Intercept)"
+        ocols <- names(retmati) 
+        retmati <- retmati[c(ocols[1], "Coef.", ocols[-1] %not% "Coef.")]
+      }
       ss$slopes <- retmat
       ss$ints <- retmati
     }
@@ -681,6 +735,8 @@ print.sim_slopes <- function(x, ...) {
 
       m <- NULL
       m$slopes <- as.data.frame(ss$slopes[[j]], stringsAsFactors = FALSE)
+      fac_pred <- "Coef." %in% names(m$slopes)
+      pred_names <- if (fac_pred) {unique(m$slopes[["Coef."]])} else {x$pred}
       if (x$confint == FALSE) {
         m$slopes <-
           m$slopes[names(m$slopes) %nin% unlist(make_ci_labs(x$ci.width))]
@@ -720,6 +776,8 @@ print.sim_slopes <- function(x, ...) {
       m <- ss
       m <- NULL
       m$slopes <- as.data.frame(ss$slopes, stringsAsFactors = FALSE)
+      fac_pred <- "Coef." %in% names(m$slopes)
+      pred_names <- if (fac_pred) {unique(m$slopes[["Coef."]])} else {x$pred}
       if (x$confint == FALSE) {
         m$slopes <-
           m$slopes[names(m$slopes) %nin% unlist(make_ci_labs(x$ci.width))]
@@ -744,9 +802,9 @@ print.sim_slopes <- function(x, ...) {
         x$modx.values <- format(x$modx.values, nsmall = x$digits)
       }
 
-      slopes <-
-        as.data.frame(lapply(m$slopes[i,2:ncol(m$slopes)], as.numeric),
-          check.names = FALSE)
+      rows <- split(1:nrow(m$slopes),
+                    ceiling(seq_along(1:nrow(m$slopes))/length(pred_names)))
+      slopes <- m$slopes[rows[[i]], 2:ncol(m$slopes)]
 
       # Handle automatic labels
       if (x$def == TRUE) {
@@ -757,15 +815,20 @@ print.sim_slopes <- function(x, ...) {
       }
 
       # Print conditional intercept
-      if (x$cond.int == TRUE) {
+      if (x$cond.int == TRUE | fac_pred == TRUE) {
+        pred_lab <- if (fac_pred) {slopes[["Coef."]]} else {x$pred}
         cat(italic(paste0("When ", x$modx, " = ", modx_label, ": \n\n")))
-        ints <- as.data.frame(lapply(m$ints[i,2:ncol(m$slopes)], as.numeric),
-                  check.names = FALSE)
-        slopes <- rbind(slopes, ints)
-        rownames(slopes) <- c(paste0("Slope of ", x$pred),
-                              "Conditional intercept")
-        print(md_table(slopes, digits = x$digits, format = "pandoc",
-                       sig.digits = FALSE))
+        if (x$cond.int) {
+          ints <- m$ints[i,2:ncol(m$slopes)]
+          slopes <- as.data.frame(rbind(slopes, ints))
+          rownames(slopes) <- c(paste0("Slope of ", pred_lab), 
+                                "Conditional intercept")
+        } else {
+          rownames(slopes) <- paste0("Slope of ", pred_lab)
+        }
+        
+        print(md_table(slopes %not% "Coef.", digits = x$digits,
+                       format = "pandoc", sig.digits = FALSE))
       } else {
         cat(italic(paste0("Slope of ", x$pred, " when ", x$modx, " = ",
                           modx_label, ": \n\n")))
@@ -857,6 +920,10 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
                        num_print(base$modx.value, attr(x, "digits"))
                      }
                     )
+  if ("Coef." %in% names(all_slopes)) {
+    base$term <- paste0(base$term, ", ", all_slopes[["Coef."]])
+    base$pred.value <- attr(x, "pred_names")
+  }
 
   # Do the same for moderator 2 if any
   if (any_mod2 == TRUE) {
@@ -1021,13 +1088,16 @@ make_table <- function(df, format = "{estimate} ({std.error})",
     mod2.value = df$mod2.value
   )
 
+  if ("pred.value" %in% names(df)) {
+    df2$pred.value <- df$pred.value
+  }
+
   if (!is.null(ints)) {
     df2["Conditional intercept"] <- num_print(ints, digits)
     int.name <- "Conditional intercept"
   } else {
     int.name <- NULL
   }
-
 
   # Add "slope of"
   pred.name <- paste(label, pred.name)
@@ -1037,16 +1107,24 @@ make_table <- function(df, format = "{estimate} ({std.error})",
   # Add "value of"
   modx.name <- paste("Value of", modx.name)
   # Change df2 colname to modx.name
-  names(df2)[1] <- modx.name
+  names(df2)[names(df2) == "modx.value"] <- modx.name
+  names(df2)[names(df2) == "slope"] <- pred.name
+  if ("pred.value" %in% names(df2)) {
+    names(df2)[names(df2) == "pred.value"] <- "Coefficient"
+  }
 
   # Create huxtable sans moderator 2 column
-  tab <- huxtable::as_hux(df2 %not%
-                            "mod2.value" %just%
-                            c(modx.name, int.name, "slope"))
+  tab <- huxtable::as_hux(df2 %not% "mod2.value" %just%
+                            c("Coefficient", modx.name, int.name, pred.name))
+  tab <- tab[names(tab) %just% c("Coefficient", modx.name, int.name, pred.name)]
+
+  pred.values <- if ("Coefficient" %in% colnames(tab)) {"Coefficient"} else {NULL}
+
   # Align the huxtable left
   tab <- huxtable::set_align(tab, value = "left")
 
   col_mult <- ifelse(is.null(int.name), yes = 1, no = 2)
+  col_mult <- ifelse(is.null(df2$Coefficient), no = col_mult + 1, yes = col_mult)
 
   # 3-way interaction handling
   if (any(!is.na(df2$mod2.value))) {
@@ -1055,7 +1133,7 @@ make_table <- function(df, format = "{estimate} ({std.error})",
     # Save the number of those
     num_mod2 <- length(mod2s)
     # Get the number of moderator values per 2nd moderator values
-    vals_per_mod2 <- length(df2$mod2.value)/num_mod2
+    vals_per_mod2 <- (length(df2$mod2.value)/num_mod2)
 
     # Iterate through 2nd moderator values
     for (i in 0:(num_mod2 - 1)) {
@@ -1063,7 +1141,7 @@ make_table <- function(df, format = "{estimate} ({std.error})",
       lab <- paste(df$mod2[1], "=", mod2s[i + 1])
       # Get the row I'll be inserting to; it's *2 because there are two row
       # insertions each time.
-      row <- (i * vals_per_mod2) + i * 2
+      row <- (i * vals_per_mod2) + i * 2 
 
       # Insert row with 2nd moderator label
       tab <- huxtable::insert_row(tab, c(lab, rep(NA, col_mult)), after = row)
@@ -1073,8 +1151,10 @@ make_table <- function(df, format = "{estimate} ({std.error})",
       tab <- huxtable::set_align(tab, row + 1, 1, "left")
 
       # Insert row with column labels
-      tab <- huxtable::insert_row(tab, c(modx.name, int.name, pred.name),
-                                  after = row + 1)
+      if (i > 0) {
+        tab <- huxtable::insert_row(tab, c(pred.values, modx.name, int.name, pred.name),
+                                    after = row + 1)
+      }
       # Put border below that row
       tab <- huxtable::set_bottom_border(tab, row + 2, 1:(2 + (col_mult - 1)),
                                          1)
@@ -1088,7 +1168,7 @@ make_table <- function(df, format = "{estimate} ({std.error})",
 
   } else { # If no second moderator
     # Add row of column labels
-    tab <- huxtable::insert_row(tab, c(modx.name, int.name, pred.name))
+    # tab <- huxtable::insert_row(tab, c(modx.name, int.name, pred.name))
     # Put a line below the column labels
     tab <- huxtable::set_bottom_border(tab, 1, 1:(2 + (col_mult - 1)), 1)
   }

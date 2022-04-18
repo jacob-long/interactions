@@ -18,6 +18,14 @@ fitw <- lm(Income ~ HSGrad*Murder*Illiteracy + o70 + Area, data = states,
 fitl <- lm(Income ~ HSGrad*o70l, data = states)
 fitc <- lm(Income ~ HSGrad*Murder + o70c, data = states)
 
+library(ggplot2)
+diamond <- diamonds
+diamond <- diamond[diamond$color != "D",]
+set.seed(10)
+samps <- sample(1:nrow(diamond), 2000)
+diamond <- diamond[samps,]
+fitd <- lm(price ~ cut * color * clarity, data = diamond)
+
 if (requireNamespace("survey")) {
   suppressMessages(library(survey, quietly = TRUE))
   data(api)
@@ -65,6 +73,13 @@ test_that("sim_slopes works for lm w/ non-focal character", {
                            pred = HSGrad,
                            modx = Murder,
                            johnson_neyman = FALSE))
+})
+
+test_that("sim_slopes accepts categorical predictor", {
+  expect_warning(ss <- sim_slopes(fitd, pred = cut, modx = color))
+  expect_s3_class(ss, "sim_slopes")
+  expect_warning(ss <- sim_slopes(fitd, pred = cut, modx = color, mod2 = clarity))
+  expect_s3_class(ss, "sim_slopes")
 })
 
 context("sim_slopes methods")

@@ -1,13 +1,19 @@
 # interactions 1.2.0.9000
 
+Enhancements:
+
+* `sim_slopes()` now supports non-continuous variables in the `pred` argument.
 * `interact_plot()` now has provisional support for factor predictors (`pred`).
 Users will receive a message because of the possibility for unexpected 
 behavior. `cat_plot()` likewise has support for continuous moderators. (#54)
 * Website and some documentation have been revamped and upgraded.
-* `johnson_neyman()` now handles non-syntactic variable names for `modx` 
-correctly. (#56)
 * Users can now change the axis labels for `johnson_neyman()` plots via the 
 arguments `y.label` and `modx.label`. (#56)
+
+Bug fixes:
+
+* `johnson_neyman()` now handles non-syntactic variable names for `modx` 
+correctly. (#56)
 * `sim_slopes()` no longer displays results with factor moderators in the 
 reverse order of the factor's levels. (#55)
 * `probe_interactions()` no longer errors when certain combinations of arguments
