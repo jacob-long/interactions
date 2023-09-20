@@ -372,11 +372,11 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   }
 
   # Evaluate the modx, mod2, pred args
-  pred <- quo_name(enexpr(pred))
-  modx <- quo_name(enexpr(modx))
-  if (modx == "NULL") {modx <- NULL}
-  mod2 <- quo_name(enexpr(mod2))
-  if (mod2 == "NULL") {mod2 <- NULL}
+  pred <- as_name(enquo(pred))
+  modx <- enquo(modx)
+  modx <- if (quo_is_null(modx)) {NULL} else {as_name(modx)}
+  mod2 <- enquo(mod2)
+  mod2 <- if (quo_is_null(mod2)) {NULL} else {as_name(mod2)}
 
   if (any(c(pred, modx, mod2) %in% centered)) {
     warn_wrap("You cannot mean-center the focal predictor or moderators with
