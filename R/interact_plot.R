@@ -398,6 +398,16 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   }
   weights <- get_weights(model, d)$weights_name
 
+  # Check for variables in the data
+  if (any(c(pred, modx, mod2) %nin% names(d))) {
+    missed_vars <- c(pred, modx, mod2) %not% names(d)
+    stop_wrap(paste(missed_vars, collapse = " and "),
+              ifelse(length(missed_vars) > 1, yes = " were ", no = " was "),
+              "not found in the data. If you are using a transformed variable,
+              like 'log(x)', use the non-transformed name ('x') as the input to
+              this function.")
+  }
+
   # If modx.values is named, use the names as labels
   if (is.null(modx.labels) & !is.null(names(modx.values))) {
     modx.labels <- names(modx.values)
