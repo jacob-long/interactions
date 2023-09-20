@@ -216,7 +216,24 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   } else {
     pred_names <- pred_names %just% names(coef(model))
   }
-
+  if (is.null(pred_names) | length(pred_names) == 0) {
+    pred_names <- c(pred, bt(pred))
+    if (pred_factor) {
+    # Need to know what the coefficients will be called (name + level)
+      if (is.factor(d[[pred]])) {
+        pred_names <- c(sapply(pred_names, function(x) {paste0(x, colnames(contrasts(d[[pred]])))}))
+      } else {
+      pred_names <- 
+        c(sapply(pred_names, function(x) paste0(x, ulevels(d[[pred]]))))
+      }
+    }
+    tidied <- tryCatch(generics::tidy(model), 
+    error = function(x) stop_wrap("tidy() could not find a method for this kind
+    of model. If you are using a package like glmmTMB or other mixed modeling 
+    packages, install and load the broom.mixed package and try again. Make sure
+    you have the broom package installed and loaded otherwise."))
+    pred_names <- pred_names %just% tidied$term
+  }
 
   wname <- get_weights(model, d)$weights_name
   wts <- get_weights(model, d)$weights
@@ -320,8 +337,9 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   # Since output columns are conditional, I call summ here to see what they will
   # be. I set vifs = FALSE to make sure it isn't fit due to user options.
   # Need proper name for test statistic
+  has_summ <- !is.null(getS3method("summ", class(model), optional = TRUE))
   tcol <- try(colnames(summary(model)$coefficients)[3], silent = TRUE)
-  if (class(tcol) != "try-error") {
+  if (!is.null(tcol) & class(tcol) != "try-error") {
     tcol <- gsub("value", "val.", tcol)
     if (tcol == "df") tcol <- "t val." # kludge for lmerModTest
     which.cols <- c("Est.", "S.E.", unlist(make_ci_labs(ci.width)), tcol)
@@ -329,9 +347,16 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   } else {
     which.cols <- NULL
   }
-  the_col_names <- colnames(summ(model, confint = TRUE, ci.width = ci.width,
-                              vifs = FALSE, which.cols = which.cols,
-                              pvals = pvals, ...)$coeftable)
+  if (has_summ) {
+    the_col_names <- colnames(summ(model, confint = TRUE, ci.width = ci.width,
+                                vifs = FALSE, which.cols = which.cols,
+                                pvals = pvals, ...)$coeftable)
+  } else {
+    the_col_names <- c("estimate", "std.error", "statistic", "p.value")
+    if (confint) {c(the_col_names, "conf.low", "conf.high")}
+  }
+                              
+
 
   # Need to make a matrix filled with NAs to store values from looped
   # model-making
@@ -502,10 +527,15 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
         covmat <- NULL
       }
       # Use j_summ to get the coefficients
-      sum <- summ(newmod, robust = robust, model.fit = FALSE,
-                  confint = TRUE, ci.width = ci.width, vifs = FALSE,
-                  cluster = cluster, which.cols = which.cols, pvals = pvals,
-                  vcov = covmat, ...)
+      if (has_summ) {
+        sum <- summ(newmod, robust = robust, model.fit = FALSE,
+                    confint = TRUE, ci.width = ci.width, vifs = FALSE,
+                    cluster = cluster, which.cols = which.cols, pvals = pvals,
+                    vcov = covmat, ...)
+      } else {
+        sum <- generics::tidy(newmod, conf.int = TRUE, conf.level = ci.width)
+      }
+
 
     } else {
       if (is.null(v.cov)) {
@@ -518,16 +548,26 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
           newmod
         covmat <- do.call(v.cov, vcovargs)
       }
-      sum <- summ(newmod, model.fit = FALSE, confint = TRUE,
+      if (has_summ) {
+        sum <- summ(newmod, model.fit = FALSE, confint = TRUE,
                   ci.width = ci.width, vifs = FALSE,
                   which.cols = which.cols, pvals = pvals, vcov = covmat, ...)
-
+      } else {
+        sum <- generics::tidy(newmod, conf.int = TRUE, conf.level = ci.width)
+      }
+    }
+    if (has_summ) {
+      summat <- sum$coeftable
+      if (pvals == FALSE) {summat <- summat[,colnames(summat) %nin% "p"]}
+      slopep <- summat[pred_names, , drop = FALSE]
+      intp <- summat["(Intercept)", ]
+    } else {
+      summat <- sum
+      if (pvals == FALSE) {summat <- summat %not% "p.value"}
+      slopep <- summat[summat$term %in% pred_names, , drop = FALSE]
+      intp <- summat[summat$term == "(Intercept)", ]
     }
 
-    summat <- sum$coeftable
-    if (pvals == FALSE) {summat <- summat[,colnames(summat) %nin% "p"]}
-    slopep <- summat[pred_names, , drop = FALSE]
-    intp <- summat["(Intercept)", ]
 
     # Have to account for variable amount of rows needed due to factor 
     # predictors
