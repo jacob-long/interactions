@@ -145,11 +145,11 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   }
 
   # Evaluate the modx, mod2, pred args
-  pred <- quo_name(enexpr(pred))
-  modx <- quo_name(enexpr(modx))
-  if (modx == "NULL") {modx <- NULL}
-  mod2 <- quo_name(enexpr(mod2))
-  if (mod2 == "NULL") {mod2 <- NULL}
+  pred <- as_name(enquo(pred))
+  modx <- enquo(modx)
+  modx <- if (quo_is_null(modx)) {NULL} else {as_name(modx)}
+  mod2 <- enquo(mod2)
+  mod2 <- if (quo_is_null(mod2)) {NULL} else {as_name(mod2)}
 
   # Warn user if interaction term is absent
   if (!check_interactions(as.formula(formula(model)), c(pred, modx, mod2))) {
@@ -433,7 +433,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       newmod <- eval(call)
     } else {
       # Creating the model
-      newmod <- update(model, data = dt)
+      newmod <- j_update(model, data = dt)
     }
 
     # Getting SEs, robust or otherwise
@@ -512,7 +512,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       call[[1]] <- survey::svyglm
       newmod <- eval(call)
     } else {
-      newmod <- update(model, data = dt)
+      newmod <- j_update(model, data = dt)
     }
 
     # Getting SEs, robust or otherwise

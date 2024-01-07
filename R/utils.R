@@ -236,3 +236,51 @@ generics::tidy
 #'@export
 #'@importFrom generics glance
 generics::glance
+
+### Hadley update #############################################################
+# modified from https://stackoverflow.com/questions/13690184/update-inside-a-function-
+# only-searches-the-global-environment
+#' @importFrom stats update.formula
+
+j_update <- function(mod, formula = NULL, data = NULL, offset = NULL,
+                     weights = NULL, call.env = parent.frame(), ...) {
+  call <- getCall(mod)
+  if (is.null(call)) {
+    stop("Model object does not support updating (no call)", call. = FALSE)
+  }
+  term <- terms(mod)
+  if (is.null(term)) {
+    stop("Model object does not support updating (no terms)", call. = FALSE)
+  }
+
+  if (!is.null(data)) call$data <- data
+  if (!is.null(formula)) call$formula <- update.formula(call$formula, formula)
+  env <- attr(term, ".Environment")
+  # Jacob add
+  # if (!is.null(offset))
+  call$offset <- offset
+  # if (!is.null(weights))
+  call$weights <- weights
+
+
+  extras <- as.list(match.call())[-1]
+  extras <- extras[which(names(extras) %nin% c("mod", "formula", "data",
+                                               "offset", "weights",
+                                               "call.env"))]
+  for (i in seq_along(extras)) {
+    if (is.name(extras[[i]])) {
+      extras[[i]] <- eval(extras[[i]], envir = call.env)
+    }
+  }
+
+  existing <- !is.na(match(names(extras), names(call)))
+  for (a in names(extras)[existing]) call[[a]] <- extras[[a]]
+  if (any(!existing)) {
+    call <- c(as.list(call), extras[!existing])
+    call <- as.call(call)
+  }
+
+  if (is.null(call.env)) {call.env <- parent.frame()}
+
+  eval(call, env, call.env)
+}
