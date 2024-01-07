@@ -593,7 +593,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   p <- ggplot(pm, aes(x = !! pred, y = !! resp, colour = !! modx,
                       group = !! grp, linetype = !! lty))
 
-  p <- p + geom_path(size = line.thickness, show.legend = !facet.modx)
+  p <- p + geom_path(linewidth = line.thickness, show.legend = !facet.modx)
 
   # Plot intervals if requested
   if (interval == TRUE) {

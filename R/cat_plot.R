@@ -411,7 +411,7 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
 
   if (geom == "line") {
     p <- p + geom_path(position = position_dodge(dodge.width),
-                       size = line.thickness)
+                       linewidth = line.thickness)
   }
 
   # Plot intervals if requested
@@ -420,12 +420,12 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
                            alpha = 1, show.legend = FALSE,
                            position = position_dodge(dodge.width),
                            width = errorbar.width,
-                           size = line.thickness)
+                           linewidth = line.thickness)
   } else if (interval == TRUE & interval.geom[1] %in% c("line", "linerange")) {
     p <- p + geom_linerange(aes(ymin = !! sym("ymin"), ymax = !! sym("ymax")),
                             alpha = 0.8, show.legend = FALSE,
                             position = position_dodge(dodge.width),
-                            size = line.thickness)
+                            linewidth = line.thickness)
   }
 
   # If third mod, facet by third mod
