@@ -284,3 +284,19 @@ j_update <- function(mod, formula = NULL, data = NULL, offset = NULL,
 
   eval(call, env, call.env)
 }
+
+# adapted from https://stackoverflow.com/a/42742370
+# Looking for whether a method is defined for a given object (...)
+# getS3method() doesn't work for something like merMod because the string
+# "merMod" is not in the vector returned by class()
+check_method <- function(generic, ...) {
+  ch <- deparse(substitute(generic))
+  f <- X <- function(x, ...) UseMethod("X")
+  for(m in methods(ch)) assign(sub(ch, "X", m, fixed = TRUE), "body<-"(f, value = m))
+  tryCatch({
+    X(...)
+    TRUE
+  }, error = function(e) {
+    FALSE
+  })
+}

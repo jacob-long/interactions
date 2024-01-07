@@ -337,9 +337,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   # Since output columns are conditional, I call summ here to see what they will
   # be. I set vifs = FALSE to make sure it isn't fit due to user options.
   # Need proper name for test statistic\
-  has_summ <- any(sapply(class(model), function(x) {
-      !is.null(getS3method("summ", x, optional = TRUE))
-    }))
+  has_summ <- check_method(summ, model)
   tcol <- try(colnames(summary(model)$coefficients)[3], silent = TRUE)
   if (!is.null(tcol) & class(tcol) != "try-error") {
     tcol <- gsub("value", "val.", tcol)
