@@ -186,7 +186,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   ss <- structure(ss, digits = digits)
 
   d <- get_data(model)
-  if (is_survey <- "svyglm" %in% class(model)) {
+  if (is_survey <- inherits(model, "svyglm")) {
     design <- model$survey.design
   } else {design <- NULL}
   # Which variables are factors?
@@ -336,8 +336,10 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
   # Since output columns are conditional, I call summ here to see what they will
   # be. I set vifs = FALSE to make sure it isn't fit due to user options.
-  # Need proper name for test statistic
-  has_summ <- !is.null(getS3method("summ", class(model), optional = TRUE))
+  # Need proper name for test statistic\
+  has_summ <- any(sapply(class(model), function(x) {
+      !is.null(getS3method("summ", x, optional = TRUE))
+    }))
   tcol <- try(colnames(summary(model)$coefficients)[3], silent = TRUE)
   if (!is.null(tcol) & class(tcol) != "try-error") {
     tcol <- gsub("value", "val.", tcol)
@@ -786,7 +788,7 @@ print.sim_slopes <- function(x, ...) {
         m$ints <- m$ints[names(m$ints) %nin% unlist(make_ci_labs(x$ci.width))]
       }
 
-      if (class(x$mod2.values) != "character") {
+      if (!inherits(x$mod2.values, "character")) {
         x$mod2.values <- format(x$mod2.values, nsmall = x$digits)
       }
 
@@ -838,7 +840,7 @@ print.sim_slopes <- function(x, ...) {
 
     for (i in seq_along(x$modx.values)) {
 
-      if (class(x$modx.values) != "character") {
+      if (!inherits(x$modx.values, "character")) {
         x$modx.values <- format(x$modx.values, nsmall = x$digits)
       }
 
@@ -943,7 +945,7 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
     base$conf.high <- all_slopes[,make_ci_labs(conf.level)[[2]]]
   } else { # If not, calculate them
     alpha <- (1 - conf.level) / 2
-    crit_t <- if (class(x$mods[[1]]) == "lm") {
+    crit_t <- if (inherits(x$mods[[1]], "lm")) {
       abs(qt(alpha, df = df.residual(x$mods[[1]])))
     } else {
       abs(qnorm(alpha))

@@ -90,7 +90,7 @@ sim_margins <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   ss <- structure(ss, digits = digits)
 
   d <- get_data(model)
-  if (is_survey <- "svyglm" %in% class(model)) {
+  if (is_survey <- inherits(model, "svyglm")) {
     design <- model$survey.design
   } else {design <- NULL}
   # Which variables are factors?

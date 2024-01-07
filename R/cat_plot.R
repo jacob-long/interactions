@@ -238,7 +238,7 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
                         pred.labels = pred.labels,
                         modx.labels = modx.labels, mod2.labels = mod2.labels,
                         facet.modx = FALSE, d = d,
-                        survey = "svyglm" %in% class(model), weights = weights,
+                        survey = inherits(model, "svyglm"), weights = weights,
                         preds.per.level = 100,
                         partial.residuals = partial.residuals, at = at, ...)
 

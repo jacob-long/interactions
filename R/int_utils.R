@@ -625,7 +625,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   resp <- jtools::get_response_name(model, ...)
 
   # Create a design object
-  design <- if ("svyglm" %in% class(model)) {
+  design <- if (inherits(model, "svyglm")) {
     model$survey.design
   } else {
     NULL
