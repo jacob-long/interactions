@@ -340,7 +340,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   # Need proper name for test statistic\
   has_summ <- check_method(summ, model)
   tcol <- try(colnames(summary(model)$coefficients)[3], silent = TRUE)
-  if (!is.null(tcol) & class(tcol) != "try-error") {
+  if (!is.null(tcol) && !inherits(tcol, "try-error")) {
     tcol <- gsub("value", "val.", tcol)
     if (tcol == "df") tcol <- "t val." # kludge for lmerModTest
     which.cols <- c("Est.", "S.E.", unlist(make_ci_labs(ci.width)), tcol)
