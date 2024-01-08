@@ -185,7 +185,7 @@ sim_margins <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     at_list[[mod2]] <- mod2vals2
   }
 
-  design <- if ("svyglm" %in% class(model)) model$survey.design else NULL
+  design <- if (inherits(model, "svyglm")) model$survey.design else NULL
 
   # Get the margins
   suppressWarnings({ # can't have confusing warnings from margins
@@ -274,7 +274,7 @@ print.sim_margins <- function(x, ...) {
 
       m <- ss$slopes[[j]]
 
-      if (class(x$mod2.values) != "character") {
+      if (inherits(x$mod2.values, "character")) {
         m[x$mod2] <- num_print(m[x$mod2], x$digits)
       }
 
@@ -312,7 +312,7 @@ print.sim_margins <- function(x, ...) {
 
     for (i in seq_along(x$modx.values)) {
 
-      if (class(x$modx.values) != "character") {
+      if (inherits(x$modx.values, "character")) {
         m[x$modx] <- num_print(m[x$modx], digits = x$digits)
       }
 
@@ -398,7 +398,7 @@ tidy.sim_margins <- function(x, conf.level = .95, ...) {
     base$conf.high <- all_slopes[,make_ci_labs(conf.level)[[2]]]
   } else { # If not, calculate them
     alpha <- (1 - conf.level) / 2
-    crit_t <- if (class(x$mods[[1]]) == "lm") {
+    crit_t <- if (inherits(x$mods[[1]], "lm")) {
       abs(qt(alpha, df = df.residual(x$mods[[1]])))
     } else {
       abs(qnorm(alpha))

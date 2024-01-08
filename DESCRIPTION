@@ -42,3 +42,4 @@ Enhances:
   rstanarm
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3

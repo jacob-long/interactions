@@ -118,7 +118,8 @@
 #' sim_slopes(regmodel, pred = ell, modx = meals, mod2 = sch.wide)
 #' }
 #'
-#' @importFrom stats coef coefficients lm predict sd update getCall vcov relevel
+#' @importFrom stats coef coefficients lm predict sd update getCall vcov 
+#' @importFrom stats relevel contrasts
 #' @import jtools
 #' @export
 #'
@@ -212,7 +213,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   # Only keep the ones represented among the coefficients
   if (!is.null(attr(class(model), "package")) && "lme4" %in%
         attr(class(model), "package")) {
-    pred_names <- pred_names %just% names(fixef(model))
+    pred_names <- pred_names %just% names(lme4::fixef(model))
   } else {
     pred_names <- pred_names %just% names(coef(model))
   }

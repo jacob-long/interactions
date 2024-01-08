@@ -165,8 +165,7 @@ cut2 <- function(x, cuts, m = 150, g, levels.mean = FALSE,
                 "\nUpper endpoints:", paste(format(up, digits = 12),
                                             collapse = " "))
     y <- structure(y, class = "factor", levels = labs)
-  }
-  else {
+  } else {
     if (minmax) {
       r <- range(x, na.rm = TRUE)
       if (r[1] < cuts[1])
@@ -289,6 +288,7 @@ j_update <- function(mod, formula = NULL, data = NULL, offset = NULL,
 # Looking for whether a method is defined for a given object (...)
 # getS3method() doesn't work for something like merMod because the string
 # "merMod" is not in the vector returned by class()
+#' @importFrom utils methods
 check_method <- function(generic, ...) {
   ch <- deparse(substitute(generic))
   f <- X <- function(x, ...) UseMethod("X")
