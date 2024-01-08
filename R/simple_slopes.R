@@ -154,9 +154,11 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
   # Warn user if interaction term is absent
   if (!check_interactions(as.formula(formula(model)), c(pred, modx, mod2))) {
-    warn_wrap(paste(c(pred, modx, mod2), collapse = " and "),
-              " are not included in an interaction with one another in the
-              model.")
+    warn_wrap("Automated checks indicate that ", 
+              paste(c(pred, modx, mod2), collapse = " and "),
+              " may not be included in an interaction with one another in the 
+               model. Double-check to ensure the model is specified correctly.
+              This message may be a false positive.")
   }
 
   if (length(dots) > 0) { # See if there were any extra args
@@ -200,15 +202,18 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   pred_names <- c(pred, bt(pred))
   pred_factor <- FALSE
   # Check for factor predictor
-  if (is.factor(d[[pred]]) | is.character(d[[pred]])) {
+  if (is.factor(d[[pred]]) || is.character(d[[pred]])) {
     # Need to know what the coefficients will be called (name + level)
     if (is.factor(d[[pred]])) {
-      pred_names <- c(sapply(pred_names, function(x) {paste0(x, colnames(contrasts(d[[pred]])))}))
+      pred_names <- 
+        c(sapply(pred_names, function(x) {paste0(x, colnames(contrasts(d[[pred]])))}))
     } else {
-    pred_names <- 
-      c(sapply(pred_names, function(x) paste0(x, ulevels(d[[pred]]))))
+      pred_names <- 
+        c(sapply(pred_names, function(x) paste0(x, ulevels(d[[pred]]))))
     }
     pred_factor <- TRUE
+  } else if (is.logical(d[[pred]])) {
+    pred_names <- c(sapply(pred_names, function (x) paste0(x, c(FALSE, TRUE))))
   }
   # Only keep the ones represented among the coefficients
   if (!is.null(attr(class(model), "package")) && "lme4" %in%
@@ -217,15 +222,17 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   } else {
     pred_names <- pred_names %just% names(coef(model))
   }
-  if (is.null(pred_names) | length(pred_names) == 0) {
+
+  if (is.null(pred_names) || length(pred_names) == 0) {
     pred_names <- c(pred, bt(pred))
     if (pred_factor) {
     # Need to know what the coefficients will be called (name + level)
       if (is.factor(d[[pred]])) {
-        pred_names <- c(sapply(pred_names, function(x) {paste0(x, colnames(contrasts(d[[pred]])))}))
+        pred_names <- 
+          c(sapply(pred_names, function(x) {paste0(x, colnames(contrasts(d[[pred]])))}))
       } else {
-      pred_names <- 
-        c(sapply(pred_names, function(x) paste0(x, ulevels(d[[pred]]))))
+        pred_names <- 
+          c(sapply(pred_names, function(x) paste0(x, ulevels(d[[pred]]))))
       }
     }
     tidied <- tryCatch(generics::tidy(model), 
@@ -234,6 +241,12 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     packages, install and load the broom.mixed package and try again. Make sure
     you have the broom package installed and loaded otherwise."))
     pred_names <- pred_names %just% tidied$term
+    if (length(pred_names) == 0) {
+      stop_wrap("Could not find the focal predictor in the model. If it was
+                 transformed (e.g. logged or turned into a factor), put the
+                 transformation into the 'pred' argument. For example,
+                 pred = 'as.numeric(x)'.")
+    }
   }
 
   wname <- get_weights(model, d)$weights_name

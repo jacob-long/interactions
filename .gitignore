@@ -44,3 +44,5 @@ Meta
 
 .DS_Store
 .vscode/launch.json
+/doc/
+/Meta/
