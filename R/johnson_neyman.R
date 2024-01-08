@@ -495,17 +495,17 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
     ggplot2::geom_path(data = cbso1, ggplot2::aes(x = cbso1[,modx],
                                     y = cbso1[,predl],
                                     color = cbso1[,"Significance"]),
-                       size = line.thickness) +
+                       linewidth = line.thickness) +
 
     ggplot2::geom_path(data = cbsi,
                        ggplot2::aes(x = cbsi[,modx], y = cbsi[,predl],
                                     color = cbsi[,"Significance"]),
-                       size = line.thickness) +
+                       linewidth = line.thickness) +
 
     ggplot2::geom_path(data = cbso2,
                        ggplot2::aes(x = cbso2[,modx], y = cbso2[,predl],
                                     color = cbso2[,"Significance"]),
-                       size = line.thickness) +
+                       linewidth = line.thickness) +
 
     ggplot2::geom_ribbon(data = cbso1,
                          ggplot2::aes(x = cbso1[,modx], ymin = cbso1[,"Lower"],

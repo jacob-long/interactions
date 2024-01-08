@@ -648,7 +648,7 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   if (linearity.check == TRUE) {
     p <- p + stat_smooth(data = d,
                          aes(x = !! pred, y = !! resp, group = !! grp),
-                         method = "loess", size = 1,
+                         method = "loess", linewidth = 1,
                          show.legend = FALSE, inherit.aes = FALSE,
                          se = FALSE, span = 2, geom = "line",
                          alpha = 0.6, color = "red")
