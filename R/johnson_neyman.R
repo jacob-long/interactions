@@ -164,11 +164,9 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
                            modx.label = NULL) {
 
   # Evaluate the modx, mod2, pred args
-  pred <- quo_name(enexpr(pred))
-  if (make.names(pred) != pred) pred <- bt(pred)
-  modx <- quo_name(enexpr(modx))
-  if (make.names(modx) != modx) modx <- bt(modx)
-  if (modx == "NULL") {modx <- NULL}
+  pred <- as_name(enquo(pred))
+  modx <- enquo(modx)
+  modx <- if (quo_is_null(modx)) {NULL} else {as_name(modx)}
 
   # Handling df argument
   if (df == "residual") {
@@ -186,7 +184,7 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
 
   # Structure
   out <- list()
-  out <- structure(out, pred = un_bt(pred), modx = un_bt(modx), alpha = alpha,
+  out <- structure(out, pred = pred, modx = modx, alpha = alpha,
                    plot = plot, digits = digits, control.fdr = control.fdr)
 
   # Construct interaction term
@@ -204,13 +202,20 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
       coef(mod)
     }
   }
+
+  # Try to support logical predictors, maybe a precursor to factor predictors
+  if (attr(terms(model), "dataClasses")[pred] == "logical") {
+      pred_names <- paste0(pred, "TRUE")
+    } else {
+      pred_names <- pred
+  }
   ## Hard to predict which order lm() will have the predictors in
   # first possible ordering
-  intterm1 <- paste(pred, ":", modx, sep = "")
+  intterm1 <- paste(pred_names, ":", modx, sep = "")
   # is it in the coef names?
   intterm1tf <- any(intterm1 %in% names(get_coef(model)))
   # second possible ordering
-  intterm2 <- paste(modx, ":", pred, sep = "")
+  intterm2 <- paste(modx, ":", pred_names, sep = "")
   # is it in the coef names?
   intterm2tf <- any(intterm2 %in% names(get_coef(model)))
   # Taking care of other business, creating coefs object for later
@@ -296,33 +301,32 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
 
   # Construct constituent terms to calculate the subsequent quadratic a,b,c
   if (is.null(vmat)) {
-
     # Get vcov
     vmat <- vcov(model)
 
     # Variance of interaction term (gamma_3)
     covy3 <- vmat[intterm,intterm]
     # Variance of predictor term (gamma_1)
-    covy1 <- vmat[pred,pred]
+    covy1 <- vmat[pred_names,pred_names]
     # Covariance of predictor and interaction terms (gamma_1 by gamma_3)
-    covy1y3 <- vmat[intterm,pred]
+    covy1y3 <- vmat[intterm,pred_names]
     # Actual interaction coefficient (gamma_3)
     y3 <- coefs[intterm]
     # Actual predictor coefficient (gamma_1)
-    y1 <- coefs[pred]
+    y1 <- coefs[pred_names]
 
   } else { # user-supplied vcov, useful for robust calculation
 
     # Variance of interaction term (gamma_3)
     covy3 <- vmat[intterm,intterm]
     # Variance of predictor term (gamma_1)
-    covy1 <- vmat[pred,pred]
+    covy1 <- vmat[pred_names,pred_names]
     # Covariance of predictor and interaction terms (gamma_1 by gamma_3)
-    covy1y3 <- vmat[intterm,pred]
+    covy1y3 <- vmat[intterm,pred_names]
     # Actual interaction coefficient (gamma_3)
     y3 <- get_coef(model)[intterm]
     # Actual predictor coefficient (gamma_1)
-    y1 <- get_coef(model)[pred]
+    y1 <- get_coef(model)[pred_names]
 
   }
 
@@ -344,14 +348,8 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
     if (disc > 0) {
       out <- disc
     } else if (disc == 0) {
-      # msg <- "There is only one real solution for the Johnson-Neyman interval.
-      # Values cannot be supplied."
-      # warning(msg)
       return(NULL)
     } else {
-      # msg <- "There are no real solutions for the Johnson-Neyman interval.
-      # Values cannot be supplied."
-      # warning(msg)
       return(NULL)
     }
 
