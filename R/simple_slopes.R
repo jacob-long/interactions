@@ -240,6 +240,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     of model. If you are using a package like glmmTMB or other mixed modeling 
     packages, install and load the broom.mixed package and try again. Make sure
     you have the broom package installed and loaded otherwise."))
+
     pred_names <- pred_names %just% tidied$term
     if (length(pred_names) == 0) {
       stop_wrap("Could not find the focal predictor in the model. If it was
@@ -283,14 +284,14 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
                         modx.labels = modx.labels,
                         any.mod2 = !is.null(mod2), sims = TRUE)
 
-  if ((pred_factor | !is.numeric(d[[modx]])) & johnson_neyman == TRUE) {
+  if ((pred_factor || !is.numeric(d[[modx]])) && johnson_neyman == TRUE) {
         warn_wrap("Johnson-Neyman intervals are not available for factor
                    predictors or moderators.", call. = FALSE)
         johnson_neyman <- FALSE
   }
 
   # Now specify def or not (for labeling w/ print method)
-  if (is.character(modx.values) | is.null(modx.values) | !is.null(modx.labels)) {
+  if (is.character(modx.values) || is.null(modx.values) || !is.null(modx.labels)) {
 
     ss <- structure(ss, def = TRUE)
 
@@ -326,7 +327,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
 
     # Now specify def or not
-    if (is.character(mod2.values) | is.null(mod2.values) | !is.null(mod2.labels)) {
+    if (is.character(mod2.values) || is.null(mod2.values) || !is.null(mod2.labels)) {
 
       ss <- structure(ss, def2 = TRUE)
 
@@ -411,7 +412,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
   }
 
-  # Looping through (perhaps non-existent)
+  # Looping through (perhaps non-existent) second moderator values
   for (j in seq_len(mod2val_len)) {
 
     # We don't want to do the J-N interval with the 1st moderator adjusted,
@@ -456,7 +457,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
 
     # Getting SEs, robust or otherwise
-    if (robust != FALSE & is.null(v.cov)) {
+    if (robust != FALSE && is.null(v.cov)) {
       # For J-N
       covmat <- get_robust_se(newmod, robust, cluster, dt)$vcov
     } else if (is.null(v.cov)) {
@@ -545,7 +546,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       } else {
         covmat <- NULL
       }
-      # Use j_summ to get the coefficients
+      # Use summ to get the coefficients
       if (has_summ) {
         sum <- summ(newmod, robust = robust, model.fit = FALSE,
                     confint = TRUE, ci.width = ci.width, vifs = FALSE,
@@ -554,8 +555,6 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       } else {
         sum <- generics::tidy(newmod, conf.int = TRUE, conf.level = ci.width)
       }
-
-
     } else {
       if (is.null(v.cov)) {
         # For J-N
@@ -586,7 +585,6 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       slopep <- summat[summat$term %in% pred_names, , drop = FALSE]
       intp <- summat[summat$term == "(Intercept)", ]
     }
-
 
     # Have to account for variable amount of rows needed due to factor 
     # predictors

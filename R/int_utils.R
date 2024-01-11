@@ -422,7 +422,7 @@ center_ss_non_survey <- function(d, weights, facvars = NULL, fvars, pred,
     # Dealing with two-level factors that aren't part
     # of an interaction/focal pred
     for (v in fv2) {
-      if (is.factor(d[[v]]) & length(unique(d[[v]])) == 2) {
+      if (is.factor(d[[v]]) && length(unique(d[[v]])) == 2) {
 
         facvars <- c(facvars, v)
 

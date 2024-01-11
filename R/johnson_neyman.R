@@ -190,7 +190,7 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
   # Construct interaction term
   ## Create helper function to use either fixef() or coef() depending on input
   get_coef <- function(mod) {
-    if (inherits(mod, "merMod") | inherits(mod, "brmsfit")) {
+    if (inherits(mod, "merMod") || inherits(mod, "brmsfit")) {
       coef <- lme4::fixef(model)
       if (inherits(mod, "brmsfit")) {
         coefs <- coef[,1, drop = TRUE]
@@ -307,7 +307,7 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
     test <- 0
     i <- 1 + length(marginal_effects)
 
-    while (test == 0 & i > 1) {
+    while (test == 0 && i > 1) {
 
       i <- i - 1
       test <- min(ps[ps_o][1:i] <= multipliers[i] * (alpha * 2))
@@ -557,7 +557,7 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
       ggplot2::geom_segment(ggplot2::aes(x = modrangeo[1], xend = modrangeo[2],
                                        y = 0, yend = 0,
                                        linetype = "Range of\nobserved\ndata"),
-                          lineend = "square", size = 1.25)
+                          lineend = "square", linewidth = 1.25)
   }
 
     # Adding this scale allows me to have consistent ordering
