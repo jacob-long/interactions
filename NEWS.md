@@ -9,6 +9,7 @@ behavior. `cat_plot()` likewise has support for continuous moderators. (#54)
 * Website and some documentation have been revamped and upgraded.
 * Users can now change the axis labels for `johnson_neyman()` plots via the 
 arguments `y.label` and `modx.label`. (#56)
+* Models produced by the `panelr` package are better supported.
 
 Bug fixes:
 

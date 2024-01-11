@@ -352,6 +352,11 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   # be. I set vifs = FALSE to make sure it isn't fit due to user options.
   # Need proper name for test statistic\
   has_summ <- check_method(summ, model)
+  # kludge for panelr compatibility
+  model_pkg <- attr(class(model), "package") 
+  if (!is.null(model_pkg) && model_pkg == "panelr") {
+    has_summ <- FALSE
+  }
   tcol <- try(colnames(summary(model)$coefficients)[3], silent = TRUE)
   if (!is.null(tcol) && !inherits(tcol, "try-error")) {
     tcol <- gsub("value", "val.", tcol)
@@ -590,10 +595,10 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     # if (length(pred_names) == 1) {rows <- 1:nrow(retmat)}
 
     retmat[rows[[i]],1] <- modxvals2[i]
-    retmat[rows[[i]],2:ncol(retmat)] <- slopep[]
+    retmat[rows[[i]],2:ncol(retmat)] <- slopep[, colnames(retmat)[-1]]
 
     retmati[i,1] <- modxvals2[i]
-    retmati[i,2:ncol(retmat)] <- intp[]
+    retmati[i,2:ncol(retmat)] <- intp[colnames(retmati)[-1]]
 
     if (length(pred_names) > 1) {
       pred_coefs <- rep(rownames(slopep), length(modxvals2))
