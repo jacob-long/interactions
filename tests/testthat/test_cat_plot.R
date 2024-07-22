@@ -127,26 +127,25 @@ test_that("cat_plot handles offsets", {
 
 context("cat_plot survey")
 
-if (requireNamespace("survey")) {
+test_that("cat_plot handles svyglm", {
+  skip_if_not_installed("survey")
   library(survey, quietly = TRUE)
   data(api)
   dstrat <- svydesign(id = ~1, strata = ~stype, weights = ~pw, data = apistrat,
                       fpc = ~fpc)
   regmodel <- svyglm(api00 ~ ell * meals * both + sch.wide, design = dstrat)
-  test_that("cat_plot handles svyglm", {
-    psvycat <- cat_plot(regmodel, pred = both)
-    expect_doppelganger("psvycat", psvycat)
-  })
-}
+  
+  psvycat <- cat_plot(regmodel, pred = both)
+  expect_doppelganger("psvycat", psvycat)
+})
 
 context("cat_plot merMod")
 
-if (requireNamespace("lme4")) {
-  test_that("cat_plot handles merMod", {
-    plme4cat <- cat_plot(mv, pred = mode, modx = Gender, interval = FALSE)
-    expect_doppelganger("plme4cat", plme4cat)
-  })
-}
+test_that("cat_plot handles merMod", {
+  skip_if_not_installed("lme4")
+  plme4cat <- cat_plot(mv, pred = mode, modx = Gender, interval = FALSE)
+  expect_doppelganger("plme4cat", plme4cat)
+})
 
 context("cat_plot 3-way")
 
@@ -284,11 +283,11 @@ test_that("cat_plot handles point.shape w/ no mod. (point)", {
   expect_doppelganger("p0ptps", p0ptps)
 })
 
-if (requireNamespace("brms")) {
-  context("brmsfit plots")
+context("brmsfit plots")
+
+test_that("brmsfit objects are supported", {
+  skip_if_not_installed("brms")
   bfit <- readRDS("brmfit.rds")
-  test_that("brmsfit objects are supported", {
-    pcatbfit <- cat_plot(bfit, pred = "Trt", interval = TRUE)
-    expect_doppelganger("pcatbfit", pcatbfit)
-  })
-}
+  pcatbfit <- cat_plot(bfit, pred = "Trt", interval = TRUE)
+  expect_doppelganger("pcatbfit", pcatbfit)
+})
