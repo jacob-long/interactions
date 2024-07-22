@@ -17,7 +17,7 @@ BugReports: https://github.com/jacob-long/interactions/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 Imports:
-  ggplot2 (>= 3.5.0),
+  ggplot2 (>= 3.4.0),
   cli,
   generics,
   jtools (>= 2.0.3),
