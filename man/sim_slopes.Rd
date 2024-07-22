@@ -229,7 +229,7 @@ results with \code{\link[ggplot2]{ggplot}}.
 \code{\link[rockchalk]{testSlopes}} performs a hypothesis test of
 differences and provides Johnson-Neyman intervals.
 
-\code{\link[pequod]{simpleSlope}} performs a similar analysis.
+\code{pequod::simpleSlope()} performs a similar analysis.
 
 Other interaction tools: 
 \code{\link{johnson_neyman}()},

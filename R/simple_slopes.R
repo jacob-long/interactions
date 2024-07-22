@@ -84,7 +84,7 @@
 #'   \code{\link[rockchalk]{testSlopes}} performs a hypothesis test of
 #'       differences and provides Johnson-Neyman intervals.
 #'
-#'   \code{\link[pequod]{simpleSlope}} performs a similar analysis.
+#'   `pequod::simpleSlope()` performs a similar analysis.
 #'
 #' @references
 #'
