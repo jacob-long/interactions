@@ -538,7 +538,7 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
       ggplot2::geom_segment(ggplot2::aes(x = modrangeo[1], xend = modrangeo[2],
                                        y = 0, yend = 0,
                                        linetype = "Range of\nobserved\ndata"),
-                          lineend = "square", size = 1.25)
+                          lineend = "square", linewidth = 1.25)
   }
 
     # Adding this scale allows me to have consistent ordering
