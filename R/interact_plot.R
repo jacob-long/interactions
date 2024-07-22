@@ -136,8 +136,8 @@
 #'   appears above the legend. If \code{NULL}, the name of the moderating
 #'   variable is used.
 #'
-#' @param colors See [jtools_colors] for details on the types of arguments
-#'    accepted. Default is "CUD Bright" for factor
+#' @param colors See [`jtools_colors`][jtools::jtools_colors] for details on the
+#'    types of arguments accepted. Default is "CUD Bright" for factor
 #'    moderators, "Blues" for +/- SD and user-specified \code{modx.values}
 #'    values.
 #'

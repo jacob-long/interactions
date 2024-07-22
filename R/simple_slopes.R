@@ -1025,7 +1025,7 @@ nobs.sim_slopes <- function(object, ...) {
 #' @param x The [sim_slopes()] object.
 #' @param format The method for sharing the slope and associated uncertainty.
 #'  Default is `"{estimate} ({std.error})"`. See the instructions for the
-#'  `error_format` argument of [export_summs()] for more on your
+#'  `error_format` argument of [jtools::export_summs()] for more on your
 #'  options.
 #' @param sig.levels A named vector in which the values are potential p value
 #'  thresholds and the names are significance markers (e.g., "*") for when
