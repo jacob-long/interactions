@@ -22,3 +22,4 @@
 ^LICENSE\.md$
 ^\.github$
 ^pkgdown$
+^interactions\.Rproj$
