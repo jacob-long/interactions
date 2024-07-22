@@ -94,7 +94,7 @@ test_that("as_huxtable.sim_slopes works", {
   expect_is(as_huxtable.sim_slopes(ss), "huxtable")
 })
 test_that("plot.sim_slopes works", {
-  skip_if_not_installed("ggstance")
+  skip_if_not_installed("broom.mixed")
   skip_if_not_installed("broom")
   ss3 <- sim_slopes(model = fit, pred = Murder, modx = Illiteracy,
                     mod2 = HSGrad)

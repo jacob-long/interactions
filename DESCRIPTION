@@ -27,7 +27,7 @@ Imports:
 Suggests:
   broom,
   cowplot,
-  ggstance,
+  broom.mixed,
   glue,
   huxtable (>= 3.0.0),
   lme4,
