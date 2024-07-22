@@ -247,7 +247,6 @@ sim_margins <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
 #' @export
 #' @importFrom cli cat_rule rule
-#' @importFrom crayon red bold italic
 
 print.sim_margins <- function(x, ...) {
 
@@ -308,7 +307,10 @@ print.sim_margins <- function(x, ...) {
     }
 
     # Clearly label simple slopes
-    cat(bold(underline("SIMPLE MARGINS")), "\n\n")
+    cli::cat_line(
+      cli::style_bold(cli::style_underline("SIMPLE MARGINS")),
+      "\n"
+    )
 
     for (i in seq_along(x$modx.values)) {
 
@@ -329,8 +331,8 @@ print.sim_margins <- function(x, ...) {
         modx_label <- paste0(m[i, x$modx])
       }
 
-      cat(italic(paste0("Average marginal effect of ", x$pred, " when ",
-                        x$modx, " = ", modx_label, ": \n\n")))
+      cli::cat_line(cli::style_italic(paste0("Average marginal effect of ", x$pred, " when ",
+                        x$modx, " = ", modx_label, ": \n")))
       print(md_table(slopes, digits = x$digits, format = "pandoc",
                      row.names = FALSE, sig.digits = FALSE))
 
