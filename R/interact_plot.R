@@ -257,10 +257,13 @@
 #'
 #' @author Jacob Long \email{jacob.long@@sc.edu}
 #'
-#' @seealso \code{\link[rockchalk]{plotSlopes}} from \pkg{rockchalk} performs a
+#' @seealso \code{plotSlopes} from \code{rockchalk} performs a
 #'   similar function, but
 #'   with R's base graphics---this function is meant, in part, to emulate
 #'   its features.
+#' 
+#'   Functions from the `margins` and `sjPlot` packages may also be useful
+#'   if this one isn't working for you.
 #'
 #'   \code{\link{sim_slopes}} performs a simple slopes analysis with a similar
 #'   argument syntax to this function.

@@ -190,7 +190,7 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
   # Construct interaction term
   ## Create helper function to use either fixef() or coef() depending on input
   get_coef <- function(mod) {
-    if (inherits(mod, "merMod") | inherits(mod, "brmsfit")) {
+    if (inherits(mod, "merMod") || inherits(mod, "brmsfit")) {
       coef <- lme4::fixef(model)
       if (inherits(mod, "brmsfit")) {
         coefs <- coef[,1, drop = TRUE]
@@ -209,25 +209,44 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
     } else {
       pred_names <- pred
   }
-  ## Hard to predict which order lm() will have the predictors in
+
+  ## Old comment: Hard to predict which order lm() will have the predictors in
+  ## New: Note that this information is actually in the terms object, but 
+  ## I'm going to leave it this way for now since I need to work around 
+  ## panelr compatibility anyway — it manually calculates the interaction 
+  ## term rather than specifying it via the design matrix
   # first possible ordering
-  intterm1 <- paste(pred_names, ":", modx, sep = "")
+  intterm1 <- paste0(pred_names, ":", modx)
   # is it in the coef names?
   intterm1tf <- any(intterm1 %in% names(get_coef(model)))
   # second possible ordering
-  intterm2 <- paste(modx, ":", pred_names, sep = "")
+  intterm2 <- paste0(modx, ":", pred_names)
   # is it in the coef names?
   intterm2tf <- any(intterm2 %in% names(get_coef(model)))
   # Taking care of other business, creating coefs object for later
   coefs <- get_coef(model)
-
 
   ## Now we know which of the two is found in the coefficents
   # Using this to get the index of the TRUE one
   inttermstf <- c(intterm1tf, intterm2tf)
   intterms <- c(intterm1, intterm2) # Both names, want to keep one
   intterm <- intterms[which(inttermstf)] # Keep the index that is TRUE
+  # See if we can recover if intterm isn't found, this is motivated by 
+  # desire for compatibility with panelr
+  if (length(intterm) == 0) {
+    intterm1 <- paste0("`", pred_names, ":", modx, "`")
+    intterm2 <- paste0("`", modx, ":", pred_names, "`")
+    intterm1tf <- any(intterm1 %in% names(get_coef(model)))
+    intterm2tf <- any(intterm2 %in% names(get_coef(model)))
+    inttermstf <- c(intterm1tf, intterm2tf)
+    intterms <- c(intterm1, intterm2) # Both names, want to keep one
+    intterm <- intterms[which(inttermstf)] 
 
+    if (length(intterm) == 0) {
+      stop_wrap("Could not find interaction term in the model, so 
+                Johnson-Neyman interval could not be calculated.")
+    }
+  }
   # Getting the range of the moderator
   modrange <- range(model.frame(model)[,un_bt(modx)])
   modrangeo <- range(model.frame(model)[,un_bt(modx)]) # for use later
@@ -288,7 +307,7 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
     test <- 0
     i <- 1 + length(marginal_effects)
 
-    while (test == 0 & i > 1) {
+    while (test == 0 && i > 1) {
 
       i <- i - 1
       test <- min(ps[ps_o][1:i] <= multipliers[i] * (alpha * 2))

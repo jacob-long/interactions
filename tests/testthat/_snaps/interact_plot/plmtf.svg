@@ -49,13 +49,13 @@
 <text x='455.80' y='552.03' text-anchor='middle' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>60</text>
 <text x='328.22' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='39.75px' lengthAdjust='spacingAndGlyphs'>HSGrad</text>
 <text transform='translate(13.05,287.64) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='36.08px' lengthAdjust='spacingAndGlyphs'>Income</text>
-<text x='665.78' y='270.84' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='20.80px' lengthAdjust='spacingAndGlyphs'>o70l</text>
-<rect x='622.52' y='282.45' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<text x='627.50' y='270.84' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='20.80px' lengthAdjust='spacingAndGlyphs'>o70l</text>
+<rect x='622.52' y='282.45' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
 <line x1='626.84' y1='291.37' x2='661.40' y2='291.37' style='stroke-width: 2.13; stroke: #49B7FC; stroke-linecap: butt;' />
-<rect x='622.52' y='300.29' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<rect x='622.52' y='300.29' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
 <line x1='626.84' y1='309.21' x2='661.40' y2='309.21' style='stroke-width: 2.13; stroke: #FF7B00; stroke-dasharray: 11.38,5.69,11.38,5.69; stroke-linecap: butt;' />
 <text x='676.18' y='294.40' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='23.96px' lengthAdjust='spacingAndGlyphs'>TRUE</text>
 <text x='676.18' y='312.24' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='27.88px' lengthAdjust='spacingAndGlyphs'>FALSE</text>
-<text x='50.35' y='26.53' style='font-size: 14.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='30.34px' lengthAdjust='spacingAndGlyphs'>plmtf</text>
+<text x='55.33' y='26.53' style='font-size: 14.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='30.34px' lengthAdjust='spacingAndGlyphs'>plmtf</text>
 </g>
 </svg>

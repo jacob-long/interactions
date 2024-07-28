@@ -3,12 +3,15 @@
 Enhancements:
 
 * `sim_slopes()` now supports non-continuous variables in the `pred` argument.
+* `sim_slopes()` now has an `at` argument, allowing you to specify an exact,
+perhaps non-centered, level for variables not involved in the interaction.
 * `interact_plot()` now has provisional support for factor predictors (`pred`).
 Users will receive a message because of the possibility for unexpected 
 behavior. `cat_plot()` likewise has support for continuous moderators. (#54)
 * Website and some documentation have been revamped and upgraded.
 * Users can now change the axis labels for `johnson_neyman()` plots via the 
 arguments `y.label` and `modx.label`. (#56)
+* Models produced by the `panelr` package are better supported.
 
 Bug fixes:
 

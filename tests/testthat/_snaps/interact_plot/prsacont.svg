@@ -55,19 +55,19 @@
 <text x='535.44' y='552.03' text-anchor='middle' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>30</text>
 <text x='334.82' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='19.57px' lengthAdjust='spacingAndGlyphs'>size</text>
 <text transform='translate(13.05,287.64) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='46.48px' lengthAdjust='spacingAndGlyphs'>incidence</text>
-<text x='677.27' y='253.00' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='30.58px' lengthAdjust='spacingAndGlyphs'>period</text>
-<rect x='645.50' y='264.60' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<text x='650.49' y='253.00' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='30.58px' lengthAdjust='spacingAndGlyphs'>period</text>
+<rect x='645.50' y='264.60' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
 <line x1='649.82' y1='273.52' x2='684.38' y2='273.52' style='stroke-width: 2.13; stroke: #49B7FC; stroke-linecap: butt;' />
-<rect x='645.50' y='282.45' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<rect x='645.50' y='282.45' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
 <line x1='649.82' y1='291.37' x2='684.38' y2='291.37' style='stroke-width: 2.13; stroke: #FF7B00; stroke-dasharray: 11.38,5.69,11.38,5.69; stroke-linecap: butt;' />
-<rect x='645.50' y='300.29' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<rect x='645.50' y='300.29' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
 <line x1='649.82' y1='309.21' x2='684.38' y2='309.21' style='stroke-width: 2.13; stroke: #17D898; stroke-dasharray: 5.69,5.69,5.69,5.69; stroke-linecap: butt;' />
-<rect x='645.50' y='318.14' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<rect x='645.50' y='318.14' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
 <line x1='649.82' y1='327.06' x2='684.38' y2='327.06' style='stroke-width: 2.13; stroke: #FF0083; stroke-dasharray: 2.85,8.54,11.38,8.54; stroke-linecap: butt;' />
 <text x='699.17' y='276.55' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>1</text>
 <text x='699.17' y='294.40' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>2</text>
 <text x='699.17' y='312.24' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>3</text>
 <text x='699.17' y='330.09' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>4</text>
-<text x='40.56' y='26.53' style='font-size: 14.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='53.71px' lengthAdjust='spacingAndGlyphs'>prsacont</text>
+<text x='45.55' y='26.53' style='font-size: 14.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='53.71px' lengthAdjust='spacingAndGlyphs'>prsacont</text>
 </g>
 </svg>

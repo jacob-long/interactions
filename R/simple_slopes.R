@@ -10,6 +10,14 @@
 #'   also use "none" to base all predictions on variables set at 0.
 #'   The response variable, `modx`, and `mod2` variables are never
 #'   centered.
+#' 
+#' @param at If you want to manually set the values of other variables in the 
+#'   model, do so by providing a named list where the names are the variables and
+#'   the list values are vectors of the values. Note that you cannot alter the
+#'   values of the `pred`, `modx`, or `mod2` variables and this will take 
+#'   precedence over the `centered` argument (but any variables unmentioned by
+#'   `at` will be centered as specified by `centered`). For linear models,
+#'   this will only change the output of the conditional intercepts.
 #'
 #' @param cond.int Should conditional intercepts be printed in addition to the
 #'   slopes? Default is \code{FALSE}.
@@ -78,13 +86,13 @@
 #'
 #' @family interaction tools
 #'
-#' @seealso \code{\link{interact_plot}} accepts similar syntax and will plot the
+#' @seealso \code{\link{interact_plot()}} accepts similar syntax and will plot the
 #'   results with \code{\link[ggplot2]{ggplot}}.
 #'
-#'   \code{\link[rockchalk]{testSlopes}} performs a hypothesis test of
+#'   \code{testSlopes()} from `rockchalk` performs a hypothesis test of
 #'       differences and provides Johnson-Neyman intervals.
 #'
-#'   `pequod::simpleSlope()` performs a similar analysis.
+#'   \code{simpleSlope()} from `pequod` performs a similar analysis.
 #'
 #' @references
 #'
@@ -125,9 +133,9 @@
 #'
 
 sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
-                       mod2.values = NULL, centered = "all", data = NULL,
-                       cond.int = FALSE, johnson_neyman = TRUE, jnplot = FALSE,
-                       jnalpha = .05, robust = FALSE,
+                       mod2.values = NULL, centered = "all", at = NULL,
+                       data = NULL, cond.int = FALSE, johnson_neyman = TRUE, 
+                       jnplot = FALSE, jnalpha = .05, robust = FALSE,
                        digits = getOption("jtools-digits", default = 2),
                        pvals = TRUE, confint = FALSE, ci.width = .95,
                        cluster = NULL, modx.labels = NULL, mod2.labels = NULL,
@@ -240,6 +248,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     of model. If you are using a package like glmmTMB or other mixed modeling 
     packages, install and load the broom.mixed package and try again. Make sure
     you have the broom package installed and loaded otherwise."))
+
     pred_names <- pred_names %just% tidied$term
     if (length(pred_names) == 0) {
       stop_wrap("Could not find the focal predictor in the model. If it was
@@ -270,7 +279,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
               fvars = fvars, pred = pred,
               resp = resp, modx = modx, survey = is_survey,
               design = design, mod2 = mod2, wname = wname,
-              offname = offname, centered = centered)
+              offname = offname, centered = centered, at = at)
 
   design <- c_out$design
   d <- c_out$d
@@ -283,14 +292,14 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
                         modx.labels = modx.labels,
                         any.mod2 = !is.null(mod2), sims = TRUE)
 
-  if ((pred_factor | !is.numeric(d[[modx]])) & johnson_neyman == TRUE) {
+  if ((pred_factor || !is.numeric(d[[modx]])) && johnson_neyman == TRUE) {
         warn_wrap("Johnson-Neyman intervals are not available for factor
                    predictors or moderators.", call. = FALSE)
         johnson_neyman <- FALSE
   }
 
   # Now specify def or not (for labeling w/ print method)
-  if (is.character(modx.values) | is.null(modx.values) | !is.null(modx.labels)) {
+  if (is.character(modx.values) || is.null(modx.values) || !is.null(modx.labels)) {
 
     ss <- structure(ss, def = TRUE)
 
@@ -326,7 +335,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
 
     # Now specify def or not
-    if (is.character(mod2.values) | is.null(mod2.values) | !is.null(mod2.labels)) {
+    if (is.character(mod2.values) || is.null(mod2.values) || !is.null(mod2.labels)) {
 
       ss <- structure(ss, def2 = TRUE)
 
@@ -352,6 +361,11 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   # be. I set vifs = FALSE to make sure it isn't fit due to user options.
   # Need proper name for test statistic\
   has_summ <- check_method(summ, model)
+  # kludge for panelr compatibility
+  model_pkg <- attr(class(model), "package") 
+  if (!is.null(model_pkg) && model_pkg == "panelr") {
+    has_summ <- FALSE
+  }
   tcol <- try(colnames(summary(model)$coefficients)[3], silent = TRUE)
   if (!is.null(tcol) && !inherits(tcol, "try-error")) {
     tcol <- gsub("value", "val.", tcol)
@@ -406,7 +420,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
   }
 
-  # Looping through (perhaps non-existent)
+  # Looping through (perhaps non-existent) second moderator values
   for (j in seq_len(mod2val_len)) {
 
     # We don't want to do the J-N interval with the 1st moderator adjusted,
@@ -451,7 +465,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
 
     # Getting SEs, robust or otherwise
-    if (robust != FALSE & is.null(v.cov)) {
+    if (robust != FALSE && is.null(v.cov)) {
       # For J-N
       covmat <- get_robust_se(newmod, robust, cluster, dt)$vcov
     } else if (is.null(v.cov)) {
@@ -540,7 +554,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       } else {
         covmat <- NULL
       }
-      # Use j_summ to get the coefficients
+      # Use summ to get the coefficients
       if (has_summ) {
         sum <- summ(newmod, robust = robust, model.fit = FALSE,
                     confint = TRUE, ci.width = ci.width, vifs = FALSE,
@@ -549,8 +563,6 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       } else {
         sum <- generics::tidy(newmod, conf.int = TRUE, conf.level = ci.width)
       }
-
-
     } else {
       if (is.null(v.cov)) {
         # For J-N
@@ -582,7 +594,6 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       intp <- summat[summat$term == "(Intercept)", ]
     }
 
-
     # Have to account for variable amount of rows needed due to factor 
     # predictors
     rows <- split(1:nrow(retmat),
@@ -590,10 +601,10 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     # if (length(pred_names) == 1) {rows <- 1:nrow(retmat)}
 
     retmat[rows[[i]],1] <- modxvals2[i]
-    retmat[rows[[i]],2:ncol(retmat)] <- slopep[]
+    retmat[rows[[i]],2:ncol(retmat)] <- slopep[, colnames(retmat)[-1]]
 
     retmati[i,1] <- modxvals2[i]
-    retmati[i,2:ncol(retmat)] <- intp[]
+    retmati[i,2:ncol(retmat)] <- intp[colnames(retmati)[-1]]
 
     if (length(pred_names) > 1) {
       pred_coefs <- rep(rownames(slopep), length(modxvals2))

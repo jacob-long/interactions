@@ -51,13 +51,13 @@
 <text x='625.03' y='552.03' text-anchor='middle' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>2</text>
 <text x='334.82' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='63.62px' lengthAdjust='spacingAndGlyphs'>log_Base4_c</text>
 <text transform='translate(13.05,287.64) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='26.91px' lengthAdjust='spacingAndGlyphs'>count</text>
-<text x='677.27' y='270.84' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='13.44px' lengthAdjust='spacingAndGlyphs'>Trt</text>
-<rect x='645.50' y='282.45' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<text x='650.49' y='270.84' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='13.44px' lengthAdjust='spacingAndGlyphs'>Trt</text>
+<rect x='645.50' y='282.45' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
 <line x1='649.82' y1='291.37' x2='684.38' y2='291.37' style='stroke-width: 2.13; stroke: #49B7FC; stroke-linecap: butt;' />
-<rect x='645.50' y='300.29' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<rect x='645.50' y='300.29' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
 <line x1='649.82' y1='309.21' x2='684.38' y2='309.21' style='stroke-width: 2.13; stroke: #FF7B00; stroke-dasharray: 11.38,5.69,11.38,5.69; stroke-linecap: butt;' />
 <text x='699.17' y='294.40' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>
 <text x='699.17' y='312.24' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>1</text>
-<text x='40.56' y='26.53' style='font-size: 14.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='45.93px' lengthAdjust='spacingAndGlyphs'>pbfcont</text>
+<text x='45.55' y='26.53' style='font-size: 14.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='45.93px' lengthAdjust='spacingAndGlyphs'>pbfcont</text>
 </g>
 </svg>

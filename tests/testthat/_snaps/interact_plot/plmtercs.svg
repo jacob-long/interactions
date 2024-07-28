@@ -120,16 +120,16 @@
 <text x='32.84' y='76.83' text-anchor='middle' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>6000</text>
 <text x='382.44' y='526.50' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='34.85px' lengthAdjust='spacingAndGlyphs'>Murder</text>
 <text transform='translate(13.05,276.68) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='36.08px' lengthAdjust='spacingAndGlyphs'>Income</text>
-<text x='163.48' y='558.92' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='40.35px' lengthAdjust='spacingAndGlyphs'>Illiteracy</text>
-<rect x='194.11' y='545.22' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
-<line x1='198.43' y1='554.15' x2='232.99' y2='554.15' style='stroke-width: 2.13; stroke: #9ED2FA; stroke-dasharray: 5.69,5.69,5.69,5.69; stroke-linecap: butt;' />
-<rect x='339.43' y='545.22' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
-<line x1='343.75' y1='554.15' x2='378.31' y2='554.15' style='stroke-width: 2.13; stroke: #71A1CE; stroke-dasharray: 11.38,5.69,11.38,5.69; stroke-linecap: butt;' />
-<rect x='486.71' y='545.22' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
-<line x1='491.03' y1='554.15' x2='525.59' y2='554.15' style='stroke-width: 2.13; stroke: #205487; stroke-linecap: butt;' />
-<text x='247.77' y='557.18' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='81.20px' lengthAdjust='spacingAndGlyphs'>Lower tercile median</text>
-<text x='393.09' y='557.18' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='83.15px' lengthAdjust='spacingAndGlyphs'>Middle tercile median</text>
-<text x='540.37' y='557.18' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='81.20px' lengthAdjust='spacingAndGlyphs'>Upper tercile median</text>
-<text x='50.35' y='26.53' style='font-size: 14.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='52.91px' lengthAdjust='spacingAndGlyphs'>plmtercs</text>
+<text x='143.30' y='558.92' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='40.35px' lengthAdjust='spacingAndGlyphs'>Illiteracy</text>
+<rect x='194.11' y='546.21' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
+<line x1='198.43' y1='555.13' x2='232.99' y2='555.13' style='stroke-width: 2.13; stroke: #9ED2FA; stroke-dasharray: 5.69,5.69,5.69,5.69; stroke-linecap: butt;' />
+<rect x='339.43' y='546.21' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
+<line x1='343.75' y1='555.13' x2='378.31' y2='555.13' style='stroke-width: 2.13; stroke: #71A1CE; stroke-dasharray: 11.38,5.69,11.38,5.69; stroke-linecap: butt;' />
+<rect x='486.71' y='546.21' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
+<line x1='491.03' y1='555.13' x2='525.59' y2='555.13' style='stroke-width: 2.13; stroke: #205487; stroke-linecap: butt;' />
+<text x='247.77' y='558.16' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='81.20px' lengthAdjust='spacingAndGlyphs'>Lower tercile median</text>
+<text x='393.09' y='558.16' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='83.15px' lengthAdjust='spacingAndGlyphs'>Middle tercile median</text>
+<text x='540.37' y='558.16' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='81.20px' lengthAdjust='spacingAndGlyphs'>Upper tercile median</text>
+<text x='55.33' y='26.53' style='font-size: 14.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='52.91px' lengthAdjust='spacingAndGlyphs'>plmtercs</text>
 </g>
 </svg>
