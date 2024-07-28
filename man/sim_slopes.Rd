@@ -232,7 +232,7 @@ multiple regression/correlation analyses for the behavioral sciences} (3rd
 ed.). Mahwah, NJ: Lawrence Erlbaum Associates, Inc.
 }
 \seealso{
-\code{\link{interact_plot()}} accepts similar syntax and will plot the
+\code{\link{interact_plot}} accepts similar syntax and will plot the
 results with \code{\link[ggplot2]{ggplot}}.
 
 \code{testSlopes()} from \code{rockchalk} performs a hypothesis test of

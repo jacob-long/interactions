@@ -86,7 +86,7 @@
 #'
 #' @family interaction tools
 #'
-#' @seealso \code{\link{interact_plot()}} accepts similar syntax and will plot the
+#' @seealso \code{\link{interact_plot}} accepts similar syntax and will plot the
 #'   results with \code{\link[ggplot2]{ggplot}}.
 #'
 #'   \code{testSlopes()} from `rockchalk` performs a hypothesis test of

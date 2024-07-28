@@ -1,5 +1,8 @@
 # interactions 1.2.0.9000
 
+A special thanks to Github user @olivroy for contributing a number of mostly 
+under-the-hood updates prior to this release.
+
 Enhancements:
 
 * `sim_slopes()` now supports non-continuous variables in the `pred` argument.
