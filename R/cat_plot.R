@@ -97,7 +97,7 @@
 #'
 #'   The function is designed for two and three-way interactions. For
 #'   additional terms, the
-#'   \code{\link[effects]{effects}} package may be better suited to the task.
+#'   \code{effects} package may be better suited to the task.
 #'
 #'   This function supports nonlinear and generalized linear models and by
 #'   default will plot them on

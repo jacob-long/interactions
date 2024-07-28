@@ -376,10 +376,13 @@ empirical practice. SSRN Electronic Journal.
 \doi{10.2139/ssrn.2739221}
 }
 \seealso{
-\code{\link[rockchalk]{plotSlopes}} from \pkg{rockchalk} performs a
+\code{plotSlopes} from \code{rockchalk} performs a
 similar function, but
 with R's base graphics---this function is meant, in part, to emulate
 its features.
+
+Functions from the \code{margins} and \code{sjPlot} packages may also be useful
+if this one isn't working for you.
 
 \code{\link{sim_slopes}} performs a simple slopes analysis with a similar
 argument syntax to this function.

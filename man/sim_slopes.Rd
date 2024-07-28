@@ -232,13 +232,13 @@ multiple regression/correlation analyses for the behavioral sciences} (3rd
 ed.). Mahwah, NJ: Lawrence Erlbaum Associates, Inc.
 }
 \seealso{
-\code{\link{interact_plot}} accepts similar syntax and will plot the
+\code{\link{interact_plot()}} accepts similar syntax and will plot the
 results with \code{\link[ggplot2]{ggplot}}.
 
-\code{\link[rockchalk]{testSlopes}} performs a hypothesis test of
+\code{testSlopes()} from \code{rockchalk} performs a hypothesis test of
 differences and provides Johnson-Neyman intervals.
 
-\code{\link[pequod]{simpleSlope}} performs a similar analysis.
+\code{simpleSlope()} from \code{pequod} performs a similar analysis.
 
 Other interaction tools: 
 \code{\link{johnson_neyman}()},
