@@ -128,16 +128,16 @@
 <text x='32.84' y='92.17' text-anchor='middle' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>7000</text>
 <text x='382.44' y='526.50' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='34.85px' lengthAdjust='spacingAndGlyphs'>Murder</text>
 <text transform='translate(13.05,276.68) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='36.08px' lengthAdjust='spacingAndGlyphs'>Income</text>
-<text x='258.61' y='558.92' text-anchor='middle' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='40.35px' lengthAdjust='spacingAndGlyphs'>Illiteracy</text>
-<rect x='289.24' y='545.22' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
-<line x1='293.56' y1='554.15' x2='328.12' y2='554.15' style='stroke-width: 2.13; stroke: #06477A; stroke-linecap: butt;' />
-<rect x='371.47' y='545.22' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
-<line x1='375.79' y1='554.15' x2='410.35' y2='554.15' style='stroke-width: 2.13; stroke: #39699A; stroke-dasharray: 11.38,5.69,11.38,5.69; stroke-linecap: butt;' />
-<rect x='451.73' y='545.22' width='43.20' height='17.85' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
-<line x1='456.05' y1='554.15' x2='490.61' y2='554.15' style='stroke-width: 2.13; stroke: #5E8DBC; stroke-dasharray: 5.69,5.69,5.69,5.69; stroke-linecap: butt;' />
-<text x='342.91' y='557.18' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='18.10px' lengthAdjust='spacingAndGlyphs'>High</text>
-<text x='425.13' y='557.18' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='16.15px' lengthAdjust='spacingAndGlyphs'>Low</text>
-<text x='505.39' y='557.18' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='21.04px' lengthAdjust='spacingAndGlyphs'>None</text>
-<text x='50.35' y='26.53' style='font-size: 14.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='66.15px' lengthAdjust='spacingAndGlyphs'>plmlabelsc</text>
+<text x='238.44' y='558.92' style='font-size: 11.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='40.35px' lengthAdjust='spacingAndGlyphs'>Illiteracy</text>
+<rect x='289.24' y='546.21' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
+<line x1='293.56' y1='555.13' x2='328.12' y2='555.13' style='stroke-width: 2.13; stroke: #06477A; stroke-linecap: butt;' />
+<rect x='371.47' y='546.21' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
+<line x1='375.79' y1='555.13' x2='410.35' y2='555.13' style='stroke-width: 2.13; stroke: #39699A; stroke-dasharray: 11.38,5.69,11.38,5.69; stroke-linecap: butt;' />
+<rect x='451.73' y='546.21' width='43.20' height='17.85' style='stroke-width: 0.00; stroke: #FFFFFF; fill: #FFFFFF;' />
+<line x1='456.05' y1='555.13' x2='490.61' y2='555.13' style='stroke-width: 2.13; stroke: #5E8DBC; stroke-dasharray: 5.69,5.69,5.69,5.69; stroke-linecap: butt;' />
+<text x='342.91' y='558.16' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='18.10px' lengthAdjust='spacingAndGlyphs'>High</text>
+<text x='425.13' y='558.16' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='16.15px' lengthAdjust='spacingAndGlyphs'>Low</text>
+<text x='505.39' y='558.16' style='font-size: 8.80px; fill: #34495E; font-family: sans;' textLength='21.04px' lengthAdjust='spacingAndGlyphs'>None</text>
+<text x='55.33' y='26.53' style='font-size: 14.00px; font-weight: bold; fill: #34495E; font-family: sans;' textLength='66.15px' lengthAdjust='spacingAndGlyphs'>plmlabelsc</text>
 </g>
 </svg>
