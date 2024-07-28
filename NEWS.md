@@ -1,4 +1,4 @@
-# interactions 1.2.0.9000
+# interactions 1.2.0
 
 A special thanks to Github user @olivroy for contributing a number of mostly 
 under-the-hood updates prior to this release.

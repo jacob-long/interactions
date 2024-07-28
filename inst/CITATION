@@ -3,8 +3,9 @@ bibentry(
   title = "interactions: Comprehensive, User-Friendly Toolkit for Probing Interactions",
   author =  person(c("Jacob","A."), "Long", email = "jacob.long@sc.edu",
                     role = c("aut", "cre")),
-  year = "2022",
-  note = "R package version 1.1.6",
+  year = "2024",
+  note = "R package version 1.2.0",
   url = "https://cran.r-project.org/package=interactions",
-  key = "interactions"
+  key = "interactions",
+  doi = "10.32614/CRAN.package.interactions"
 )
