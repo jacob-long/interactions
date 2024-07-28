@@ -1,75 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/articles/categorical.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/interactions.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as_huxtable.sim_margins.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as_huxtable.sim_slopes.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cat_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/interact_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/johnson_neyman.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.sim_margins.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.sim_slopes.html</loc>
-  </url>
-  <url>
-    <loc>/reference/probe_interaction.html</loc>
-  </url>
-  <url>
-    <loc>/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim_margins.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim_margins_tidiers.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim_slopes.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim_slopes_tidiers.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/CONDUCT.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/categorical.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/interactions.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/as_huxtable.sim_margins.html</loc></url>
+<url><loc>/reference/as_huxtable.sim_slopes.html</loc></url>
+<url><loc>/reference/cat_plot.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/interact_plot.html</loc></url>
+<url><loc>/reference/johnson_neyman.html</loc></url>
+<url><loc>/reference/plot.sim_margins.html</loc></url>
+<url><loc>/reference/plot.sim_slopes.html</loc></url>
+<url><loc>/reference/probe_interaction.html</loc></url>
+<url><loc>/reference/reexports.html</loc></url>
+<url><loc>/reference/sim_margins.html</loc></url>
+<url><loc>/reference/sim_margins_tidiers.html</loc></url>
+<url><loc>/reference/sim_slopes.html</loc></url>
+<url><loc>/reference/sim_slopes_tidiers.html</loc></url>
 </urlset>
+
