@@ -20,7 +20,7 @@ as_huxtable.sim_margins(
 
 \item{format}{The method for sharing the slope and associated uncertainty.
 Default is \code{"{estimate} ({std.error})"}. See the instructions for the
-\code{error_format} argument of \code{\link[=export_summs]{export_summs()}} for more on your
+\code{error_format} argument of \code{\link[jtools:export_summs]{jtools::export_summs()}} for more on your
 options.}
 
 \item{sig.levels}{A named vector in which the values are potential p value

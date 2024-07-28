@@ -136,8 +136,8 @@
 #'   appears above the legend. If \code{NULL}, the name of the moderating
 #'   variable is used.
 #'
-#' @param colors See [jtools_colors] for details on the types of arguments
-#'    accepted. Default is "CUD Bright" for factor
+#' @param colors See [`jtools_colors`][jtools::jtools_colors] for details on the
+#'    types of arguments accepted. Default is "CUD Bright" for factor
 #'    moderators, "Blues" for +/- SD and user-specified \code{modx.values}
 #'    values.
 #'
@@ -446,11 +446,14 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   # Check for factor predictor and send to plot_cat() if so
   if (!is.numeric(d[[pred]])) {
     # Warn users that this is kinda janky
-    msg_wrap("Detected factor predictor. Plotting with cat_plot() instead.
-              Consult cat_plot() documentation (?cat_plot) for full details
-              on how to specify models with categorical predictors. If you 
-              experience errors or unexpected results, try using cat_plot() 
-              directly.")
+    cli::cli_inform(c(
+      x = "Detected factor predictor.",
+      i = "Plotting with cat_plot() instead.",
+      i = "See {.help interactions::cat_plot} for full details on 
+         how to specify models with categorical predictors.",
+      i = "If you  experience errors or unexpected results, try using 
+           cat_plot() directly."
+    ))
     # Gather arguments for plot_cat()
     args <- list(predictions = pm, pred = pred, modx = modx, mod2 = mod2,
                   data = d, modx.values = modxvals2, mod2.values = mod2vals2,

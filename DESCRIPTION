@@ -16,8 +16,8 @@ URL: https://interactions.jacob-long.com
 BugReports: https://github.com/jacob-long/interactions/issues 
 License: MIT + file LICENSE
 Encoding: UTF-8
-Imports: ggplot2,
-  crayon,
+Imports:
+  ggplot2 (>= 3.4.0),
   cli,
   generics,
   jtools (>= 2.0.3),
@@ -26,17 +26,17 @@ Imports: ggplot2,
 Suggests:
   broom,
   cowplot,
-  ggstance,
+  broom.mixed,
   glue,
   huxtable (>= 3.0.0),
   lme4,
   margins,
   sandwich,
   survey,
-    knitr,
-    rmarkdown,
-    testthat,
-    vdiffr
+  knitr,
+  rmarkdown,
+  testthat,
+  vdiffr
 Enhances:
   brms,
   rstanarm

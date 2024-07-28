@@ -622,7 +622,6 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
 }
 
 #' @export
-#' @importFrom crayon bold inverse underline
 
 print.johnson_neyman <- function(x, ...) {
 
@@ -630,9 +629,9 @@ print.johnson_neyman <- function(x, ...) {
 
   # Describe whether sig values are inside/outside the interval
   if (atts$inside == FALSE) {
-    inout <- inverse("OUTSIDE")
+    inout <- cli::style_inverse("OUTSIDE")
   } else {
-    inout <- inverse("INSIDE")
+    inout <- cli::style_inverse("INSIDE")
   }
 
   b_format <- num_print(x$bounds, atts$digits)
@@ -641,13 +640,16 @@ print.johnson_neyman <- function(x, ...) {
   pmsg <- paste("p <", alpha)
 
   # Print the output
-  cat(bold(underline("JOHNSON-NEYMAN INTERVAL")), "\n\n")
+  cli::cat_line(
+    cli::style_bold(cli::style_underline("JOHNSON-NEYMAN INTERVAL")),
+    "\n"
+  )
   if (all(is.finite(x$bounds))) {
     cat_wrap("When ", atts$modx, " is ", inout, " the interval [",
              b_format[1], ", ", b_format[2], "], the slope of ", atts$pred,
              " is ", pmsg, ".", brk = "\n\n")
-    cat_wrap(italic("Note: The range of observed values of", atts$modx,
-        "is "), "[", m_range[1], ", ", m_range[2], "]", brk = "\n\n")
+    cat_wrap(cli::style_italic("Note: The range of observed values of ", atts$modx,
+        " is "), "[", m_range[1], ", ", m_range[2], "]", brk = "\n\n")
   } else {
     cat_wrap("The Johnson-Neyman interval could not be found.
         Is the p value for your interaction term below

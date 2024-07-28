@@ -3,13 +3,14 @@
 
 # interactions <img src="man/figures/logo.png" alt="interactions" height="250px" align="right" />
 
+<!-- badges: start -->
+
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-ago/interactions)](https://cran.r-project.org/package=interactions)
 [![GitHub
 tag](https://img.shields.io/github/tag/jacob-long/interactions.svg?label=Github)](https://github.com/jacob-long/interactions)
 [![Total
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/interactions)](https://cran.r-project.org/package=interactions)
-[![Build
-Status](https://github.com/jacob-long/interactions/workflows/R-CMD-check/badge.svg)](https://github.com/jacob-long/interactions/actions)
+[![R-CMD-check](https://github.com/jacob-long/interactions/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jacob-long/interactions/actions/workflows/R-CMD-check.yaml)
 [![AppVeyor Build
 status](https://ci.appveyor.com/api/projects/status/qfyn5cwomufqxath?svg=true)](https://ci.appveyor.com/project/jacob-long/interactions)
 [![codecov](https://codecov.io/gh/jacob-long/interactions/branch/master/graph/badge.svg)](https://codecov.io/gh/jacob-long/interactions)
@@ -18,6 +19,7 @@ state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![MIT
 License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
+<!-- badges: end -->
 
 This package consists of a number of tools for the analysis and
 interpretation of statistical interactions in regression models. Some of
@@ -27,9 +29,9 @@ when done “by hand.”
 
 Quick rundown of features:
 
--   simple slopes analysis
--   calculation of Johnson-Neyman intervals
--   visualization of predicted and observed values using `ggplot2`
+- simple slopes analysis
+- calculation of Johnson-Neyman intervals
+- visualization of predicted and observed values using `ggplot2`
 
 All of these are implemented in a consistent interface designed to be as
 simple as possible with tweaks and guts available to advanced users.
@@ -80,7 +82,7 @@ fiti <- lm(mpg ~ hp * wt, data = mtcars)
 sim_slopes(fiti, pred = hp, modx = wt, jnplot = TRUE)
 ```
 
-    #> JOHNSON-NEYMAN INTERVAL 
+    #> JOHNSON-NEYMAN INTERVAL
     #> 
     #> When wt is OUTSIDE the interval [3.69, 5.90], the slope of hp is p < .05.
     #> 
@@ -88,7 +90,7 @@ sim_slopes(fiti, pred = hp, modx = wt, jnplot = TRUE)
 
 ![](man/figures/j-n-plot-1.png)<!-- -->
 
-    #> SIMPLE SLOPES ANALYSIS 
+    #> SIMPLE SLOPES ANALYSIS
     #> 
     #> Slope of hp when wt = 2.238793 (- 1 SD): 
     #> 

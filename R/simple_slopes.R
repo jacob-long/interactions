@@ -775,7 +775,6 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
 #' @export
 #' @importFrom cli cat_rule rule
-#' @importFrom crayon red bold italic
 
 print.sim_slopes <- function(x, ...) {
 
@@ -859,7 +858,10 @@ print.sim_slopes <- function(x, ...) {
     }
 
     # Clearly label simple slopes
-    cat(bold(underline("SIMPLE SLOPES ANALYSIS")), "\n\n")
+    cli::cat_line(
+      cli::style_bold(cli::style_underline("SIMPLE SLOPES ANALYSIS")),
+      "\n"
+    )
 
     for (i in seq_along(x$modx.values)) {
 
@@ -882,7 +884,7 @@ print.sim_slopes <- function(x, ...) {
       # Print conditional intercept
       if (x$cond.int == TRUE | fac_pred == TRUE) {
         pred_lab <- if (fac_pred) {slopes[["Coef."]]} else {x$pred}
-        cat(italic(paste0("When ", x$modx, " = ", modx_label, ": \n\n")))
+        cli::cat_line(cli::style_italic(paste0("When ", x$modx, " = ", modx_label, ": \n")))
         if (x$cond.int) {
           ints <- m$ints[i,2:ncol(m$slopes)]
           slopes <- as.data.frame(rbind(slopes, ints))
@@ -895,8 +897,8 @@ print.sim_slopes <- function(x, ...) {
         print(md_table(slopes %not% "Coef.", digits = x$digits,
                        format = "pandoc", sig.digits = FALSE))
       } else {
-        cat(italic(paste0("Slope of ", x$pred, " when ", x$modx, " = ",
-                          modx_label, ": \n\n")))
+        cli::cat_line(cli::style_italic(paste0("Slope of ", x$pred, " when ", x$modx, " = ",
+                          modx_label, ": \n")))
         print(md_table(slopes, digits = x$digits, format = "pandoc",
                        row.names = FALSE, sig.digits = FALSE))
       }
@@ -1036,7 +1038,7 @@ nobs.sim_slopes <- function(object, ...) {
 #' @param x The [sim_slopes()] object.
 #' @param format The method for sharing the slope and associated uncertainty.
 #'  Default is `"{estimate} ({std.error})"`. See the instructions for the
-#'  `error_format` argument of [export_summs()] for more on your
+#'  `error_format` argument of [jtools::export_summs()] for more on your
 #'  options.
 #' @param sig.levels A named vector in which the values are potential p value
 #'  thresholds and the names are significance markers (e.g., "*") for when
