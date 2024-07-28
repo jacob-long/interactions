@@ -13,7 +13,7 @@ Downloads](https://cranlogs.r-pkg.org/badges/grand-total/interactions)](https://
 [![R-CMD-check](https://github.com/jacob-long/interactions/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jacob-long/interactions/actions/workflows/R-CMD-check.yaml)
 [![AppVeyor Build
 status](https://ci.appveyor.com/api/projects/status/qfyn5cwomufqxath?svg=true)](https://ci.appveyor.com/project/jacob-long/interactions)
-[![codecov](https://codecov.io/gh/jacob-long/interactions/branch/master/graph/badge.svg)](https://codecov.io/gh/jacob-long/interactions)
+[![codecov](https://codecov.io/gh/jacob-long/interactions/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jacob-long/interactions)
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
