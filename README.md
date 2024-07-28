@@ -1,8 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    ## Warning: le package 'jtools' a été compilé avec la version R 4.3.3
-
 # interactions <img src="man/figures/logo.png" alt="interactions" height="250px" align="right" />
 
 <!-- badges: start -->
