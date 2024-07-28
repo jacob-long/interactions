@@ -12,6 +12,7 @@ sim_slopes(
   modx.values = NULL,
   mod2.values = NULL,
   centered = "all",
+  at = NULL,
   data = NULL,
   cond.int = FALSE,
   johnson_neyman = TRUE,
@@ -85,6 +86,14 @@ may instead pass a character vector of variables to center. User can
 also use "none" to base all predictions on variables set at 0.
 The response variable, \code{modx}, and \code{mod2} variables are never
 centered.}
+
+\item{at}{If you want to manually set the values of other variables in the
+model, do so by providing a named list where the names are the variables and
+the list values are vectors of the values. Note that you cannot alter the
+values of the \code{pred}, \code{modx}, or \code{mod2} variables and this will take
+precedence over the \code{centered} argument (but any variables unmentioned by
+\code{at} will be centered as specified by \code{centered}). For linear models,
+this will only change the output of the conditional intercepts.}
 
 \item{data}{Optional, default is NULL. You may provide the data used to
 fit the model. This can be a better way to get mean values for centering

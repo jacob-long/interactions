@@ -10,6 +10,14 @@
 #'   also use "none" to base all predictions on variables set at 0.
 #'   The response variable, `modx`, and `mod2` variables are never
 #'   centered.
+#' 
+#' @param at If you want to manually set the values of other variables in the 
+#'   model, do so by providing a named list where the names are the variables and
+#'   the list values are vectors of the values. Note that you cannot alter the
+#'   values of the `pred`, `modx`, or `mod2` variables and this will take 
+#'   precedence over the `centered` argument (but any variables unmentioned by
+#'   `at` will be centered as specified by `centered`). For linear models,
+#'   this will only change the output of the conditional intercepts.
 #'
 #' @param cond.int Should conditional intercepts be printed in addition to the
 #'   slopes? Default is \code{FALSE}.
@@ -125,9 +133,9 @@
 #'
 
 sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
-                       mod2.values = NULL, centered = "all", data = NULL,
-                       cond.int = FALSE, johnson_neyman = TRUE, jnplot = FALSE,
-                       jnalpha = .05, robust = FALSE,
+                       mod2.values = NULL, centered = "all", at = NULL,
+                       data = NULL, cond.int = FALSE, johnson_neyman = TRUE, 
+                       jnplot = FALSE, jnalpha = .05, robust = FALSE,
                        digits = getOption("jtools-digits", default = 2),
                        pvals = TRUE, confint = FALSE, ci.width = .95,
                        cluster = NULL, modx.labels = NULL, mod2.labels = NULL,
@@ -271,7 +279,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
               fvars = fvars, pred = pred,
               resp = resp, modx = modx, survey = is_survey,
               design = design, mod2 = mod2, wname = wname,
-              offname = offname, centered = centered)
+              offname = offname, centered = centered, at = at)
 
   design <- c_out$design
   d <- c_out$d
