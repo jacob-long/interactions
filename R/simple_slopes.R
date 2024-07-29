@@ -243,26 +243,34 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
           c(sapply(pred_names, function(x) paste0(x, ulevels(d[[pred]]))))
       }
     }
+    # see if jtools::summ() knows about this model
+    has_summ <- check_method(summ, model)
+    # use tidy on the model to get the term names
     tidied <- try(generics::tidy(model), silent = TRUE)
-
+    # if there was no method, see if it's because it's a mixed model
     if (inherits(tidied, "try-error")) {
       if (rlang::is_installed("broom.mixed")) {
         tidied <- try(broom.mixed::tidy(model), silent = TRUE)
       }
     }
-
-    if (inherits(tidied, "try-error")) { 
-      stop_wrap("tidy() could not find a method for this kind of model. If you 
-        are using a package like glmmTMB or other mixed modeling packages, install
-        and load the broom.mixed package and try again.")
+    # If that doesn't fix, see if we can kludge with summ()
+    if (inherits(tidied, "try-error")) {
+      if (has_summ) {
+        pred_names <- pred_names %just% rownames(summ(model)$coeftable)
+      } else { # No summ method? Have to bail out here...
+        stop_wrap("tidy() could not find a method for this kind of model. If you 
+          are using a package like glmmTMB or other mixed modeling packages, 
+          install and load the broom.mixed package and try again.")
+      }
+    } else {
+      pred_names <- pred_names %just% tidied$term
     }
 
-    pred_names <- pred_names %just% tidied$term
     if (length(pred_names) == 0) {
       stop_wrap("Could not find the focal predictor in the model. If it was
                  transformed (e.g. logged or turned into a factor), put the
                  transformation into the 'pred' argument. For example,
-                 pred = 'log(x)'.")
+                 pred = '(x)'.")
     }
     }
 
@@ -367,8 +375,6 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
   # Since output columns are conditional, I call summ here to see what they will
   # be. I set vifs = FALSE to make sure it isn't fit due to user options.
-  # Need proper name for test statistic\
-  has_summ <- check_method(summ, model)
   # kludge for panelr compatibility
   model_pkg <- attr(class(model), "package") 
   if (!is.null(model_pkg) && model_pkg == "panelr") {
