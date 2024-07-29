@@ -197,6 +197,8 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   ss <- structure(ss, digits = digits)
 
   d <- get_data(model)
+  # see if jtools::summ() knows about this model
+  has_summ <- check_method(summ, model)
   if (is_survey <- inherits(model, "svyglm")) {
     design <- model$survey.design
   } else {design <- NULL}
@@ -243,8 +245,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
           c(sapply(pred_names, function(x) paste0(x, ulevels(d[[pred]]))))
       }
     }
-    # see if jtools::summ() knows about this model
-    has_summ <- check_method(summ, model)
+    
     # use tidy on the model to get the term names
     tidied <- try(generics::tidy(model), silent = TRUE)
     # if there was no method, see if it's because it's a mixed model
