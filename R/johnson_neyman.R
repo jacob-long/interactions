@@ -202,9 +202,11 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
       coef(mod)
     }
   }
-
+  # lmerModTest and perhaps others do not give dataClasses in terms object
+  # so I need to both check for existence and check for data type
+  dataclass <- attr(terms(model), "dataClasses")[pred]
   # Try to support logical predictors, maybe a precursor to factor predictors
-  if (attr(terms(model), "dataClasses")[pred] == "logical") {
+  if (!is.null(dataclass) && dataclass == "logical") {
       pred_names <- paste0(pred, "TRUE")
     } else {
       pred_names <- pred
