@@ -6,7 +6,7 @@
 #'
 #' @param model A regression model. The function is tested with \code{lm},
 #'   \code{glm}, \code{\link[survey]{svyglm}}, \code{\link[lme4]{merMod}},
-#'   \code{\link[quantreg]{rq}}, \code{\link[brms]{brmsfit}},
+#'   `rq` (from `quantreg`), \code{\link[brms]{brmsfit}},
 #'   \code{stanreg} models.
 #'   Models from other classes may work as well but are not officially
 #'   supported. The model should include the interaction of interest.
@@ -192,7 +192,7 @@
 #'   for the purpose of exploring interactions in regression models.
 #'
 #'   The function is designed for two and three-way interactions. For
-#'   additional terms, the \pkg{effects} package may be better suited to the
+#'   additional terms, the `effects` package may be better suited to the
 #'   task.
 #'
 #'   This function supports nonlinear and generalized linear models and by
@@ -223,7 +223,7 @@
 #'   plots. When you do, the data are split into three approximately
 #'   equal-sized groups with the lowest third, middle third, and highest third
 #'   of the data split accordingly. You can replicate this procedure using
-#'   [Hmisc::cut2()] with `g = 3` from the `Hmisc` package. Sometimes, the
+#'   `cut2()` with `g = 3` from the `Hmisc` package. Sometimes, the
 #'   groups will not be equal in size because the number of observations is
 #'   not divisible by 3 and/or there are multiple observations with the same
 #'   value at one of the cut points.
