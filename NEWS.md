@@ -26,6 +26,7 @@ reverse order of the factor's levels. (#55)
 are provided. (#50)
 * `sim_slopes()` no longer errors when ordered factors are moderators.
 Thanks to Jonathan Zadra for suggesting the fix. (#42)
+* `sim_slopes()` no longer errors when given `merModTest` objects.
 
 # interactions 1.1.5
 
