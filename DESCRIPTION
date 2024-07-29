@@ -20,11 +20,11 @@ Imports:
   ggplot2 (>= 3.4.0),
   cli,
   generics,
+  broom,
   jtools (>= 2.0.3),
   rlang (>= 0.3.0),
   tibble
 Suggests:
-  broom,
   cowplot,
   broom.mixed,
   glue,

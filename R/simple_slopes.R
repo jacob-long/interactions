@@ -243,20 +243,28 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
           c(sapply(pred_names, function(x) paste0(x, ulevels(d[[pred]]))))
       }
     }
-    tidied <- tryCatch(generics::tidy(model), 
-    error = function(x) stop_wrap("tidy() could not find a method for this kind
-    of model. If you are using a package like glmmTMB or other mixed modeling 
-    packages, install and load the broom.mixed package and try again. Make sure
-    you have the broom package installed and loaded otherwise."))
+    tidied <- try(generics::tidy(model), silent = TRUE)
+
+    if (inherits(tidied, "try-error")) {
+      if (rlang::is_installed("broom.mixed")) {
+        tidied <- try(broom.mixed::tidy(model), silent = TRUE)
+      }
+    }
+
+    if (inherits(tidied, "try-error")) { 
+      stop_wrap("tidy() could not find a method for this kind of model. If you 
+        are using a package like glmmTMB or other mixed modeling packages, install
+        and load the broom.mixed package and try again.")
+    }
 
     pred_names <- pred_names %just% tidied$term
     if (length(pred_names) == 0) {
       stop_wrap("Could not find the focal predictor in the model. If it was
                  transformed (e.g. logged or turned into a factor), put the
                  transformation into the 'pred' argument. For example,
-                 pred = 'as.numeric(x)'.")
+                 pred = 'log(x)'.")
     }
-  }
+    }
 
   wname <- get_weights(model, d)$weights_name
   wts <- get_weights(model, d)$weights
