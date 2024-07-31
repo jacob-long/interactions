@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">interactions</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Exploring interactions with continuous predictors in regression models</h1>
                         <h4 data-toc-skip class="author">Jacob Long</h4>
             
-            <h4 data-toc-skip class="date">2024-07-28</h4>
+            <h4 data-toc-skip class="date">2024-07-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jacob-long/interactions/blob/master/vignettes/interactions.Rmd" class="external-link"><code>vignettes/interactions.Rmd</code></a></small>
       <div class="d-none name"><code>interactions.Rmd</code></div>
@@ -515,23 +515,23 @@ argument for <code>modx =</code>. Let’s go through an example.</p>
 <p>Now let’s do the most basic simple slopes analysis:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sim_slopes.html">sim_slopes</a></span><span class="op">(</span><span class="va">fiti</span>, pred <span class="op">=</span> <span class="va">Illiteracy</span>, modx <span class="op">=</span> <span class="va">Murder</span>, johnson_neyman <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder =  5.420973 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>    Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##     Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## -------- -------- -------- ------</span></span>
 <span><span class="co">##   -17.43   250.08    -0.07   0.94</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder =  8.685043 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>     Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##      Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------- -------- -------- ------</span></span>
 <span><span class="co">##   -399.64   178.86    -2.23   0.03</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder = 11.949113 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>     Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##      Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------- -------- -------- ------</span></span>
 <span><span class="co">##   -781.85   189.11    -4.13   0.00</span></span></code></pre>
 <p>So what we see in this example is that when the value of
@@ -549,23 +549,23 @@ is high.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sim_slopes.html">sim_slopes</a></span><span class="op">(</span><span class="va">fiti</span>, pred <span class="op">=</span> <span class="va">Illiteracy</span>, modx <span class="op">=</span> <span class="va">Murder</span>, modx.values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>           johnson_neyman <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder =  0.00: </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>    Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##     Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## -------- -------- -------- ------</span></span>
 <span><span class="co">##   617.34   434.85     1.42   0.16</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder =  5.00: </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>   Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##    Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## ------- -------- -------- ------</span></span>
 <span><span class="co">##   31.86   262.63     0.12   0.90</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder = 10.00: </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>     Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##      Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------- -------- -------- ------</span></span>
 <span><span class="co">##   -553.62   171.42    -3.23   0.00</span></span></code></pre>
 <p>Bear in mind that these estimates are managed by refitting the
@@ -633,30 +633,30 @@ familiar with the Johnson-Neyman technique. But if you read the output
 carefully and take it literally, you’ll get the hang of it.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sim_slopes.html">sim_slopes</a></span><span class="op">(</span><span class="va">fiti</span>, pred <span class="op">=</span> <span class="va">Illiteracy</span>, modx <span class="op">=</span> <span class="va">Murder</span>, johnson_neyman <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## When Murder is OUTSIDE the interval [-6.37, 8.41], the slope of</span></span>
 <span><span class="co">## Illiteracy is p &lt; .05.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Note: The range of observed values of Murder is </span>[1.40, 15.10]</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder =  5.420973 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>    Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##     Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## -------- -------- -------- ------</span></span>
 <span><span class="co">##   -17.43   250.08    -0.07   0.94</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder =  8.685043 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>     Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##      Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------- -------- -------- ------</span></span>
 <span><span class="co">##   -399.64   178.86    -2.23   0.03</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder = 11.949113 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>     Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##      Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------- -------- -------- ------</span></span>
 <span><span class="co">##   -781.85   189.11    -4.13   0.00</span></span></code></pre>
 <p>In the example above, we can see that the Johnson-Neyman interval and
@@ -670,7 +670,7 @@ if you want to do something like tweak the alpha level. The
 <code>sim_slopes</code>.</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/johnson_neyman.html">johnson_neyman</a></span><span class="op">(</span><span class="va">fiti</span>, pred <span class="op">=</span> <span class="va">Illiteracy</span>, modx <span class="op">=</span> <span class="va">Murder</span>, alpha <span class="op">=</span> <span class="fl">.05</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## When Murder is OUTSIDE the interval [-10.61, 8.16], the slope of</span></span>
 <span><span class="co">## Illiteracy is p &lt; .05.</span></span>
@@ -721,7 +721,7 @@ the call to <code>johnson_neyman</code> or <code>sim_slopes</code>.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sim_slopes.html">sim_slopes</a></span><span class="op">(</span><span class="va">fiti</span>, pred <span class="op">=</span> <span class="va">Illiteracy</span>, modx <span class="op">=</span> <span class="va">Murder</span>, johnson_neyman <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>           control.fdr <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## When Murder is OUTSIDE the interval [-15.78, 8.84], the slope of</span></span>
 <span><span class="co">## Illiteracy is p &lt; .05.</span></span>
@@ -730,23 +730,23 @@ the call to <code>johnson_neyman</code> or <code>sim_slopes</code>.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Interval calculated using false discovery rate adjusted t = 2.35 </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder =  5.420973 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>    Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##     Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## -------- -------- -------- ------</span></span>
 <span><span class="co">##   -17.43   250.08    -0.07   0.94</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder =  8.685043 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>     Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##      Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------- -------- -------- ------</span></span>
 <span><span class="co">##   -399.64   178.86    -2.23   0.03</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder = 11.949113 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>     Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##      Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------- -------- -------- ------</span></span>
 <span><span class="co">##   -781.85   189.11    -4.13   0.00</span></span></code></pre>
 <p>In this case, you can see that the interval is just a little bit
@@ -771,32 +771,32 @@ this, but you can do it with the console output as well.</p>
 <code>cond.int = TRUE</code> argument.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sim_slopes.html">sim_slopes</a></span><span class="op">(</span><span class="va">fiti</span>, pred <span class="op">=</span> <span class="va">Illiteracy</span>, modx <span class="op">=</span> <span class="va">Murder</span>, cond.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## When Murder is OUTSIDE the interval [-6.37, 8.41], the slope of</span></span>
 <span><span class="co">## Illiteracy is p &lt; .05.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Note: The range of observed values of Murder is </span>[1.40, 15.10]</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">When Murder =  5.420973 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>                                 Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##                                  Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------------------------- --------- -------- -------- ------</span></span>
 <span><span class="co">## Slope of Illiteracy            -17.43   250.08    -0.07   0.94</span></span>
 <span><span class="co">## Conditional intercept         4618.50   229.76    20.10   0.00</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">When Murder =  8.685043 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>                                 Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##                                  Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------------------------- --------- -------- -------- ------</span></span>
 <span><span class="co">## Slope of Illiteracy           -399.64   178.86    -2.23   0.03</span></span>
 <span><span class="co">## Conditional intercept         5097.72   239.69    21.27   0.00</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">When Murder = 11.949113 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>                                 Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##                                  Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------------------------- --------- -------- -------- ------</span></span>
 <span><span class="co">## Slope of Illiteracy           -781.85   189.11    -4.13   0.00</span></span>
 <span><span class="co">## Conditional intercept         5576.95   340.70    16.37   0.00</span></span></code></pre>
@@ -818,30 +818,30 @@ same with the use of the <code>robust</code> option so you can
 consistently report standard errors across models.</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sim_slopes.html">sim_slopes</a></span><span class="op">(</span><span class="va">fiti</span>, pred <span class="op">=</span> <span class="va">Illiteracy</span>, modx <span class="op">=</span> <span class="va">Murder</span>, robust <span class="op">=</span> <span class="st">"HC3"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## When Murder is OUTSIDE the interval [-3.34, 8.14], the slope of</span></span>
 <span><span class="co">## Illiteracy is p &lt; .05.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Note: The range of observed values of Murder is </span>[1.40, 15.10]</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder =  5.420973 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>    Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##     Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## -------- -------- -------- ------</span></span>
 <span><span class="co">##   -17.43   227.37    -0.08   0.94</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder =  8.685043 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>     Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##      Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------- -------- -------- ------</span></span>
 <span><span class="co">##   -399.64   158.77    -2.52   0.02</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of Illiteracy when Murder = 11.949113 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>     Est.     S.E.   t val.      p</span></span>
+<span><span class="co">##      Est.     S.E.   t val.      p</span></span>
 <span><span class="co">## --------- -------- -------- ------</span></span>
 <span><span class="co">##   -781.85   156.96    -4.98   0.00</span></span></code></pre>
 <p>These data are a relatively rare case in which the robust standard
@@ -881,32 +881,32 @@ advantage of their overlapping syntax.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/probe_interaction.html">probe_interaction</a></span><span class="op">(</span><span class="va">regmodel</span>, pred <span class="op">=</span> <span class="va">growth</span>, modx <span class="op">=</span> <span class="va">avg.ed</span>, cond.int <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                  interval <span class="op">=</span> <span class="cn">TRUE</span>,  jnplot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## When avg.ed is OUTSIDE the interval [3.11, 5.78], the slope of</span></span>
 <span><span class="co">## growth is p &lt; .05.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Note: The range of observed values of avg.ed is </span>[1.38, 4.44]</span></span></code></pre>
 <p><img src="interactions_files/figure-html/unnamed-chunk-33-1.png" width="576"></p>
-<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<pre><code><span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">When avg.ed = 2.085002 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>                                Est.    S.E.   t val.      p</span></span>
+<span><span class="co">##                                 Est.    S.E.   t val.      p</span></span>
 <span><span class="co">## --------------------------- -------- ------- -------- ------</span></span>
 <span><span class="co">## Slope of growth                 1.05    0.19     5.66   0.00</span></span>
 <span><span class="co">## Conditional intercept         521.23   11.20    46.54   0.00</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">When avg.ed = 2.787381 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>                                Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##                                 Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## --------------------------- -------- ------ -------- ------</span></span>
 <span><span class="co">## Slope of growth                 0.58   0.15     3.80   0.00</span></span>
 <span><span class="co">## Conditional intercept         639.78   6.80    94.09   0.00</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">When avg.ed = 3.489761 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>                                Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##                                 Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## --------------------------- -------- ------ -------- ------</span></span>
 <span><span class="co">## Slope of growth                 0.11   0.25     0.43   0.67</span></span>
 <span><span class="co">## Conditional intercept         758.34   6.85   110.66   0.00</span></span></code></pre>
@@ -949,84 +949,84 @@ significant slope.</p>
 <span>                  alpha <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## █████████████ While privileges (2nd moderator) = 40.89790 (- 1 SD) █████████████ </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## When learning is INSIDE the interval [49.48, 161.86], the slope of</span></span>
 <span><span class="co">## critical is p &lt; .1.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Note: The range of observed values of learning is </span>[34.00, 75.00]</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of critical when learning = 44.62965 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.24   0.24     1.02   0.32</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of critical when learning = 56.36667 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.68   0.33     2.05   0.05</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of critical when learning = 68.10368 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   1.11   0.55     2.01   0.06</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## ██████████████ While privileges (2nd moderator) = 53.13333 (Mean) ██████████████ </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## The Johnson-Neyman interval could not be found. Is the p value for your</span></span>
 <span><span class="co">## interaction term below the specified alpha?</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of critical when learning = 44.62965 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.09   0.34     0.27   0.79</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of critical when learning = 56.36667 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.06   0.24     0.24   0.81</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of critical when learning = 68.10368 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.02   0.33     0.07   0.95</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## █████████████ While privileges (2nd moderator) = 65.36876 (+ 1 SD) █████████████ </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## The Johnson-Neyman interval could not be found. Is the p value for your</span></span>
 <span><span class="co">## interaction term below the specified alpha?</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of critical when learning = 44.62965 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>   Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##    Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------- ------ -------- ------</span></span>
 <span><span class="co">##   -0.06   0.61    -0.09   0.93</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of critical when learning = 56.36667 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>   Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##    Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------- ------ -------- ------</span></span>
 <span><span class="co">##   -0.56   0.50    -1.12   0.28</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of critical when learning = 68.10368 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>   Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##    Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------- ------ -------- ------</span></span>
 <span><span class="co">##   -1.06   0.66    -1.62   0.12</span></span></code></pre>
 <p><img src="interactions_files/figure-html/unnamed-chunk-35-1.png" width="576"></p>
@@ -1052,86 +1052,86 @@ together the separate J-N plots.</p>
 <span>          jnplot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## ███████████████ While enroll (2nd moderator) =  153.0518 (- 1 SD) ██████████████ </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## When avg.ed is OUTSIDE the interval [2.75, 3.82], the slope of</span></span>
 <span><span class="co">## growth is p &lt; .05.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Note: The range of observed values of avg.ed is </span>[1.38, 4.44]</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of growth when avg.ed = 2.085002 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   1.25   0.32     3.86   0.00</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of growth when avg.ed = 2.787381 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.39   0.22     1.75   0.08</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of growth when avg.ed = 3.489761 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>   Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##    Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------- ------ -------- ------</span></span>
 <span><span class="co">##   -0.48   0.35    -1.37   0.17</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## ████████████████ While enroll (2nd moderator) =  595.2821 (Mean) ███████████████ </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## When avg.ed is OUTSIDE the interval [2.84, 7.83], the slope of</span></span>
 <span><span class="co">## growth is p &lt; .05.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Note: The range of observed values of avg.ed is </span>[1.38, 4.44]</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of growth when avg.ed = 2.085002 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.72   0.22     3.29   0.00</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of growth when avg.ed = 2.787381 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.34   0.16     2.16   0.03</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of growth when avg.ed = 3.489761 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>   Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##    Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------- ------ -------- ------</span></span>
 <span><span class="co">##   -0.04   0.24    -0.16   0.87</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## ███████████████ While enroll (2nd moderator) = 1037.5125 (+ 1 SD) ██████████████ </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">JOHNSON-NEYMAN INTERVAL</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## The Johnson-Neyman interval could not be found. Is the p value for your</span></span>
 <span><span class="co">## interaction term below the specified alpha?</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold; text-decoration: underline;">SIMPLE SLOPES ANALYSIS</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of growth when avg.ed = 2.085002 (- 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.18   0.31     0.58   0.56</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of growth when avg.ed = 2.787381 (Mean): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.29   0.20     1.49   0.14</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-style: italic;">Slope of growth when avg.ed = 3.489761 (+ 1 SD): </span></span></span>
 <span><span class="co"><span style="font-style: italic;">## </span></span></span>
-<span><span class="co"><span style="font-style: italic;">## </span>  Est.   S.E.   t val.      p</span></span>
+<span><span class="co">##   Est.   S.E.   t val.      p</span></span>
 <span><span class="co">## ------ ------ -------- ------</span></span>
 <span><span class="co">##   0.40   0.27     1.49   0.14</span></span></code></pre>
 <p><img src="interactions_files/figure-html/unnamed-chunk-37-1.png" width="576"></p>
