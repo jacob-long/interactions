@@ -1,31 +1,29 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Jacob copied from https://github.com/r-lib/pkgdown/blob/main/.github/workflows/pkgdown.yaml 
+# Workflow derived from https://github.com/r-lib/actions/tree/master/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
     branches: [main, master]
     tags: ['*']
   pull_request:
-    branches: [main, master]
-  release:
-    types: [published]
-  workflow_dispatch:
+    branches: [master, main]
 
 name: pkgdown
 
-permissions: read-all
-
 jobs:
   pkgdown:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.fork == false
     runs-on: ubuntu-latest
-    # Only restrict concurrency for non-PR jobs
-    concurrency:
-      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      contents: write
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      isPush: ${{ github.event_name == 'push' }}
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-tinytex@v2
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -40,7 +38,7 @@ jobs:
 
       - name: Install package
         run: R CMD INSTALL .
-  
+
       - name: Build and deploy pkgdown site
         if: contains(env.isPush, 'true')
         run: |
@@ -52,7 +50,7 @@ jobs:
         run: |
           pkgdown::build_site()
         shell: Rscript {0}
-  
+
       - name: Create index file
         if: contains(env.isPush, 'false')
         run: |
