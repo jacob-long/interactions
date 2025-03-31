@@ -475,139 +475,140 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       call[[1]] <- survey::svyglm
       newmod <- eval(call)
     } else {
-      # Creating the model
+    
       newmod <- j_update(model, data = dt)
     }
 
-    # Getting SEs, robust or otherwise
-    if (robust != FALSE && is.null(v.cov)) {
-      # For J-N
+    # Handling vcov correctly
+    if (!is.null(vcov)) {
+      # Use the externally provided vcov matrix
+      covmat <- vcov
+    } else if (robust != FALSE && is.null(v.cov)) {
       covmat <- get_robust_se(newmod, robust, cluster, dt)$vcov
     } else if (is.null(v.cov)) {
-      # For J-N
+      # Default variance-covariance matrix
       covmat <- vcov(newmod)
     } else {
       vcovargs <- v.cov.args
       vcovargs[[which(sapply(vcovargs, function(x) length(x[[1]]) == 1 &&
-                               x[[1]] == "model"))]] <-
-        newmod
+                               x[[1]] == "model"))]] <- newmod
       covmat <- do.call(v.cov, vcovargs)
     }
-
-    # if (robust == FALSE & is.null()) {covmat <- NULL}
-
+    
+    # Ensure covmat is a matrix (fixes "closure not subsettable" error)
+    if (is.function(covmat)) {
+      covmat <- covmat(newmod)
+    }
+    
+    # Johnson-Neyman interval calculations
     if (johnson_neyman == TRUE) {
       args <- list(newmod, pred = substitute(pred), modx = substitute(modx),
                    vmat = covmat, plot = jnplot, alpha = jnalpha,
                    digits = digits)
-      if (exists("jn_args")) {args <- as.list(c(args, jn_args))}
+      if (exists("jn_args")) { args <- as.list(c(args, jn_args)) }
       jn <- do.call("johnson_neyman", args)
     } else {
-
       jn <- NULL
-
     }
-
+    
     if (j != 0) {
-        jns[[j]] <- jn
+      jns[[j]] <- jn
     }
-
-  # Looping so any amount of moderator values can be used
-  for (i in seq_along(modxvals2)) {
-
-    dt <- d
-
-    # Create new design to modify
-    if (is_survey == TRUE) {designt <- design}
-
-    # The moderator value-adjusted variable
-    if (is.numeric(dt[[modx]])) {
-      dt[[modx]] <- dt[[modx]] - modxvals2[i]
-    } else {
-      dt[[modx]] <- factor(dt[[modx]], ordered = FALSE)
-      dt[[modx]] <- relevel(dt[[modx]], ref = as.character(modxvals2[i]))
-      dt[[modx]] <- stats::C(dt[[modx]], "contr.treatment")
-    }
-
-    if (!is.null(mod2)) {
-
-      # The moderator value-adjusted variable
-      if (is.numeric(dt[[mod2]])) {
-        dt[[mod2]] <- dt[[mod2]] - mod2vals2[j]
+    
+    # Looping over moderator values
+    for (i in seq_along(modxvals2)) {
+      dt <- d
+      
+      # Adjust moderator variable
+      if (is.numeric(dt[[modx]])) {
+        dt[[modx]] <- dt[[modx]] - modxvals2[i]
       } else {
-        dt[[mod2]] <- factor(dt[[mod2]], ordered = FALSE)
-        dt[[mod2]] <- relevel(dt[[mod2]], ref = as.character(mod2vals2[j]))
-        dt[[mod2]] <- stats::C(dt[[mod2]], "contr.treatment")
+        dt[[modx]] <- factor(dt[[modx]], ordered = FALSE)
+        dt[[modx]] <- relevel(dt[[modx]], ref = as.character(modxvals2[i]))
+        dt[[modx]] <- stats::C(dt[[modx]], "contr.treatment")
       }
-
-
-    }
-
-    # Creating the model
-    if (is_survey == TRUE) {
-      # Update design
-      designt$variables <- dt
-
+      
+      # Handle second moderator
+      if (!is.null(mod2)) {
+        if (is.numeric(dt[[mod2]])) {
+          dt[[mod2]] <- dt[[mod2]] - mod2vals2[j]
+        } else {
+          dt[[mod2]] <- factor(dt[[mod2]], ordered = FALSE)
+          dt[[mod2]] <- relevel(dt[[mod2]], ref = as.character(mod2vals2[j]))
+          dt[[mod2]] <- stats::C(dt[[mod2]], "contr.treatment")
+        }
+      }
+      
       # Update model
-      ## Have to do all this to avoid adding survey to dependencies
-      call <- getCall(model)
-      call$design <- designt
-      call[[1]] <- survey::svyglm
-      newmod <- eval(call)
-    } else {
-      newmod <- j_update(model, data = dt)
-    }
-
-    # Getting SEs, robust or otherwise
-    if (robust != FALSE) {
-      if (!is.null(v.cov)) {
-        vcovargs <- v.cov.args
-        vcovargs[[which(sapply(vcovargs, function(x) length(x[[1]]) == 1 &&
-                                 x[[1]] == "model"))]] <-
-          newmod
-        covmat <- do.call(v.cov, vcovargs)
+      if (is_survey == TRUE) {
+        designt$variables <- dt
+        call <- getCall(model)
+        call$design <- designt
+        call[[1]] <- survey::svyglm
+        newmod <- eval(call)
       } else {
-        covmat <- NULL
+        newmod <- j_update(model, data = dt)
       }
+      
+      # Getting SEs, robust or otherwise
+      if (!is.null(vcov)) {
+        covmat <- vcov  # Ensure external vcov is always used
+      } else if (robust != FALSE) {
+        if (!is.null(v.cov)) {
+          vcovargs <- v.cov.args
+          vcovargs[[which(sapply(vcovargs, function(x) length(x[[1]]) == 1 &&
+                                   x[[1]] == "model"))]] <- newmod
+          covmat <- do.call(v.cov, vcovargs)
+        } else {
+          covmat <- get_robust_se(newmod, robust, cluster, dt)$vcov
+        }
+      } else {
+        if (is.null(v.cov)) {
+          covmat <- vcov(newmod)
+        } else {
+          vcovargs <- v.cov.args
+          vcovargs[[which(sapply(vcovargs, function(x) length(x[[1]]) == 1 &&
+                                   x[[1]] == "model"))]] <- newmod
+          covmat <- do.call(v.cov, vcovargs)
+        }
+      }
+      
+      # Ensure covmat is a matrix (fixing potential closure error)
+      if (is.function(covmat)) {
+        covmat <- covmat(newmod)
+      }
+      
       # Use summ to get the coefficients
       if (has_summ) {
-        sum <- summ(newmod, robust = robust, model.fit = FALSE,
-                    confint = TRUE, ci.width = ci.width, vifs = FALSE,
-                    cluster = cluster, which.cols = which.cols, pvals = pvals,
-                    vcov = covmat, ...)
-      } else {
-        sum <- generics::tidy(newmod, conf.int = TRUE, conf.level = ci.width)
+        if (!is.null(vcov)) {
+          # When vcov is provided, do NOT pass vcov argument inside summ()
+          sum <- summ(newmod, robust = robust, model.fit = FALSE,
+                      confint = TRUE, ci.width = ci.width, vifs = FALSE,
+                      cluster = cluster, which.cols = which.cols, pvals = pvals,
+                      ...)  # No vcov here!
+        } else {
+          # When vcov is NOT provided, use computed covariance matrix
+          sum <- summ(newmod, robust = robust, model.fit = FALSE,
+                      confint = TRUE, ci.width = ci.width, vifs = FALSE,
+                      cluster = cluster, which.cols = which.cols, pvals = pvals,
+                      vcov = covmat, ...)
+        }
       }
-    } else {
-      if (is.null(v.cov)) {
-        # For J-N
-        covmat <- vcov(newmod)
-      } else {
-        vcovargs <- v.cov.args
-        vcovargs[[which(sapply(vcovargs, function(x) length(x[[1]]) == 1 &&
-                                 x[[1]] == "model"))]] <-
-          newmod
-        covmat <- do.call(v.cov, vcovargs)
-      }
+      
+      # Extract coefficients
       if (has_summ) {
-        sum <- summ(newmod, model.fit = FALSE, confint = TRUE,
-                  ci.width = ci.width, vifs = FALSE,
-                  which.cols = which.cols, pvals = pvals, vcov = covmat, ...)
+        summat <- sum$coeftable
+        if (pvals == FALSE) { summat <- summat[, colnames(summat) %nin% "p"] }
+        slopep <- summat[pred_names, , drop = FALSE]
+        intp <- summat["(Intercept)", ]
       } else {
-        sum <- generics::tidy(newmod, conf.int = TRUE, conf.level = ci.width)
+        summat <- sum
+        if (pvals == FALSE) { summat <- summat %not% "p.value" }
+        slopep <- summat[summat$term %in% pred_names, , drop = FALSE]
+        intp <- summat[summat$term == "(Intercept)", ]
       }
-    }
-    if (has_summ) {
-      summat <- sum$coeftable
-      if (pvals == FALSE) {summat <- summat[,colnames(summat) %nin% "p"]}
-      slopep <- summat[pred_names, , drop = FALSE]
-      intp <- summat["(Intercept)", ]
-    } else {
-      summat <- sum
-      if (pvals == FALSE) {summat <- summat %not% "p.value"}
-      slopep <- summat[summat$term %in% pred_names, , drop = FALSE]
-      intp <- summat[summat$term == "(Intercept)", ]
-    }
+    
+    
 
     # Have to account for variable amount of rows needed due to factor 
     # predictors
