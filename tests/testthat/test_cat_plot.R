@@ -20,6 +20,16 @@ test_that("cat_plot handles simple plot (bar)", {
   expect_doppelganger("plmbar", plmbar)
 })
 
+test_that("cat_plot warns when numeric predictor looks continuous", {
+  d <- mtcars
+  d$cyl_f <- factor(d$cyl)
+  fit_num <- lm(mpg ~ hp * cyl_f, data = d)
+  expect_warning(
+    cat_plot(fit_num, pred = hp, modx = cyl_f),
+    "cat_plot\\(\\) is intended for categorical predictors"
+  )
+})
+
 test_that("interact_plot handles simple cat plot (bar)", {
   plmbar <- interact_plot(fit, pred = color, modx = cut)
   expect_doppelganger("plmbar interact_plot", plmbar)

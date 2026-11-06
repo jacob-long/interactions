@@ -84,12 +84,12 @@ probe_interaction <- function(model, pred, modx, mod2 = NULL, ...) {
   # Capture the arguments
   dots <- list(...)
 
-  # Capture explicit args
-  args <- match.call()
-
-  # Add the actual arguments
-  dots <- c(dots, model = args$model, modx = args$modx, pred = args$pred, 
-            mod2 = args$mod2)
+  # Resolve caller-local models and tidy-evaluated variable names before dispatch.
+  pred <- as_name(enquo(pred))
+  modx <- as_name(enquo(modx))
+  mod2 <- enquo(mod2)
+  mod2 <- if (quo_is_null(mod2)) NULL else as_name(mod2)
+  dots <- c(dots, list(model = model, modx = modx, pred = pred, mod2 = mod2))
 
   # Create list of arguments accepted by sim_slopes
   ssargs <- dots[names(dots) %in% ssnames]
@@ -380,7 +380,7 @@ center_ss <- function(d, weights, facvars = NULL, fvars, pred, resp, modx,
 center_ss_non_survey <- function(d, weights, facvars = NULL, fvars, pred,
                                  resp, modx, mod2, wname, offname, centered, at) {
 
-  omitvars <- c(pred, resp, modx, mod2, wname, offname)
+  omitvars <- c(pred, resp, modx, mod2, wname, offname, names(at))
 
   # Dealing with two-level factors that aren't part of an interaction
   # /focal pred
@@ -553,8 +553,21 @@ get_interactions <- function(formula) {
   }
 }
 
-check_interactions <- function(formula, vars) {
+check_interactions <- function(formula, vars, model = NULL) {
   vars <- vars[!is.null(vars)]
+
+  # Shoehorn some panelr compatibility
+  if (!is.null(model) && inherits(model, "wbm")) {
+    ints <- tryCatch(gsub("`", "", model@call_info$interactions),
+                     error = function(e) NULL)
+    if (!is.null(ints)) {
+      int_vars <- strsplit(ints, ":", fixed = TRUE)
+      if (any(vapply(int_vars, function(x) all(vars %in% x), logical(1)))) return(TRUE)
+      # Expanded factor contrasts may not contain the original variable names.
+      # In that case check the original formula below.
+    }
+  }
+
   if (any_interaction(formula)) {
     checks <- sapply(get_interactions(formula), function(x, vars) {
       if (all(vars %in% x)) TRUE else FALSE
@@ -565,7 +578,120 @@ check_interactions <- function(formula, vars) {
   }
 }
 
+normalize_point_shape <- function(point.shape_arg, d, env) {
+  check_value <- function(value) {
+    if (is.null(value)) {
+      return(FALSE)
+    }
+    if (is.logical(value) && length(value) == 1 && !is.na(value)) {
+      return(value)
+    }
+    if (is.character(value) && length(value) == 1 && !is.na(value)) {
+      if (value %nin% names(d)) {
+        stop_wrap("point.shape variable '", value, "' was not found in the data.")
+      }
+      return(value)
+    }
+    stop_wrap("point.shape must be TRUE, FALSE, or the name of a variable in
+              the data.")
+  }
+
+  if (is.logical(point.shape_arg) || is.character(point.shape_arg) ||
+      is.null(point.shape_arg)) {
+    return(check_value(point.shape_arg))
+  }
+
+  if (is.name(point.shape_arg)) {
+    var <- as.character(point.shape_arg)
+    if (var %in% names(d)) {
+      return(var)
+    }
+  }
+
+  value <- tryCatch(eval(point.shape_arg, envir = env),
+                    error = function(e) e)
+  if (inherits(value, "error")) {
+    stop_wrap("point.shape must be TRUE, FALSE, or the name of a variable in
+              the data.")
+  }
+  check_value(value)
+}
+
+restore_point_shape_data <- function(d, point.shape, point_shape_data) {
+  if (!is.character(point.shape) || is.null(point_shape_data)) {
+    return(d)
+  }
+
+  if (!all(rownames(d) %in% rownames(point_shape_data))) {
+    return(d)
+  }
+
+  d[[point.shape]] <- point_shape_data[rownames(d), point.shape, drop = TRUE]
+  d
+}
+
+adjust_lm_interval_width <- function(pm, model, resp, interval, int.width,
+                                     robust, vcov) {
+  if (!isTRUE(interval) || inherits(model, "glm") || !inherits(model, "lm") ||
+      !identical(robust, FALSE) || !is.null(vcov) ||
+      isTRUE(all.equal(int.width, .95)) ||
+      !all(c("ymin", "ymax", resp) %in% names(pm))) {
+    return(pm)
+  }
+
+  df <- df.residual(model)
+  if (!is.numeric(df) || !is.finite(df)) {
+    return(pm)
+  }
+
+  target_width <- 1 - ((1 - int.width) / 2)
+  scale_factor <- qt(target_width, df) / qt(.975, df)
+
+  pm[["ymax"]] <- pm[[resp]] + ((pm[["ymax"]] - pm[[resp]]) * scale_factor)
+  pm[["ymin"]] <- pm[[resp]] - ((pm[[resp]] - pm[["ymin"]]) * scale_factor)
+  pm
+}
+
 #### predict helpers ########################################################
+
+prepare_panel_plot <- function(model, d, pred, modx, mod2, plot.scale,
+                                modx.values, mod2.values, at) {
+  if (!inherits(model, c("wbm", "wbgee"))) return(NULL)
+  if (!requireNamespace("panelr", quietly = TRUE) ||
+      !"prepare_wb_plot" %in% getNamespaceExports("panelr")) {
+    stop_wrap("Update panelr to version 1.1.0 or later to use component-aware interaction plots.")
+  }
+  panelr::prepare_wb_plot(model, d, pred, modx, mod2, plot.scale,
+                          modx.values, mod2.values, at)
+}
+
+finish_panel_plot <- function(p, prepared) {
+  if (is.null(prepared)) return(p)
+  p <- p + ggplot2::labs(caption = prepared$caption)
+  metadata <- attr(prepared$model, "panelr_plot", exact = TRUE)
+  metadata$warned <- NULL
+  attr(p, "panelr") <- metadata
+  p
+}
+
+panel_value_labels <- function(model, var, values, labels, supplied_values,
+                                facet = FALSE) {
+  context <- attr(model, "panelr_plot", exact = TRUE)
+  if (!is.null(context) && context$scale == "within" &&
+      var %in% names(context$means) && is.null(labels) &&
+      is.null(names(supplied_values))) {
+    digits <- 3L
+    numbers <- format(signif(unname(values), digits), trim = TRUE)
+    while (anyDuplicated(numbers) && digits < 16L) {
+      digits <- digits + 1L
+      numbers <- format(signif(unname(values), digits), trim = TRUE)
+    }
+    names(values) <- if (facet) {
+      paste(var, "(within-person deviation) =", numbers)
+    } else numbers
+  }
+  values
+}
 
 values_checks <- function(pred.values = NULL, modx.values, mod2.values) {
 
@@ -588,7 +714,8 @@ values_checks <- function(pred.values = NULL, modx.values, mod2.values) {
 prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
                       modx.values, mod2.values, survey, pred.labels = NULL,
                       modx.labels, mod2.labels, wname, weights,
-                      linearity.check, interval, set.offset, facvars, centered,
+                      linearity.check, interval, int.type, int.width, robust,
+                      cluster, vcov, set.offset, facvars, centered,
                       preds.per.level, force.cat = FALSE, facet.modx = FALSE,
                       partial.residuals = FALSE, outcome.scale, at, ...) {
   # offset?
@@ -649,7 +776,7 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
   }
 
   # Warn user if interaction term is absent
-  if (!check_interactions(formula, c(pred, modx, mod2))) {
+  if (!check_interactions(formula, c(pred, modx, mod2), model = model)) {
     warn_wrap(paste(c(pred, modx, mod2), collapse = " and "),
               " are not included in an interaction with one another in the
               model.")
@@ -675,6 +802,8 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
                           design = design,
                           modx.labels = modx.labels, any.mod2 = !is.null(mod2),
                           facet.modx = facet.modx, force.cat = force.cat)
+    modxvals2 <- panel_value_labels(model, modx, modxvals2, modx.labels,
+                                    modx.values, facet = facet.modx)
     modx.labels <- names(modxvals2)
 
   } else {
@@ -690,6 +819,8 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
                           design = design,
                           modx.labels = mod2.labels, any.mod2 = !is.null(mod2),
                           is.mod2 = TRUE, force.cat = force.cat)
+    mod2vals2 <- panel_value_labels(model, mod2, mod2vals2, mod2.labels,
+                                    mod2.values, facet = TRUE)
     mod2.labels <- names(mod2vals2)
 
   } else {
@@ -764,8 +895,12 @@ prep_data <- function(model, d, pred, modx, mod2, pred.values = NULL,
     suppressMessages({pms[[i]] <- jtools::make_predictions(
         model = model, data = d, pred = pred, pred.values = pred.predicted,
         at = at_list, set.offset = set.offset, center = centered,
-        interval = interval, outcome.scale = outcome.scale, ...
+        interval = interval, int.type = int.type, int.width = int.width,
+        robust = robust, cluster = cluster, vcov = vcov,
+        outcome.scale = outcome.scale, ...
     )})
+    pms[[i]] <- adjust_lm_interval_width(pms[[i]], model, resp, interval,
+                                         int.width, robust, vcov)
     # only looking for completeness in these variables
     check_vars <- all.vars(get_formula(model, ...)) %just% names(pms[[i]])
     pms[[i]] <-
@@ -862,7 +997,7 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
     # splitting the data into groups that roughly correspond to the modxvals
     cut_points <- c() # empty vector
     # Iterate to allow this to work regardless of number of modxvals
-    for (i in 1:(length(modxvals2) - 1)) {
+    for (i in seq_len(length(modxvals2) - 1L)) {
 
       cut_points <- c(cut_points, mean(mod_val_qs[i:(i + 1)]))
 
@@ -870,6 +1005,11 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
 
     # Add Inf to both ends to encompass all values outside the cut points
     cut_points <- c(-Inf, quantile(d[[modx]], cut_points, na.rm = TRUE), Inf)
+    if (anyDuplicated(cut_points)) {
+      # Tied quantiles, including extrapolated values, cannot define cut bins.
+      values <- sort(unname(modxvals2))
+      cut_points <- c(-Inf, utils::head(values, -1) / 2 + utils::tail(values, -1) / 2, Inf)
+    }
 
     # Create variable storing this info as a factor
     d["modx_group"] <- cut(d[[modx]], cut_points,
@@ -897,7 +1037,7 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
 
 
       cut_points2 <- c()
-      for (i in 1:(length(mod2vals2) - 1)) {
+      for (i in seq_len(length(mod2vals2) - 1L)) {
 
         cut_points2 <- c(cut_points2, mean(mod_val_qs[i:(i + 1)]))
 
@@ -905,6 +1045,10 @@ split_int_data <- function(d, modx, mod2, linearity.check, modx.values,
 
       cut_points2 <- c(-Inf, quantile(d[[mod2]], cut_points2, na.rm = TRUE),
                        Inf)
+      if (anyDuplicated(cut_points2)) {
+        values <- sort(unname(mod2vals2))
+        cut_points2 <- c(-Inf, utils::head(values, -1) / 2 + utils::tail(values, -1) / 2, Inf)
+      }
 
       d["mod2_group"] <- cut(d[[mod2]], cut_points2,
                           labels = names(sort(mod2vals2)))

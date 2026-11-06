@@ -43,13 +43,14 @@ interact_plot(
   partial.residuals = FALSE,
   point.alpha = 0.6,
   color.class = NULL,
+  plot.scale = c("within", "original"),
   ...
 )
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
 \code{glm}, \code{\link[survey]{svyglm}}, \code{\link[lme4]{merMod}},
-\code{\link[quantreg]{rq}}, \code{\link[brms]{brmsfit}},
+\code{rq} (from \code{quantreg}), \code{\link[brms]{brmsfit}},
 \code{stanreg} models.
 Models from other classes may work as well but are not officially
 supported. The model should include the interaction of interest.}
@@ -212,8 +213,10 @@ line in addition to colors? Defaults to \code{TRUE}.}
 
 \item{point.shape}{For plotted points---either of observed data or predicted
 values with the "point" or "line" geoms---should the shape of the points
-vary by the values of the factor? This is especially useful if you aim to
-be black and white printing- or colorblind-friendly.}
+vary by the values of the moderator? This is especially useful if you aim
+to be black and white printing- or colorblind-friendly. You may also
+provide the name of a discrete variable in the data to shape observed data
+points by a variable that is not part of the interaction.}
 
 \item{jitter}{How much should \code{plot.points} observed values be "jittered"
 via \code{\link[ggplot2:position_jitter]{ggplot2::position_jitter()}}? When there are many points near each
@@ -246,6 +249,18 @@ observed data be? Default is 0.6, and it can range from 0 (transparent) to
 
 \item{color.class}{Deprecated. Now known as \code{colors}.}
 
+\item{plot.scale}{For panelr within-between models, \code{"within"} (default)
+displays numeric within-person predictors as deviations from each person's
+observed mean, in original units. Default ranges and moderator values use
+within-person variation. Constant moderators retain their original scale.
+Use \code{"original"} for raw predictor levels conditional on reference person
+means. Numeric moderator values and \code{at} use the selected display scale;
+\code{imean(...)} overrides always use original units. Axes, legends, and
+captions identify the interpretation. Values outside observed within-person
+ranges produce warnings; these checks do not establish joint support.
+Requires a panelr version exporting \code{prepare_wb_plot()}. Ignored for other
+model classes. See panelr's prediction documentation for limitations.}
+
 \item{...}{extra arguments passed to \code{make_predictions}}
 }
 \value{
@@ -262,7 +277,7 @@ This function provides a means for plotting conditional effects
 for the purpose of exploring interactions in regression models.
 
 The function is designed for two and three-way interactions. For
-additional terms, the \pkg{effects} package may be better suited to the
+additional terms, the \code{effects} package may be better suited to the
 task.
 
 This function supports nonlinear and generalized linear models and by
@@ -293,7 +308,7 @@ multi-pane
 plots. When you do, the data are split into three approximately
 equal-sized groups with the lowest third, middle third, and highest third
 of the data split accordingly. You can replicate this procedure using
-\code{\link[Hmisc:cut2]{Hmisc::cut2()}} with \code{g = 3} from the \code{Hmisc} package. Sometimes, the
+\code{cut2()} with \code{g = 3} from the \code{Hmisc} package. Sometimes, the
 groups will not be equal in size because the number of observations is
 not divisible by 3 and/or there are multiple observations with the same
 value at one of the cut points.

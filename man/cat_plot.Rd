@@ -46,13 +46,14 @@ cat_plot(
   point.alpha = 0.6,
   color.class = NULL,
   at = NULL,
+  plot.scale = c("within", "original"),
   ...
 )
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
 \code{glm}, \code{\link[survey]{svyglm}}, \code{\link[lme4]{merMod}},
-\code{\link[quantreg]{rq}}, \code{\link[brms]{brmsfit}},
+\code{rq} (from \code{quantreg}), \code{\link[brms]{brmsfit}},
 \code{stanreg} models.
 Models from other classes may work as well but are not officially
 supported. The model should include the interaction of interest.}
@@ -122,7 +123,9 @@ facetted by? That is, there will be a separate plot for each level of this
 moderator. Defaults are the same as \code{modx.values}.}
 
 \item{interval}{Logical. If \code{TRUE}, plots confidence/prediction
-intervals.}
+intervals. These are confidence intervals by default; set
+\code{int.type = "prediction"} for prediction intervals and use \code{int.width} to
+choose the interval width.}
 
 \item{plot.points}{Logical. If \code{TRUE}, plots the actual data points as a
 scatterplot on top of the interaction lines. Note that if
@@ -131,8 +134,10 @@ see the points.}
 
 \item{point.shape}{For plotted points---either of observed data or predicted
 values with the "point" or "line" geoms---should the shape of the points
-vary by the values of the factor? This is especially useful if you aim to
-be black and white printing- or colorblind-friendly.}
+vary by the values of the moderator? This is especially useful if you aim
+to be black and white printing- or colorblind-friendly. You may also
+provide the name of a discrete variable in the data to shape observed data
+points by a variable that is not part of the interaction.}
 
 \item{vary.lty}{Should the resulting plot have different shapes for each
 line in addition to colors? Defaults to \code{TRUE}.}
@@ -265,6 +270,18 @@ model, do so by providing a named list where the names are the variables
 and the list values are vectors of the values. This can be useful
 especially when you are exploring interactions or other conditional
 predictions.}
+
+\item{plot.scale}{For panelr within-between models, \code{"within"} (default)
+displays numeric within-person predictors as deviations from each person's
+observed mean, in original units. Default ranges and moderator values use
+within-person variation. Constant moderators retain their original scale.
+Use \code{"original"} for raw predictor levels conditional on reference person
+means. Numeric moderator values and \code{at} use the selected display scale;
+\code{imean(...)} overrides always use original units. Axes, legends, and
+captions identify the interpretation. Values outside observed within-person
+ranges produce warnings; these checks do not establish joint support.
+Requires a panelr version exporting \code{prepare_wb_plot()}. Ignored for other
+model classes. See panelr's prediction documentation for limitations.}
 
 \item{...}{extra arguments passed to \code{make_predictions}}
 }

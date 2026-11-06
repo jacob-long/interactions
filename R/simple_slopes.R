@@ -47,6 +47,12 @@
 #' @param v.cov.args A list of arguments for the `v.cov` function. For
 #'  whichever argument should be the fitted model, put `"model"`.
 #'
+#' @param df For panelr models, `NULL` uses a residual-df t approximation for
+#'   Gaussian mixed models and a normal approximation for generalized mixed
+#'   models and GEE. Alternatively use `"residual"`, `"normal"`, or a positive
+#'   number. These are not Satterthwaite or Kenward-Roger tests. For other model
+#'   classes an explicitly supplied value is forwarded to the default method.
+#'
 #' @inheritParams interact_plot
 #'
 #' @details This allows the user to perform a simple slopes analysis for the
@@ -61,6 +67,45 @@
 #'   case, be aware that not all the assumptions applied to simple slopes
 #'   analysis apply.
 #'
+#' @section Ordinary lm and glm refits:
+#' Refits retain the original estimation sample, fitted weights, and total
+#' offset. Subset expressions are not reapplied, and weight/offset expressions
+#' are not reevaluated after centering moderators. Conditional intercepts are
+#' regression intercepts with the known offset contribution excluded.
+#' When original variables must be recovered from `data`, provide unchanged
+#' fitting data with its original row names. The recovered model frame is
+#' checked against the fitted model before refitting.
+#'
+#' @section Panelr models:
+#' With a panelr version providing `wb_slope_design()`, `wbm` and `wbgee` models
+#' use exact design-matrix contrasts rather than shifted-data refits. If `L` is
+#' the difference between design rows one focal-predictor unit apart, the slope
+#' is `L %*% beta` and its variance is `L %*% vcov(model) %*% t(L)`. All covariance
+#' terms are retained. Other model classes retain the existing refit method.
+#'
+#' Numeric focal predictors, numeric/factor moderators, and two- and three-way
+#' interactions are supported. `plot.scale = "within"` uses the same deviations,
+#' moderator defaults, and fixed reference quantities as `interact_plot()`.
+#' Constant moderators retain original units/categories. `"original"` uses raw
+#' levels. Slopes use original predictor units even for standardized fits, and
+#' the outcome's fitted scale. Intercepts refer to a focal predictor of zero
+#' on the selected display scale. Offset variables absent from the formula must
+#' be supplied explicitly in `at`, in the same way as for prediction grids.
+#'
+#' Slopes are fixed-effect slopes conditional on reference person means and
+#' interaction-centering quantities, not derivatives of recomputed panel
+#' histories or averages over random effects. For non-identity links they are
+#' link-scale slopes, not response-scale marginal effects. The fitted GEE
+#' sandwich covariance is retained. Custom covariance estimators, FDR-adjusted
+#' Johnson-Neyman inference, nonlinear focal terms, predictor-dependent offsets,
+#' factor focal predictors, rank-deficient fits, and the plotting exclusions
+#' for lagged/detrended/basis models are not supported and produce errors.
+#'
+#' Johnson-Neyman regions use the same contrasts, covariance matrix, and
+#' degrees of freedom as the slope tests. Their intervals are pointwise, not
+#' simultaneous confidence bands. `probe_interaction()` shares the display
+#' scale and moderator settings between the slope and plotting methods.
+#'
 #' @return
 #'
 #'  A list object with the following components:
@@ -71,7 +116,10 @@
 #'    moderator}
 #'  \item{modx.values}{The values of the moderator used in the analysis}
 #'  \item{mods}{A list containing each regression model created to estimate
-#'     the conditional coefficients.}
+#'     the conditional coefficients. Empty for contrast-based panelr methods.}
+#'  \item{model}{For panelr methods, the original fitted model; it is not modified.}
+#'  \item{contrasts}{For panelr methods, the slope contrast matrices used in the
+#'     calculation, one per second-moderator value.}
 #'  \item{jn}{If \code{johnson_neyman = TRUE}, a list of `johnson_neyman`
 #'  objects from \code{\link{johnson_neyman}}. These contain the values of the
 #'  interval and the plots. If a 2-way interaction, the list will be of length
@@ -134,6 +182,19 @@
 
 sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
                        mod2.values = NULL, centered = "all", at = NULL,
+                       data = NULL, cond.int = FALSE, johnson_neyman = TRUE,
+                       jnplot = FALSE, jnalpha = .05, robust = FALSE,
+                       digits = getOption("jtools-digits", default = 2),
+                       pvals = TRUE, confint = FALSE, ci.width = .95,
+                       cluster = NULL, modx.labels = NULL, mod2.labels = NULL,
+                       v.cov = NULL, v.cov.args = NULL,
+                       plot.scale = c("within", "original"), df = NULL, ...) {
+  UseMethod("sim_slopes")
+}
+
+#' @export
+sim_slopes.default <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
+                       mod2.values = NULL, centered = "all", at = NULL,
                        data = NULL, cond.int = FALSE, johnson_neyman = TRUE, 
                        jnplot = FALSE, jnalpha = .05, robust = FALSE,
                        digits = getOption("jtools-digits", default = 2),
@@ -161,7 +222,8 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
   mod2 <- if (quo_is_null(mod2)) {NULL} else {as_name(mod2)}
 
   # Warn user if interaction term is absent
-  if (!check_interactions(as.formula(formula(model)), c(pred, modx, mod2))) {
+  if (!check_interactions(as.formula(formula(model)), c(pred, modx, mod2),
+                          model = model)) {
     warn_wrap("Automated checks indicate that ", 
               paste(c(pred, modx, mod2), collapse = " and "),
               " may not be included in an interaction with one another in the 
@@ -196,7 +258,14 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
   ss <- structure(ss, digits = digits)
 
-  d <- get_data(model)
+  native_lm <- identical(class(model), "lm") ||
+    identical(class(model), c("glm", "lm"))
+  refit_model <- model
+  if (native_lm) {
+    refit_info <- prepare_lm_slopes_refit(model, data)
+    d <- refit_info$data
+    refit_model <- refit_info$model
+  } else d <- get_data(model)
   # see if jtools::summ() knows about this model
   has_summ <- check_method(summ, model)
   if (is_survey <- inherits(model, "svyglm")) {
@@ -247,7 +316,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
     
     # use tidy on the model to get the term names
-    tidied <- try(generics::tidy(model), silent = TRUE)
+    tidied <- try(broom::tidy(model), silent = TRUE)
     # if there was no method, see if it's because it's a mixed model
     if (inherits(tidied, "try-error")) {
       if (rlang::is_installed("broom.mixed")) {
@@ -275,9 +344,16 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     }
     }
 
-  wname <- get_weights(model, d)$weights_name
-  wts <- get_weights(model, d)$weights
-  offname <- get_offset_name(model)
+  if (native_lm) {
+    wname <- refit_info$wname
+    wts <- refit_info$weights
+    if (is.null(wts)) wts <- rep(1, nrow(d))
+    offname <- refit_info$offname
+  } else {
+    wname <- get_weights(model, d)$weights_name
+    wts <- get_weights(model, d)$weights
+    offname <- get_offset_name(model)
+  }
   # Need the raw variable name from the LHS
   resp <- all.vars(as.formula(paste("~", (get_response_name(model)))))
 
@@ -391,7 +467,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
     which.cols <- NULL
   }
   if (has_summ) {
-    the_col_names <- colnames(summ(model, confint = TRUE, ci.width = ci.width,
+    the_col_names <- colnames(summ(model, model.fit = FALSE, confint = TRUE, ci.width = ci.width,
                                 vifs = FALSE, which.cols = which.cols,
                                 pvals = pvals, ...)$coeftable)
   } else {
@@ -476,7 +552,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       newmod <- eval(call)
     } else {
       # Creating the model
-      newmod <- j_update(model, data = dt)
+      newmod <- j_update(refit_model, data = dt)
     }
 
     # Getting SEs, robust or otherwise
@@ -555,7 +631,7 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
       call[[1]] <- survey::svyglm
       newmod <- eval(call)
     } else {
-      newmod <- j_update(model, data = dt)
+      newmod <- j_update(refit_model, data = dt)
     }
 
     # Getting SEs, robust or otherwise
@@ -793,6 +869,8 @@ sim_slopes <- function(model, pred, modx, mod2 = NULL, modx.values = NULL,
 
 print.sim_slopes <- function(x, ...) {
 
+  if (!is.null(attr(x, "panelr"))) cat_wrap(attr(x, "panelr")$note, brk = "\n\n")
+
   # This is to make refactoring easier after switch to attributes
   ss <- x
   x <- attributes(x)
@@ -887,6 +965,7 @@ print.sim_slopes <- function(x, ...) {
       rows <- split(1:nrow(m$slopes),
                     ceiling(seq_along(1:nrow(m$slopes))/length(pred_names)))
       slopes <- m$slopes[rows[[i]], 2:ncol(m$slopes)]
+      if (identical(x$pvals, FALSE)) slopes <- slopes[names(slopes) != "p"]
 
       # Handle automatic labels
       if (x$def == TRUE) {
@@ -902,6 +981,7 @@ print.sim_slopes <- function(x, ...) {
         cli::cat_line(cli::style_italic(paste0("When ", x$modx, " = ", modx_label, ": \n")))
         if (x$cond.int) {
           ints <- m$ints[i,2:ncol(m$slopes)]
+          if (identical(x$pvals, FALSE)) ints <- ints[names(ints) != "p"]
           slopes <- as.data.frame(rbind(slopes, ints))
           rownames(slopes) <- c(paste0("Slope of ", pred_lab), 
                                 "Conditional intercept")
@@ -985,7 +1065,9 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
     base$conf.high <- all_slopes[,make_ci_labs(conf.level)[[2]]]
   } else { # If not, calculate them
     alpha <- (1 - conf.level) / 2
-    crit_t <- if (inherits(x$mods[[1]], "lm")) {
+    crit_t <- if (!is.null(attr(x, "inference.df"))) {
+      abs(qt(alpha, df = attr(x, "inference.df")))
+    } else if (inherits(x$mods[[1]], "lm")) {
       abs(qt(alpha, df = df.residual(x$mods[[1]])))
     } else {
       abs(qnorm(alpha))
@@ -995,7 +1077,8 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
   }
 
   # Create unique term labels for each value of the moderator
-  base$term <- paste(base$modx, "=",
+  label <- if (is.null(atts$panelr)) base$modx else atts$panelr$modx.label
+  base$term <- paste(label, "=",
                      if (is.character(base$modx.value)) {
                        base$modx.value
                      } else {
@@ -1014,7 +1097,8 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
       rep(y, nrow(x$slopes[[1]]))
     }))
 
-    base$mod2.term <- paste(base$mod2, "=",
+    label2 <- if (is.null(atts$panelr)) base$mod2 else atts$panelr$mod2.label
+    base$mod2.term <- paste(label2, "=",
                        if (is.character(base$mod2.value)) {
                          base$mod2.value
                        } else {
@@ -1025,6 +1109,10 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
 
   base <- tibble::as_tibble(base)
   attr(base, "pred") <- atts$pred
+  if (!is.null(atts$panelr)) {
+    attr(base, "panelr") <- atts$panelr
+    attr(base, "inference.df") <- atts$inference.df
+  }
 
   return(base)
 
@@ -1034,6 +1122,7 @@ tidy.sim_slopes <- function(x, conf.level = .95, ...) {
 #' @export
 
 glance.sim_slopes <- function(x, ...) {
+  if (!is.null(x$model)) return(data.frame(N = length(residuals(x$model))))
   data.frame(N = length(residuals(x$mods[[1]])))
 }
 
@@ -1041,6 +1130,7 @@ glance.sim_slopes <- function(x, ...) {
 #' @export
 
 nobs.sim_slopes <- function(object, ...) {
+  if (!is.null(object$model)) return(length(residuals(object$model)))
   length(residuals(object$mods[[1]]))
 }
 
@@ -1274,6 +1364,11 @@ make_table <- function(df, format = "{estimate} ({std.error})",
 plot.sim_slopes <- function(x, ...) {
   # Get the plot and add better x-axis label
   p <- plot_coefs(x, ...) + ggplot2::xlab(paste("Slope of", attr(x, "pred")))
+  if (!is.null(attr(x, "panelr"))) {
+    metadata <- attr(x, "panelr")
+    p <- p + ggplot2::labs(x = paste("Slope of", attr(x, "panelr")$pred.label),
+                           caption = if (is.null(metadata$caption)) metadata$note else metadata$caption)
+  }
 
   # If there's a second moderator, format as appropriate
   if (!is.null(attr(x, "mod2"))) {

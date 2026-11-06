@@ -38,7 +38,9 @@
 #'   \code{NULL}, the default, the factor labels are used.
 #'
 #' @param interval Logical. If \code{TRUE}, plots confidence/prediction
-#'   intervals.
+#'   intervals. These are confidence intervals by default; set
+#'   `int.type = "prediction"` for prediction intervals and use `int.width` to
+#'   choose the interval width.
 #'
 #' @param plot.points Logical. If \code{TRUE}, plots the actual data points as a
 #'   scatterplot on top of the interaction lines. Note that if
@@ -47,8 +49,10 @@
 #'
 #' @param point.shape For plotted points---either of observed data or predicted
 #'   values with the "point" or "line" geoms---should the shape of the points
-#'   vary by the values of the factor? This is especially useful if you aim to
-#'   be black and white printing- or colorblind-friendly.
+#'   vary by the values of the moderator? This is especially useful if you aim
+#'   to be black and white printing- or colorblind-friendly. You may also
+#'   provide the name of a discrete variable in the data to shape observed data
+#'   points by a variable that is not part of the interaction.
 #'
 #' @param colors Any palette argument accepted by [jtools::get_colors()]. 
 #'   Default is "CUD Bright" for factor moderators and "blue" for continuous 
@@ -155,6 +159,7 @@
 #' @import ggplot2
 #'
 
+#' @inheritParams interact_plot
 cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   data = NULL, geom = c("point", "line", "bar"), pred.values = NULL,
   modx.values = NULL, mod2.values = NULL, interval = TRUE, plot.points = FALSE,
@@ -168,7 +173,10 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   modx.labels = NULL, mod2.labels = NULL, set.offset = 1, x.label = NULL,
   y.label = NULL, main.title = NULL, legend.main = NULL,
   colors = NULL, partial.residuals = FALSE, point.alpha = 0.6,
-  color.class = NULL, at = NULL, ...) {
+  color.class = NULL, at = NULL, plot.scale = c("within", "original"), ...) {
+
+  point.shape_arg <- substitute(point.shape)
+  point.shape_env <- parent.frame()
 
   # Capture extra arguments
   dots <- list(...)
@@ -216,7 +224,18 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   } else {
     d <- data
   }
-  weights <- get_weights(model, d)$weights_name
+  point.shape <- normalize_point_shape(point.shape_arg, d, point.shape_env)
+  point_shape_data <- if (is.character(point.shape)) {
+    d[point.shape]
+  } else {
+    NULL
+  }
+
+  if (is.numeric(d[[pred]]) && length(unique(stats::na.omit(d[[pred]]))) > 10) {
+    warn_wrap("cat_plot() is intended for categorical predictors. The predictor
+              '", pred, "' is numeric with many unique values; interact_plot()
+              is usually better suited for continuous predictors.")
+  }
 
   # If modx.values is named, use the names as labels
   if (is.null(modx.labels) & !is.null(names(modx.values))) {
@@ -226,6 +245,22 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   if (is.null(mod2.labels) & !is.null(names(mod2.values))) {
     mod2.labels <- names(mod2.values)
   }
+
+  panel_plot <- prepare_panel_plot(model, d, pred, modx, mod2, plot.scale,
+                                   modx.values, mod2.values, at)
+  if (!is.null(panel_plot)) {
+    model <- panel_plot$model
+    d <- panel_plot$data
+    modx.values <- panel_plot$modx.values
+    mod2.values <- panel_plot$mod2.values
+    if (is.null(x.label)) x.label <- panel_plot$x.label
+    if (is.null(y.label)) {
+      y.label <- paste0("Predicted ", get_response_name(model),
+                         if (outcome.scale == "link") " (link scale)" else "")
+    }
+    if (is.null(legend.main)) legend.main <- panel_plot$legend.main
+  }
+  weights <- get_weights(model, d)$weights_name
 
   pred_out <- prep_data(model = model, pred = pred, modx = modx,
                         pred.values = pred.values,
@@ -252,10 +287,12 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
   # Putting these outputs into separate objects
   pm <- pred_out$predicted
   d <- pred_out$original
+  d <- restore_point_shape_data(d, point.shape, point_shape_data)
 
-  plot_cat(predictions = pm, pred = pred, modx = modx, mod2 = mod2,
+  p <- plot_cat(predictions = pm, pred = pred, modx = modx, mod2 = mod2,
            data = d, geom = geom, pred.values = pred.values,
-           modx.values = modx.values, mod2.values = mod2.values,
+           modx.values = if (is.null(panel_plot)) modx.values else modxvals2,
+           mod2.values = if (is.null(panel_plot)) mod2.values else mod2vals2,
            interval = interval,
            plot.points = plot.points | partial.residuals,
            point.shape = point.shape, vary.lty = vary.lty,
@@ -268,6 +305,7 @@ cat_plot <- function(model, pred, modx = NULL, mod2 = NULL,
            point.size = point.size, line.thickness = line.thickness,
            pred.point.size = pred.point.size, jitter = jitter,
            point.alpha = point.alpha)
+  finish_panel_plot(p, panel_plot)
 
 }
 
@@ -289,6 +327,16 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
 
   pm <- predictions
   d <- data
+  point_shape_var <- if (is.character(point.shape)) point.shape else NULL
+  point_shape_by_modx <- isTRUE(point.shape)
+
+  if (!is.null(point_shape_var) && is.numeric(d[[point_shape_var]])) {
+    if (length(unique(stats::na.omit(d[[point_shape_var]]))) <= 6) {
+      d[[point_shape_var]] <- factor(d[[point_shape_var]])
+    } else {
+      stop_wrap("point.shape variables must be discrete.")
+    }
+  }
 
   geom <- geom[1]
   if (geom == "dot") {geom <- "point"}
@@ -389,11 +437,14 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
   # Can't have point shapes if modx is numeric
   if (numeric_modx) {
     point.shape <- FALSE
+    if (is.null(point_shape_var)) {
+      point_shape_by_modx <- FALSE
+    }
   }
 
   # Create arguments for ggplot calls
-  shape <- if (point.shape == TRUE) {modx} else {NULL}
-  fill <- if (point.shape == TRUE) {modx} else {NULL}
+  shape <- if (point_shape_by_modx == TRUE) {modx} else {NULL}
+  fill <- if (point_shape_by_modx == TRUE) {modx} else {NULL}
   lty <- if (vary.lty == TRUE) {if (numeric_modx) sym("modx_group") else modx} else {NULL}
   grp <- if (!is.null(modx)) modx else 1
 
@@ -439,7 +490,9 @@ plot_cat <- function(predictions, pred, modx = NULL, mod2 = NULL,
   # If the moderator is numeric, will create a gradient color scheme.
   if (plot.points == TRUE) {
 
-    if (!numeric_modx & point.shape) {
+    if (!is.null(point_shape_var)) {
+      shape_arg <- sym(point_shape_var)
+    } else if (!numeric_modx & point_shape_by_modx) {
       shape_arg <- modx
     } else {
       shape_arg <- NULL
