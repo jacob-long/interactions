@@ -52,6 +52,60 @@ test_that("interact_plot: robust standard errors work", {
   expect_doppelganger("plmrob", plmrob)
 })
 
+test_that("interact_plot interval width changes ribbons", {
+  fit_int <- lm(mpg ~ cyl * hp, data = mtcars)
+  p95 <- interact_plot(fit_int, pred = cyl, modx = hp, interval = TRUE,
+                       int.width = .95)
+  p40 <- interact_plot(fit_int, pred = cyl, modx = hp, interval = TRUE,
+                       int.width = .4)
+
+  ribbon_width <- function(p) {
+    layers <- ggplot2::ggplot_build(p)$data
+    ribbon <- layers[vapply(layers, function(x) {
+      all(c("ymin", "ymax") %in% names(x))
+    }, logical(1))][[1]]
+    max(ribbon$ymax - ribbon$ymin)
+  }
+
+  expect_lt(ribbon_width(p40), ribbon_width(p95))
+})
+
+test_that("interact_plot intervals do not add NA linetype legend levels", {
+  fit_int <- lm(mpg ~ cyl * hp, data = mtcars)
+  p <- interact_plot(fit_int, pred = cyl, modx = hp, interval = TRUE)
+  built <- ggplot2::ggplot_build(p)
+  linetype_scale <- built$plot$scales$get_scales("linetype")
+  linetypes <- linetype_scale$get_limits()
+
+  expect_false(any(is.na(linetypes)))
+})
+
+test_that("interact_plot point.shape works with continuous moderators", {
+  fit_int <- lm(mpg ~ hp * wt, data = mtcars)
+  p <- interact_plot(fit_int, pred = hp, modx = wt, plot.points = TRUE,
+                     point.shape = TRUE)
+  layers <- ggplot2::ggplot_build(p)$data
+  points <- layers[vapply(layers, function(x) {
+    all(c("shape", "stroke") %in% names(x))
+  }, logical(1))][[1]]
+
+  expect_gt(length(unique(points$shape)), 1)
+})
+
+test_that("interact_plot point.shape accepts another discrete variable", {
+  d <- mtcars
+  d$gear_f <- factor(d$gear)
+  fit_int <- lm(mpg ~ hp * wt + gear_f, data = d)
+  p <- interact_plot(fit_int, pred = hp, modx = wt, plot.points = TRUE,
+                     partial.residuals = TRUE, point.shape = gear_f)
+  layers <- ggplot2::ggplot_build(p)$data
+  points <- layers[vapply(layers, function(x) {
+    all(c("shape", "stroke") %in% names(x))
+  }, logical(1))][[1]]
+
+  expect_equal(length(unique(points$shape)), nlevels(d$gear_f))
+})
+
 test_that("rug plots work", {
   plmrugb <- interact_plot(model = fit, pred = Murder, modx = Illiteracy,
                      mod2 = HSGrad, centered = "all", rug = TRUE)

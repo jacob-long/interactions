@@ -154,6 +154,23 @@
 #' @export
 #'
 
+#' @param plot.scale For panelr models, use `"within"` (default) for
+#'   within-person deviations or `"original"` for original moderator levels.
+#'   Constant moderators retain original units. Ignored for other models.
+#' @section Panelr models:
+#' The `wbm` and `wbgee` methods use the contrast backend of [sim_slopes()],
+#' without refitting. Default degrees of freedom are residual for Gaussian
+#' mixed models and infinite for GEE/generalized mixed models. An explicit `df`
+#' overrides this default. Inference is conditional, fixed-effect, and on the
+#' link scale, with the same reference quantities as interaction plots.
+#'
+#' These methods return an object inheriting from `johnson_neyman`, with a
+#' dedicated print method. `bounds` contains zero, one, or two finite crossing
+#' points. `intervals` describes significance in every region, including
+#' unbounded regions. This distinguishes no crossings from failure and from
+#' a slope that is significant everywhere. The observed moderator range is
+#' reported separately; regions beyond it extrapolate. Custom `vmat` and
+#' `control.fdr = TRUE` are not currently supported for panelr models.
 johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
                            plot = TRUE, control.fdr = FALSE,
                            line.thickness = 0.5, df = "residual",
@@ -161,7 +178,21 @@ johnson_neyman <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
                            critical.t = NULL, sig.color = "#00BFC4",
                            insig.color = "#F8766D", mod.range = NULL,
                            title = "Johnson-Neyman plot", y.label = NULL,
-                           modx.label = NULL) {
+                           modx.label = NULL,
+                           plot.scale = c("within", "original")) {
+  UseMethod("johnson_neyman")
+}
+
+#' @export
+johnson_neyman.default <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
+                           plot = TRUE, control.fdr = FALSE,
+                           line.thickness = 0.5, df = "residual",
+                           digits = getOption("jtools-digits", 2),
+                           critical.t = NULL, sig.color = "#00BFC4",
+                           insig.color = "#F8766D", mod.range = NULL,
+                           title = "Johnson-Neyman plot", y.label = NULL,
+                           modx.label = NULL,
+                           plot.scale = c("within", "original")) {
 
   # Evaluate the modx, mod2, pred args
   pred <- as_name(enquo(pred))

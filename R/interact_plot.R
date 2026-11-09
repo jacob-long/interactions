@@ -328,6 +328,17 @@
 #' @import rlang
 #' @export interact_plot
 
+#' @param plot.scale For panelr within-between models, `"within"` (default)
+#'   displays numeric within-person predictors as deviations from each person's
+#'   observed mean, in original units. Default ranges and moderator values use
+#'   within-person variation. Constant moderators retain their original scale.
+#'   Use `"original"` for raw predictor levels conditional on reference person
+#'   means. Numeric moderator values and `at` use the selected display scale;
+#'   `imean(...)` overrides always use original units. Axes, legends, and
+#'   captions identify the interpretation. Values outside observed within-person
+#'   ranges produce warnings; these checks do not establish joint support.
+#'   Requires a panelr version exporting `prepare_wb_plot()`. Ignored for other
+#'   model classes. See panelr's prediction documentation for limitations.
 interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                           mod2.values = NULL, centered = "all", data = NULL,
                           at = NULL,
@@ -345,7 +356,10 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                           point.size = 1.5, point.shape = FALSE,
                           jitter = 0, rug = FALSE, rug.sides = "b",
                           partial.residuals = FALSE, point.alpha = 0.6,
-                          color.class = NULL,  ...) {
+                          color.class = NULL, plot.scale = c("within", "original"), ...) {
+
+  point.shape_arg <- substitute(point.shape)
+  point.shape_env <- parent.frame()
 
   # Capture extra arguments
   dots <- list(...)
@@ -399,7 +413,12 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   } else {
     d <- data
   }
-  weights <- get_weights(model, d)$weights_name
+  point.shape <- normalize_point_shape(point.shape_arg, d, point.shape_env)
+  point_shape_data <- if (is.character(point.shape)) {
+    d[point.shape]
+  } else {
+    NULL
+  }
 
   # Check for variables in the data
   if (any(c(pred, modx, mod2) %nin% names(d))) {
@@ -419,6 +438,22 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   if (is.null(mod2.labels) & !is.null(names(mod2.values))) {
     mod2.labels <- names(mod2.values)
   }
+
+  panel_plot <- prepare_panel_plot(model, d, pred, modx, mod2, plot.scale,
+                                   modx.values, mod2.values, at)
+  if (!is.null(panel_plot)) {
+    model <- panel_plot$model
+    d <- panel_plot$data
+    modx.values <- panel_plot$modx.values
+    mod2.values <- panel_plot$mod2.values
+    if (is.null(x.label)) x.label <- panel_plot$x.label
+    if (is.null(y.label)) {
+      y.label <- paste0("Predicted ", get_response_name(model),
+                         if (outcome.scale == "link") " (link scale)" else "")
+    }
+    if (is.null(legend.main)) legend.main <- panel_plot$legend.main
+  }
+  weights <- get_weights(model, d)$weights_name
 
   pred_out <- prep_data(model = model, pred = pred, modx = modx,
                         modx.values = modx.values, mod2 = mod2,
@@ -442,6 +477,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
   # Putting these outputs into separate objects
   pm <- pred_out$predicted
   d <- pred_out$original
+  d <- restore_point_shape_data(d, point.shape, point_shape_data)
 
   # Check for factor predictor and send to plot_cat() if so
   if (!is.numeric(d[[pred]])) {
@@ -475,7 +511,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
       }
     }
     # Call internal plotting function
-    return(do.call("plot_cat", args))
+    return(finish_panel_plot(do.call("plot_cat", args), panel_plot))
     # Using plot_cat turns out to be more robust than cat_plot. I'm doing 
     # something dumb and/or badly with environments that makes calling 
     # plot_cat() within a function fail inside of testthat (and inside of
@@ -483,7 +519,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
     # predictor even in the "normal" environment).
   } else {
     # Send to internal plotting function
-    plot_mod_continuous(predictions = pm, pred = pred, modx = modx, resp = resp,
+    p <- plot_mod_continuous(predictions = pm, pred = pred, modx = modx, resp = resp,
                         mod2 = mod2, data = d,
                         plot.points = plot.points | partial.residuals,
                         interval = interval, linearity.check = linearity.check,
@@ -497,6 +533,7 @@ interact_plot <- function(model, pred, modx, modx.values = NULL, mod2 = NULL,
                         weights = weights, rug = rug, rug.sides = rug.sides,
                         point.size = point.size, point.shape = point.shape,
                         facet.modx = facet.modx, point.alpha = point.alpha)
+    finish_panel_plot(p, panel_plot)
   }
 
 }
@@ -518,6 +555,15 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
 
   d <- data
   pm <- predictions
+  modx_name <- modx
+
+  if (is.character(point.shape) && is.numeric(d[[point.shape]])) {
+    if (length(unique(stats::na.omit(d[[point.shape]]))) <= 6) {
+      d[[point.shape]] <- factor(d[[point.shape]])
+    } else {
+      stop_wrap("point.shape variables must be discrete.")
+    }
+  }
 
   # Setting default for colors
   if (is.null(colors) && (facet.modx == TRUE | linearity.check == TRUE)) {
@@ -606,9 +652,9 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
     p <- p + geom_ribbon(data = pm,
                          aes(x = !! pred, ymin = !! sym("ymin"),
                              ymax = !! sym("ymax"), fill = !! modx,
-                             group = !! grp, colour = !! modx, linetype = NA),
+                             group = !! grp),
                          alpha = 1/5, show.legend = FALSE,
-                         inherit.aes = TRUE)
+                         inherit.aes = FALSE)
   }
 
   # If third mod, facet by third mod
@@ -664,8 +710,16 @@ plot_mod_continuous <- function(predictions, pred, modx, resp, mod2 = NULL,
   # and coloring them by factor looks great
   if (plot.points == TRUE) {
 
-    if (!is.numeric(d[[as_string(modx)]]) & point.shape) {
-      shape_arg <- modx
+    if (is.character(point.shape)) {
+      shape_arg <- sym(point.shape)
+      # Only show legend if there's a shape aesthetic
+      show_legend <- TRUE
+    } else if (isTRUE(point.shape)) {
+      shape_arg <- if (!is.numeric(d[[modx_name]])) {
+        modx
+      } else {
+        sym("modx_group")
+      }
       # Only show legend if there's a shape aesthetic
       show_legend <- TRUE
     } else {

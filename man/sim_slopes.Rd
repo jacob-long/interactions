@@ -28,13 +28,15 @@ sim_slopes(
   mod2.labels = NULL,
   v.cov = NULL,
   v.cov.args = NULL,
+  plot.scale = c("within", "original"),
+  df = NULL,
   ...
 )
 }
 \arguments{
 \item{model}{A regression model. The function is tested with \code{lm},
 \code{glm}, \code{\link[survey]{svyglm}}, \code{\link[lme4]{merMod}},
-\code{\link[quantreg]{rq}}, \code{\link[brms]{brmsfit}},
+\code{rq} (from \code{quantreg}), \code{\link[brms]{brmsfit}},
 \code{stanreg} models.
 Models from other classes may work as well but are not officially
 supported. The model should include the interaction of interest.}
@@ -160,6 +162,24 @@ could be \code{\link[sandwich:vcovPC]{sandwich::vcovPC()}}.}
 \item{v.cov.args}{A list of arguments for the \code{v.cov} function. For
 whichever argument should be the fitted model, put \code{"model"}.}
 
+\item{plot.scale}{For panelr within-between models, \code{"within"} (default)
+displays numeric within-person predictors as deviations from each person's
+observed mean, in original units. Default ranges and moderator values use
+within-person variation. Constant moderators retain their original scale.
+Use \code{"original"} for raw predictor levels conditional on reference person
+means. Numeric moderator values and \code{at} use the selected display scale;
+\code{imean(...)} overrides always use original units. Axes, legends, and
+captions identify the interpretation. Values outside observed within-person
+ranges produce warnings; these checks do not establish joint support.
+Requires a panelr version exporting \code{prepare_wb_plot()}. Ignored for other
+model classes. See panelr's prediction documentation for limitations.}
+
+\item{df}{For panelr models, \code{NULL} uses a residual-df t approximation for
+Gaussian mixed models and a normal approximation for generalized mixed
+models and GEE. Alternatively use \code{"residual"}, \code{"normal"}, or a positive
+number. These are not Satterthwaite or Kenward-Roger tests. For other model
+classes an explicitly supplied value is forwarded to the default method.}
+
 \item{...}{Arguments passed to \code{\link{johnson_neyman}} and
 \code{summ}.}
 }
@@ -172,7 +192,10 @@ value of the moderator}
 moderator}
 \item{modx.values}{The values of the moderator used in the analysis}
 \item{mods}{A list containing each regression model created to estimate
-the conditional coefficients.}
+the conditional coefficients. Empty for contrast-based panelr methods.}
+\item{model}{For panelr methods, the original fitted model; it is not modified.}
+\item{contrasts}{For panelr methods, the slope contrast matrices used in the
+calculation, one per second-moderator value.}
 \item{jn}{If \code{johnson_neyman = TRUE}, a list of \code{johnson_neyman}
 objects from \code{\link{johnson_neyman}}. These contain the values of the
 interval and the plots. If a 2-way interaction, the list will be of length
@@ -199,6 +222,49 @@ Others may work as well, but are not tested. In all but the linear model
 case, be aware that not all the assumptions applied to simple slopes
 analysis apply.
 }
+\section{Ordinary lm and glm refits}{
+
+Refits retain the original estimation sample, fitted weights, and total
+offset. Subset expressions are not reapplied, and weight/offset expressions
+are not reevaluated after centering moderators. Conditional intercepts are
+regression intercepts with the known offset contribution excluded.
+When original variables must be recovered from \code{data}, provide unchanged
+fitting data with its original row names. The recovered model frame is
+checked against the fitted model before refitting.
+}
+
+\section{Panelr models}{
+
+With a panelr version providing \code{wb_slope_design()}, \code{wbm} and \code{wbgee} models
+use exact design-matrix contrasts rather than shifted-data refits. If \code{L} is
+the difference between design rows one focal-predictor unit apart, the slope
+is \code{L \%*\% beta} and its variance is \code{L \%*\% vcov(model) \%*\% t(L)}. All covariance
+terms are retained. Other model classes retain the existing refit method.
+
+Numeric focal predictors, numeric/factor moderators, and two- and three-way
+interactions are supported. \code{plot.scale = "within"} uses the same deviations,
+moderator defaults, and fixed reference quantities as \code{interact_plot()}.
+Constant moderators retain original units/categories. \code{"original"} uses raw
+levels. Slopes use original predictor units even for standardized fits, and
+the outcome's fitted scale. Intercepts refer to a focal predictor of zero
+on the selected display scale. Offset variables absent from the formula must
+be supplied explicitly in \code{at}, in the same way as for prediction grids.
+
+Slopes are fixed-effect slopes conditional on reference person means and
+interaction-centering quantities, not derivatives of recomputed panel
+histories or averages over random effects. For non-identity links they are
+link-scale slopes, not response-scale marginal effects. The fitted GEE
+sandwich covariance is retained. Custom covariance estimators, FDR-adjusted
+Johnson-Neyman inference, nonlinear focal terms, predictor-dependent offsets,
+factor focal predictors, rank-deficient fits, and the plotting exclusions
+for lagged/detrended/basis models are not supported and produce errors.
+
+Johnson-Neyman regions use the same contrasts, covariance matrix, and
+degrees of freedom as the slope tests. Their intervals are pointwise, not
+simultaneous confidence bands. \code{probe_interaction()} shares the display
+scale and moderator settings between the slope and plotting methods.
+}
+
 \examples{
 
 # Using a fitted model as formula input

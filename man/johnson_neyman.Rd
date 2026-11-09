@@ -21,7 +21,8 @@ johnson_neyman(
   mod.range = NULL,
   title = "Johnson-Neyman plot",
   y.label = NULL,
-  modx.label = NULL
+  modx.label = NULL,
+  plot.scale = c("within", "original")
 )
 }
 \arguments{
@@ -99,6 +100,10 @@ predictor variable but instead make clear that it is a slope. By default,
 \item{modx.label}{If you prefer to override the automatic labelling of
 the x axis, you can specify your own label here. By default, the name
 \code{modx} is used.}
+
+\item{plot.scale}{For panelr models, use \code{"within"} (default) for
+within-person deviations or \code{"original"} for original moderator levels.
+Constant moderators retain original units. Ignored for other models.}
 }
 \value{
 \item{bounds}{The two numbers that make up the interval.}
@@ -145,6 +150,23 @@ having to pick arbitrary points. If you want to do this, just use the
 \code{\link{sim_slopes}} function's ability to handle 3-way interactions
 and request Johnson-Neyman intervals for each.
 }
+\section{Panelr models}{
+
+The \code{wbm} and \code{wbgee} methods use the contrast backend of \code{\link[=sim_slopes]{sim_slopes()}},
+without refitting. Default degrees of freedom are residual for Gaussian
+mixed models and infinite for GEE/generalized mixed models. An explicit \code{df}
+overrides this default. Inference is conditional, fixed-effect, and on the
+link scale, with the same reference quantities as interaction plots.
+
+These methods return an object inheriting from \code{johnson_neyman}, with a
+dedicated print method. \code{bounds} contains zero, one, or two finite crossing
+points. \code{intervals} describes significance in every region, including
+unbounded regions. This distinguishes no crossings from failure and from
+a slope that is significant everywhere. The observed moderator range is
+reported separately; regions beyond it extrapolate. Custom \code{vmat} and
+\code{control.fdr = TRUE} are not currently supported for panelr models.
+}
+
 \examples{
 # Using a fitted lm model
 states <- as.data.frame(state.x77)

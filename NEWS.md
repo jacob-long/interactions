@@ -1,3 +1,32 @@
+# interactions 1.3.0
+
+* Fixed `sim_slopes()` refits silently discarding weights and offsets. Ordinary
+  `lm`/`glm` refits now preserve the estimation sample, evaluated weights, and
+  total offset, without reapplying subsets or reevaluating these expressions
+  on centered variables. Original-data recovery checks row alignment and model
+  frame agreement; explicit `data` is honored for these refits.
+* Fixed non-survey simple-slopes `at` values being applied after mean-centering.
+  They now override centering on the original scale, as documented.
+
+* `sim_slopes()` and `johnson_neyman()` are now S3 generics. New panelr methods
+  use design-matrix contrasts and the fitted covariance matrix without refits,
+  with the same within/original-scale conventions as interaction plots.
+  `probe_interaction()`, printing, tidying, coefficient plots, and tables are
+  supported. Other model classes retain their existing calculation path.
+* Panelr Johnson-Neyman results explicitly represent zero, one, or two
+  crossing points, including all-significant and nowhere-significant cases.
+  Tests are conditional, fixed-effect, and link-scale, with a stated degrees
+  of freedom approximation; unsupported inference options fail explicitly.
+
+* Added component-aware panelr interaction plots. Numeric within-person terms
+  default to deviations in original units, including ranges and moderator
+  values; constant terms retain their original units or categories. Labels and
+  captions explain the scale and reference means. `plot.scale = "original"`
+  selects raw levels, and out-of-range deviations warn about extrapolation.
+  Requires panelr 1.1.0 or later. Other model classes are unchanged.
+
+* Requires jtools 2.3.2 or later for the refitting and compatibility fixes.
+
 # interactions 1.2.0
 
 A special thanks to Github user @olivroy for contributing a number of mostly 
