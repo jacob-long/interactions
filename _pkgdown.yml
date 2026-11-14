@@ -15,24 +15,26 @@ template:
 
 navbar:
   type: inverse
-  left:
-    - icon: fa-home
+  structure:
+    left: [home, news, reference, articles]
+  components:
+    home:
+      icon: fa-home
       href: index.html
-    - icon: fa-newspaper-o
+      aria-label: "Home"
+    news:
+      icon: fa-newspaper-o
       text: "News"
       href: news/index.html
-    - icon: fa-file-code-o
-      text: "Documentation"
+    reference:
+      icon: fa-file-code-o
       href: reference/index.html
-    - icon: fa-book
+      text: "Documentation"
+    articles:
+      icon: fa-book
       text: "Vignettes"
       menu:
-      -  text: Exploring interactions with continuous predictors in regression models
-         href: articles/interactions.html
-      -  text: Plotting interactions among categorical variables in regression models
-         href: articles/categorical.html
-
-  right:
-    - icon: fa-github fa-lg
-      text: "Github"
-      href: https://github.com/jacob-long/interactions
+      - text: Exploring interactions with continuous predictors in regression models
+        href: articles/interactions.html
+      - text: Plotting interactions among categorical variables in regression models
+        href: articles/categorical.html

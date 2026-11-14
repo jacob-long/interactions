@@ -21,7 +21,7 @@ jobs:
       isPush: ${{ github.event_name == 'push' }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-tinytex@v2
 
