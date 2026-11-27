@@ -308,7 +308,7 @@ johnson_neyman.default <- function(model, pred, modx, vmat = NULL, alpha = 0.05,
     intb <- coefs[intterm]
 
     ## Covariance matrix of betas
-    vcovs <- vcov(model)
+    vcovs <- if (is.null(vmat)) vcov(model) else vmat
     ## Predictor variance
     vcov_pred <- vcovs[pred,pred]
     ## Interaction variance
